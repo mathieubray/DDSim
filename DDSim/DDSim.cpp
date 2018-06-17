@@ -4,9 +4,9 @@
 #include "sys/stat.h"
 #endif
 
-#include "KPD-Enums-Functions.h"
-#include "KPD-Parameters.h"
-#include "KPD-Simulation.h"
+#include "DD-Enums-Functions.h"
+#include "DD-Parameters.h"
+#include "DD-Simulation.h"
 
 #include <vector>
 #include <string>
@@ -102,8 +102,8 @@ void buildDirectoryStructure(){
 	//Set up main output directory
 	std::string outputFolder = kpdParameters->getOutputFolder();
 	
-	std::string folderName = "output/KPDSim/" + outputFolder;
-	std::string folderPath = "output\\KPDSim\\" + outputFolder;
+	std::string folderName = "output/DDSim/" + outputFolder;
+	std::string folderPath = "output\\DDSim\\" + outputFolder;
 	
 	#ifdef _WIN32
 	_mkdir(folderPath.c_str());
@@ -228,7 +228,7 @@ int main(int argc, const char* argv[]){
 	// First argument points to parameter file. Process this file to collect parameters.
 	if (argc > 1){
 		std::string parameterFile = argv[1];
-		parameterFile = "parameters/KPDSim/" + parameterFile;
+		parameterFile = "parameters/DDSim/" + parameterFile;
 		kpdParameters->processParameters(parameterFile);
 	}
 

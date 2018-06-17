@@ -3,11 +3,11 @@
 
 #include "gurobi_c++.h"
 
-#include "KPD-Enums-Functions.h"
-#include "KPD-Parameters.h"
-#include "KPD-Node.h"
-#include "KPD-Match.h"
-#include "KPD-RNG.h"
+#include "DD-Enums-Functions.h"
+#include "DD-Parameters.h"
+#include "DD-Node.h"
+#include "DD-Match.h"
+#include "DD-RNG.h"
 
 #include <string>
 #include <vector>

@@ -2,9 +2,9 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "KPD-Enums-Functions.h"
-#include "KPD-Candidate.h"
-#include "KPD-Donor.h"
+#include "DD-Enums-Functions.h"
+#include "DD-Candidate.h"
+#include "DD-Donor.h"
 
 #include <string>
 #include <vector>

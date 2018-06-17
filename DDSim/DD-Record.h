@@ -2,14 +2,14 @@
 #ifndef RECORD_H
 #define RECORD_H
 
-#include "KPD-Enums-Functions.h"
-#include "KPD-Candidate.h"
-#include "KPD-Donor.h"
-#include "KPD-Data.h"
-#include "KPD-Parameters.h"
-#include "KPD-Node.h"
-#include "KPD-Match.h"
-#include "KPD-RNG.h"
+#include "DD-Enums-Functions.h"
+#include "DD-Candidate.h"
+#include "DD-Donor.h"
+#include "DD-Data.h"
+#include "DD-Parameters.h"
+#include "DD-Node.h"
+#include "DD-Match.h"
+#include "DD-RNG.h"
 
 #include <vector>
 #include <string>
@@ -113,7 +113,7 @@ KPDRecord::KPDRecord(KPDParameters * params){
 
 	setMatchRunSchedule();
 
-	logFile = "output/KPDSim/" + kpdParameters->getOutputFolder() + "/" + kpdParameters->getSubFolder() + "/SimulationLogs/Log-Record.txt";	
+	logFile = "output/DDSim/" + kpdParameters->getOutputFolder() + "/" + kpdParameters->getSubFolder() + "/SimulationLogs/Log-Record.txt";	
 
 }
 

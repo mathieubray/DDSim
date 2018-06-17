@@ -2,10 +2,10 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include "KPD-Enums-Functions.h"
-#include "KPD-Candidate.h"
-#include "KPD-Donor.h"
-#include "KPD-Parameters.h"
+#include "DD-Enums-Functions.h"
+#include "DD-Candidate.h"
+#include "DD-Donor.h"
+#include "DD-Parameters.h"
 
 #include <string>
 #include <vector>
@@ -100,7 +100,7 @@ KPDData::KPDData(KPDParameters * params) {
 	formCharacteristicsFrequency(params->excludeABDonorsFromSimulation());
 	formKPDPopulation(params->excludeABDonorsFromSimulation(), params->includeCompatiblePairs(), params->allowDesensitization());
 
-	logFile = "output/KPDSim/" + params->getOutputFolder() + "/" + params->getSubFolder() + "/SimulationLogs/Log-Data.txt";
+	logFile = "output/DDSim/" + params->getOutputFolder() + "/" + params->getSubFolder() + "/SimulationLogs/Log-Data.txt";
 }
 
 KPDData::~KPDData() {

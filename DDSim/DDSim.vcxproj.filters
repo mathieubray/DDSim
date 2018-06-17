@@ -18,45 +18,45 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KPD-Parameters.h">
+    <ClInclude Include="DD-Simulation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-Record.h">
+    <ClInclude Include="DD-RNG.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-RNG.h">
+    <ClInclude Include="DD-Record.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-Simulation.h">
+    <ClInclude Include="DD-Parameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-Donor.h">
+    <ClInclude Include="DD-Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-Node.h">
+    <ClInclude Include="DD-MatchRun.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-Match.h">
+    <ClInclude Include="DD-Match.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-Candidate.h">
+    <ClInclude Include="DD-Enums-Functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-Data.h">
+    <ClInclude Include="DD-Donor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-Enums-Functions.h">
+    <ClInclude Include="DD-Data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-MatchRun.h">
+    <ClInclude Include="DD-Candidate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KPD-Arrangement.h">
+    <ClInclude Include="DD-Arrangement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KPD.cpp">
+    <ClCompile Include="DDSim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

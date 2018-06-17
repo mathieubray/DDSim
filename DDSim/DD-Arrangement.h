@@ -2,10 +2,10 @@
 #ifndef ARRANGEMENT_H
 #define ARRANGEMENT_H
 
-#include "KPD-Enums-Functions.h"
-#include "KPD-Node.h"
-#include "KPD-Match.h"
-#include "KPD-Parameters.h"
+#include "DD-Enums-Functions.h"
+#include "DD-Node.h"
+#include "DD-Match.h"
+#include "DD-Parameters.h"
 
 #include <vector>
 #include <string>

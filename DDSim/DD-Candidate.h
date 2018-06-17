@@ -2,7 +2,7 @@
 #ifndef CANDIDATE_H
 #define CANDIDATE_H
 
-#include "KPD-Enums-Functions.h"
+#include "DD-Enums-Functions.h"
 
 #include <vector>
 #include <string>

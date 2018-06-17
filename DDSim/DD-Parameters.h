@@ -1,7 +1,7 @@
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
 
-#include "KPD-Enums-Functions.h"
+#include "DD-Enums-Functions.h"
 
 #include <string>
 #include <iostream>
@@ -875,7 +875,7 @@ void KPDParameters::printLog(){
 
 	kpdParametersLog << std::endl;
 
-	logFile = "output/KPDSim/" + outputFolder + "/" + subFolder + "/SimulationLogs/Log-Parameters.txt";
+	logFile = "output/DDSim/" + outputFolder + "/" + subFolder + "/SimulationLogs/Log-Parameters.txt";
 	std::ofstream outputFileLog(logFile.c_str());
 	outputFileLog << kpdParametersLog.str();
 	outputFileLog.close();

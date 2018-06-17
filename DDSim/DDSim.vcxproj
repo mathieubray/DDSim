@@ -218,21 +218,21 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="KPD-Candidate.h" />
-    <ClInclude Include="KPD-Data.h" />
-    <ClInclude Include="KPD-Donor.h" />
-    <ClInclude Include="KPD-Enums-Functions.h" />
-    <ClInclude Include="KPD-Match.h" />
-    <ClInclude Include="KPD-Node.h" />
-    <ClInclude Include="KPD-Parameters.h" />
-    <ClInclude Include="KPD-Record.h" />
-    <ClInclude Include="KPD-RNG.h" />
-    <ClInclude Include="KPD-Simulation.h" />
-    <ClInclude Include="KPD-MatchRun.h" />
-    <ClInclude Include="KPD-Arrangement.h" />
+    <ClInclude Include="DD-Candidate.h" />
+    <ClInclude Include="DD-Data.h" />
+    <ClInclude Include="DD-Donor.h" />
+    <ClInclude Include="DD-Enums-Functions.h" />
+    <ClInclude Include="DD-Match.h" />
+    <ClInclude Include="DD-Node.h" />
+    <ClInclude Include="DD-Parameters.h" />
+    <ClInclude Include="DD-Record.h" />
+    <ClInclude Include="DD-RNG.h" />
+    <ClInclude Include="DD-Simulation.h" />
+    <ClInclude Include="DD-MatchRun.h" />
+    <ClInclude Include="DD-Arrangement.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="KPD.cpp" />
+    <ClCompile Include="DDSim.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
