@@ -1,3 +1,8 @@
+/* ---------------------------------------------
+DD-Arrangement.h
+Stores Found Exchanges, Define Functions to Find
+Fallback Options, Calculate Utility
+---------------------------------------------- */
 
 #ifndef ARRANGEMENT_H
 #define ARRANGEMENT_H
@@ -64,7 +69,7 @@ public:
 		std::vector<KPDNode *> arrangement,
 		std::vector<KPDNodeType> nodeTypes,
 		std::vector<std::vector<std::vector<KPDMatch *> > > & matches,
-		std::vector<std::vector<KPDUnderlyingStatus> > & donorStatus,
+		std::vector<std::vector<KPDStatus> > & donorStatus,
 		bool ndd, KPDOptimizationScheme scheme);
 
 	~KPDArrangement();
@@ -101,7 +106,7 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 	std::vector<KPDNode *> arrangement,
 	std::vector<KPDNodeType> nodeTypes,
 	std::vector<std::vector<std::vector<KPDMatch *> > > & matches,
-	std::vector<std::vector<KPDUnderlyingStatus> > & donorStatus,
+	std::vector<std::vector<KPDStatus> > & donorStatus,
 	bool ndd, KPDOptimizationScheme scheme) {
 
 	//Copy Arrangement
@@ -124,7 +129,10 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 		int numDonors = arrangementNodes[i - 1]->getNumberOfAssociatedDonors();
 
 		for (int j = 1; j <= N; j++){
-			arrangementMatchMatrix[i][j].assign(1 + numDonors, new KPDMatch());
+
+			for (int k = 0; k <= numDonors; k++) {
+				arrangementMatchMatrix[i][j].push_back(new KPDMatch());
+			}
 
 			arrangementTransplantSelected[i][j].assign(1 + numDonors, false);
 		}
@@ -148,7 +156,7 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 			for (int k = 1; k <= numDonors; k++) {				
 
 				//If the donor is active and matched with the candidate...
-				if (donorStatus[donorNodeID][k] == ACTIVE && matches[donorNodeID][candidateNodeID][k]->getIncidence()) {
+				if (donorStatus[donorNodeID][k] == STATUS_ACTIVE && matches[donorNodeID][candidateNodeID][k]->getIncidence()) {
 
 					arrangementMatchMatrix[i][i + 1][k]->setIncidence(true);
 					arrangementMatchMatrix[i][i + 1][k]->setFiveYearSurvival(matches[donorNodeID][candidateNodeID][k]->getFiveYearSurvival());
@@ -181,7 +189,7 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 		for (int k = 1; k <= numDonors; k++) {
 
 			//If the donor is active and matched with the candidate...
-			if (donorStatus[donorNodeID][k] == ACTIVE && matches[donorNodeID][candidateNodeID][k]->getIncidence()) { // Should capture implicit donation information
+			if (donorStatus[donorNodeID][k] == STATUS_ACTIVE && matches[donorNodeID][candidateNodeID][k]->getIncidence()) { // Should capture implicit donation information
 				
 				arrangementMatchMatrix[N][1][k]->setIncidence(true);
 				arrangementMatchMatrix[N][1][k]->setFiveYearSurvival(matches[donorNodeID][candidateNodeID][k]->getFiveYearSurvival());
@@ -212,7 +220,7 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 
 				for (int k = 1; k <= arrangementDonors; k++) {
 
-					if (donorStatus[donorNodeID][k] == ACTIVE) {
+					if (donorStatus[donorNodeID][k] == STATUS_ACTIVE) {
 						
 						arrangementDonorAvailability[i][k] = true;
 						
@@ -347,7 +355,7 @@ int KPDArrangement::selectDonor(int donorNode, int candidateNode, bool convertID
 
 		if (arrangementMatchMatrix[donorNodeID][candidateNodeID][k]->getIncidence() && arrangementDonorAvailability[donorNodeID][k]) {
 			
-			if (utilityScheme == TRANSPLANTS && arrangementDonorAvailability[donorNodeID][k]) {
+			if (utilityScheme == UTILITY_TRANSPLANTS && arrangementDonorAvailability[donorNodeID][k]) {
 				if (maxVal == 0.0) {
 					maxVal = 1.0;
 					maxIndex = k;
@@ -501,7 +509,7 @@ void KPDArrangement::calculateUtilityOfFallBackOptions(){
 
 				int donorID = selectDonor(*itNode, *(itNode + 1), false);
 					
-				if (utilityScheme == TRANSPLANTS) { // Transplants
+				if (utilityScheme == UTILITY_TRANSPLANTS) { // Transplants
 					if (arrangementNodeTypes[*(itNode + 1) - 1] == PAIR) {
 						u += 1;
 					}
@@ -513,7 +521,7 @@ void KPDArrangement::calculateUtilityOfFallBackOptions(){
 
 			int donorID = selectDonor(*(itOption->end() - 1), *(itOption->begin()), false);
 
-			if (utilityScheme == TRANSPLANTS) { // Transplants
+			if (utilityScheme == UTILITY_TRANSPLANTS) { // Transplants
 				if (arrangementNodeTypes[*(itOption->begin()) - 1] == PAIR) {
 					u += 1;
 				}
@@ -672,15 +680,15 @@ std::string KPDArrangement::toTransplantString(){
 
 						ss << currentIteration << "," << matchRun << "," << matchRunTime << "," << timeToTransplantation << ",";
 						
-						ss << KPDFunctions::toString(donorNodeType) << "," << donorNode->getID() << "," << k << "," << donorNode->getArrivalTime() << "," << KPDFunctions::boolToString(arrangementDonorAvailability[i][k]) << ",";
+						ss << KPDFunctions::nodeTypeToString(donorNodeType) << "," << donorNode->getID() << "," << k << "," << donorNode->getArrivalTime() << "," << KPDFunctions::boolToYesNo(arrangementDonorAvailability[i][k]) << ",";
 						//ss << donorNode->getDonorString(k) << ","; 
 
-						ss << candidateNode->getID() << "," << candidateNode->getArrivalTime() << "," << candidateNode->getNumberOfAssociatedDonors() << "," << KPDFunctions::boolToString(arrangementCandidateAvailability[j]) << ",";
+						ss << candidateNode->getID() << "," << candidateNode->getArrivalTime() << "," << candidateNode->getNumberOfAssociatedDonors() << "," << KPDFunctions::boolToYesNo(arrangementCandidateAvailability[j]) << ",";
 						//ss << candidateNode->getCandidateString() << ",";
 						
 						ss << match->matchString() << ",";
 						
-						ss << KPDFunctions::boolToString(arrangementTransplantSelected[i][j][k]) << std::endl;
+						ss << KPDFunctions::boolToYesNo(arrangementTransplantSelected[i][j][k]) << std::endl;
 
 					}
 				}

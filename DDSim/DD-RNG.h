@@ -1,3 +1,7 @@
+/* ---------------------------------------------
+DD-RNG.h
+Defines a Random-Number Generator for Simulations
+---------------------------------------------- */
 
 #ifndef RNG_H
 #define RNG_H

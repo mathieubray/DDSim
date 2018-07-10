@@ -1,3 +1,8 @@
+/* ---------------------------------------------
+DD-Node.h
+Forms Nodes (Donor-Candidate Pairings or NDDs) 
+for KPD Network
+---------------------------------------------- */
 
 #ifndef NODE_H
 #define NODE_H
@@ -23,9 +28,14 @@ private:
 	
 public:
 	
+	//Constructors
+
+	//Construct a dummy node
 	KPDNode();
-	KPDNode(int id, double arrivalTime, KPDDonor * donor);											// Altruistic Donor
-	KPDNode(int id, double arrivalTime, std::vector<KPDDonor * > donors, KPDCandidate * candidate);	// Donor-Candidate Pair
+	//Construct an NDD
+	KPDNode(int id, double arrivalTime, KPDDonor * donor);	
+	//Construct a donor-candidate pair
+	KPDNode(int id, double arrivalTime, std::vector<KPDDonor * > donors, KPDCandidate * candidate);
 	~KPDNode();
 
 	//IDs
@@ -66,12 +76,10 @@ public:
 	
 };
 
-//Blank Nodes
 KPDNode::KPDNode(){
 
 }
 
-//Non-Directed Donors
 KPDNode::KPDNode(int id, double arrivalTime, KPDDonor * donor){
 
 	nodeID = id;	
@@ -84,7 +92,6 @@ KPDNode::KPDNode(int id, double arrivalTime, KPDDonor * donor){
 
 }
 
-//Incompatible Donor-Recipient Pairing
 KPDNode::KPDNode(int id, double arrivalTime, std::vector<KPDDonor *> donors, KPDCandidate * candidate){
 
 	nodeID = id;

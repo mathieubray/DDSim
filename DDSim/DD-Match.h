@@ -1,3 +1,8 @@
+/* ---------------------------------------------
+DD-Match.h
+Stores Information on Donor-Candidate Matches
+---------------------------------------------- */
+
 #ifndef MATCH_H
 #define MATCH_H
 
@@ -22,13 +27,17 @@ private:
 	double assumedSuccessProbability;
 	double actualSuccessProbability;
 
-	KPDCrossmatchResult virtualCrossmatchResult;
+	KPDCrossmatch virtualCrossmatchResult;
 	bool labCrossmatchResult;
 
 public:
 
+	//Constructors
+
+	//Construts a dummy match
 	KPDMatch();
-	KPDMatch(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatchResult vResult, bool lResult);
+	//Constructs a match with all defined match characteristics 
+	KPDMatch(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult);
 	~KPDMatch();
 
 	//Getters
@@ -39,12 +48,12 @@ public:
 	double getTransplantDifficultyScore();
 	double getRandomUtility();
 
-	double getUtility(KPDUtilityScheme scheme);
+	double getUtility(KPDUtilityScheme scheme); // Returns utility value based on specified utility scheme
 
 	double getAssumedSuccessProbability();
 	double getActualSuccessProbability();
 
-	KPDCrossmatchResult getVirtualCrossmatchResult();
+	KPDCrossmatch getVirtualCrossmatchResult();
 	bool getLabCrossmatchResult();
 
 
@@ -61,15 +70,15 @@ public:
 	void setAssumedSuccessProbability(double prob);
 	void setActualSuccessProbability(double prob);
 
-	void setVirtualCrossmatchResult(KPDCrossmatchResult result);
+	void setVirtualCrossmatchResult(KPDCrossmatch result);
 	void setLabCrossmatchResult(bool result);
 	
-	void setMatchProperties(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatchResult vResult, bool lResult);
+	void setMatchProperties(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult);
 
 	//Strings
-	std::string matchOutput(int space);
-	std::string matchShortOutput();
-	std::string matchString();
+	std::string matchString(); // Returns a comma-separated string
+	std::string matchOutput(); // Returns detailed match information
+	std::string matchShortOutput(); // Returns brief match information
 
 	//Copy Constructor
 	KPDMatch * copy();
@@ -77,11 +86,35 @@ public:
 };
 
 KPDMatch::KPDMatch(){	
-	setMatchProperties(false, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, FAILED_CROSSMATCH_LAB, false);	
+
+	incidence = false;
+
+	fiveYearSurvival = 0.0;
+	tenYearSurvival = 0.0; 
+	transplantDifficultyScore = 0.0;
+	randomUtility = 0.0;
+	
+	assumedSuccessProbability = 0.0;
+	actualSuccessProbability = 0.0;
+
+	virtualCrossmatchResult = CROSSMATCH_FAILED_LAB;
+	labCrossmatchResult = false;
 }
 
-KPDMatch::KPDMatch(bool inc, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatchResult vResult, bool lResult){
-	setMatchProperties(inc, fiveYearSurv, tenYearSurv, score, util, assumedProb, actualProb, vResult, lResult);
+KPDMatch::KPDMatch(bool inc, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult){
+	
+	incidence = inc;
+
+	fiveYearSurvival = fiveYearSurv;
+	tenYearSurvival = tenYearSurv;
+	transplantDifficultyScore = score;
+	randomUtility = util;
+
+	assumedSuccessProbability = assumedProb;
+	actualSuccessProbability = actualProb;
+
+	virtualCrossmatchResult = vResult;
+	labCrossmatchResult = lResult;
 }
 
 KPDMatch::~KPDMatch(){
@@ -109,16 +142,16 @@ double KPDMatch::getRandomUtility(){
 }
 
 double KPDMatch::getUtility(KPDUtilityScheme scheme){
-	if (scheme == FIVE_YEAR_SURVIVAL) {
+	if (scheme == UTILITY_FIVE_YEAR_SURVIVAL) {
 		return fiveYearSurvival;
 	}
-	else if (scheme == TEN_YEAR_SURVIVAL) {
+	else if (scheme == UTILITY_TEN_YEAR_SURVIVAL) {
 		return tenYearSurvival;
 	}
-	else if (scheme == TRANSPLANT_DIFFICULTY) {
+	else if (scheme == UTILITY_TRANSPLANT_DIFFICULTY) {
 		return transplantDifficultyScore;
 	}
-	else if (scheme == RANDOM_UTILITY) {
+	else if (scheme == UTILITY_RANDOM) {
 		return randomUtility;
 	}
 	else {
@@ -134,7 +167,7 @@ double KPDMatch::getActualSuccessProbability(){
 	return actualSuccessProbability;
 }
 
-KPDCrossmatchResult KPDMatch::getVirtualCrossmatchResult(){
+KPDCrossmatch KPDMatch::getVirtualCrossmatchResult(){
 	return virtualCrossmatchResult;
 }
 
@@ -163,16 +196,16 @@ void KPDMatch::setRandomUtility(double util){
 }
 
 void KPDMatch::setUtility(KPDUtilityScheme scheme, double util){
-	if (scheme == FIVE_YEAR_SURVIVAL) {
+	if (scheme == UTILITY_FIVE_YEAR_SURVIVAL) {
 		fiveYearSurvival = util;
 	}
-	else if (scheme == TEN_YEAR_SURVIVAL) {
+	else if (scheme == UTILITY_TEN_YEAR_SURVIVAL) {
 		tenYearSurvival = util;
 	}
-	else if (scheme == TRANSPLANT_DIFFICULTY) {
+	else if (scheme == UTILITY_TRANSPLANT_DIFFICULTY) {
 		transplantDifficultyScore = util;
 	}
-	else if (scheme == RANDOM_UTILITY) {
+	else if (scheme == UTILITY_RANDOM) {
 		randomUtility = util;
 	}
 }
@@ -185,7 +218,7 @@ void KPDMatch::setActualSuccessProbability(double prob){
 	actualSuccessProbability = prob;
 }
 
-void KPDMatch::setVirtualCrossmatchResult(KPDCrossmatchResult result){
+void KPDMatch::setVirtualCrossmatchResult(KPDCrossmatch result){
 	virtualCrossmatchResult = result;
 }
 
@@ -193,7 +226,7 @@ void KPDMatch::setLabCrossmatchResult(bool result){
 	labCrossmatchResult = result;
 }
 
-void KPDMatch::setMatchProperties(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatchResult vResult, bool lResult){
+void KPDMatch::setMatchProperties(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult){
 	
 	incidence = isIncident;
 
@@ -214,31 +247,27 @@ std::string KPDMatch::matchString(){
 
 	std::stringstream matchInfo;
 
-	matchInfo << fiveYearSurvival << ",";									// 5-Year Survival
-	matchInfo << tenYearSurvival << ",";									// 10-Year Survival
-	matchInfo << transplantDifficultyScore << ",";							// Transplant Difficulty Score
-	matchInfo << randomUtility << ",";										// Random Utility
-	matchInfo << assumedSuccessProbability << ",";							// Assumed Success Probability
-	matchInfo << actualSuccessProbability << ",";							// Actual Success Probability
-	matchInfo << KPDFunctions::toString(virtualCrossmatchResult) << ",";	// Virtual Crossmatch Result
-	matchInfo << KPDFunctions::labCrossmatchToString(labCrossmatchResult);	// Lab Crossmatch Result
+	matchInfo << fiveYearSurvival << ",";
+	matchInfo << tenYearSurvival << ",";						
+	matchInfo << transplantDifficultyScore << ",";
+	matchInfo << randomUtility << ",";
+	matchInfo << assumedSuccessProbability << ",";
+	matchInfo << actualSuccessProbability << ",";
+	matchInfo << KPDFunctions::crossmatchToString(virtualCrossmatchResult) << ",";
+	matchInfo << KPDFunctions::boolToTF(labCrossmatchResult);
 
 	return matchInfo.str();
 }
 
-std::string KPDMatch::matchOutput(int space){
+std::string KPDMatch::matchOutput(){
 
-	std::stringstream indent;
-
-	for (int i = 1; i <= space; i++) {
-		indent << " ";
-	}
+	int tab = 3;
 
 	std::stringstream matchInfo;
 
-	matchInfo << indent.str() << "5-Year Survival: " << fiveYearSurvival << ", 10-Year Survival: " << tenYearSurvival << ", Score: " << transplantDifficultyScore << ", Random Utility: " << randomUtility << std::endl;
-	matchInfo << indent.str() << "Assumed Success Probability: " << assumedSuccessProbability << ", Actual Success Probability: " << actualSuccessProbability << std::endl;
-	matchInfo << indent.str() << "Virtual Crossmatch Result: " << KPDFunctions::toString(virtualCrossmatchResult) << ", Lab Crossmatch Result: " << KPDFunctions::labCrossmatchToString(labCrossmatchResult) << std::endl;
+	matchInfo << KPDFunctions::indent(tab) << "5-Year Survival: " << fiveYearSurvival << ", 10-Year Survival: " << tenYearSurvival << ", Score: " << transplantDifficultyScore << ", Random Utility: " << randomUtility << std::endl;
+	matchInfo << KPDFunctions::indent(tab) << "Assumed Success Probability: " << assumedSuccessProbability << ", Actual Success Probability: " << actualSuccessProbability << std::endl;
+	matchInfo << KPDFunctions::indent(tab) << "Virtual Crossmatch Result: " << KPDFunctions::crossmatchToString(virtualCrossmatchResult) << ", Lab Crossmatch Result: " << KPDFunctions::boolToTF(labCrossmatchResult) << std::endl;
 
 	return matchInfo.str();
 
@@ -250,7 +279,7 @@ std::string KPDMatch::matchShortOutput() {
 
 	matchInfo << "[" << fiveYearSurvival << "," << tenYearSurvival << "," << transplantDifficultyScore << "," << randomUtility << ",";
 	matchInfo << assumedSuccessProbability << "," << actualSuccessProbability << ",";
-	matchInfo << KPDFunctions::toShortString(virtualCrossmatchResult) << "," << KPDFunctions::labCrossmatchToShortString(labCrossmatchResult) << "]";
+	matchInfo << KPDFunctions::crossmatchToString(virtualCrossmatchResult) << "," << KPDFunctions::boolToTF(labCrossmatchResult) << "]";
 
 	return matchInfo.str();
 
@@ -258,9 +287,7 @@ std::string KPDMatch::matchShortOutput() {
 
 KPDMatch * KPDMatch::copy(){
 
-	KPDMatch * copyMatch = new KPDMatch();
-
-	copyMatch->setMatchProperties(incidence, fiveYearSurvival, tenYearSurvival, transplantDifficultyScore, randomUtility, assumedSuccessProbability, actualSuccessProbability, virtualCrossmatchResult, labCrossmatchResult);
+	KPDMatch * copyMatch = new KPDMatch(incidence, fiveYearSurvival, tenYearSurvival, transplantDifficultyScore, randomUtility, assumedSuccessProbability, actualSuccessProbability, virtualCrossmatchResult, labCrossmatchResult);
 
 	return copyMatch;
 }

@@ -1,3 +1,7 @@
+/* ---------------------------------------------
+DD-Record.h
+Stores Data for Specific Simulation Iteration
+---------------------------------------------- */
 
 #ifndef RECORD_H
 #define RECORD_H
@@ -34,11 +38,12 @@ private:
 	std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrix;
 
 	std::vector<std::vector<bool> > incidenceMatrix;
+	std::vector<std::vector<bool> > incidenceMatrixReduced;
 	
-	std::vector<std::deque<KPDUnderlyingStatus> > candidateStateTransitionMatrix;
+	std::vector<std::deque<KPDStatus> > candidateStateTransitionMatrix;
 	std::vector<std::deque<double> > candidateStateTransitionTimeMatrix;
 
-	std::vector<std::vector<std::deque<KPDUnderlyingStatus> > > donorStateTransitionMatrix;
+	std::vector<std::vector<std::deque<KPDStatus> > > donorStateTransitionMatrix;
 	std::vector<std::vector<std::deque<double> > > donorStateTransitionTimeMatrix;
 
 	// Random Number Generators
@@ -67,14 +72,12 @@ private:
 	KPDDonor * generateNDD();
 	void generateDonors(std::vector<KPDDonor *> & donors, int numberOfDonors, KPDCandidate * candidate);
 
-	double generateChangePoint(KPDUnderlyingStatus currentState, bool isDonor, bool isNDD);
-	KPDUnderlyingStatus generateStateTransition(KPDUnderlyingStatus currentState, double changePoint, KPDTimeline timeline, double activeToInactive, double activeToWithdrawn, double inactiveToActive, double inactiveToWithdrawn);
+	double generateChangePoint(KPDStatus currentState, bool isDonor, bool isNDD);
+	KPDStatus generateStateTransition(KPDStatus currentState, double changePoint, KPDTimeline timeline, double activeToInactive, double activeToWithdrawn, double inactiveToActive, double inactiveToWithdrawn);
 	
-	bool allowableMatch(KPDCrossmatchResult crossmatch);
+	bool allowableMatch(KPDCrossmatch crossmatch);
 
 	std::stringstream kpdRecordLog;
-
-	std::string logFile;
 
 
 public:
@@ -92,11 +95,12 @@ public:
 	std::vector<std::vector<std::vector<KPDMatch *> > > getMatchMatrix();
 
 	std::vector<std::vector<bool> > getIncidenceMatrix();
+	std::vector<std::vector<bool> > getIncidenceMatrixReduced();
 	
-	std::vector<std::deque<KPDUnderlyingStatus> > getCandidateStateTransitionMatrix();
+	std::vector<std::deque<KPDStatus> > getCandidateStateTransitionMatrix();
 	std::vector<std::deque<double> > getCandidateStateTransitionTimeMatrix();
 	
-	std::vector<std::vector<std::deque<KPDUnderlyingStatus> > > getDonorStateTransitionMatrix();
+	std::vector<std::vector<std::deque<KPDStatus> > > getDonorStateTransitionMatrix();
 	std::vector<std::vector<std::deque<double> > > getDonorStateTransitionTimeMatrix();
 	
 	std::string getPopulationList();
@@ -109,12 +113,10 @@ KPDRecord::KPDRecord(KPDParameters * params){
 
 	kpdParameters = params;
 
+	std::cout << "Collecting Data" << std::endl;
 	kpdData = new KPDData(params);
 
 	setMatchRunSchedule();
-
-	logFile = "output/DDSim/" + kpdParameters->getOutputFolder() + "/" + kpdParameters->getSubFolder() + "/SimulationLogs/Log-Record.txt";	
-
 }
 
 KPDRecord::~KPDRecord(){
@@ -174,7 +176,7 @@ void KPDRecord::selectNodesFixed(){
 	kpdRecordLog << "Selecting Nodes:" << std::endl;
 	std::cout << "Selecting Nodes..." << std::endl;
 	
-	KPDDonorAssignmentScheme donorAssignmentScheme = kpdParameters->getDonorAssignmentScheme();
+	KPDDonorAssignment donorAssignmentScheme = kpdParameters->getDonorAssignment();
 
 	int nPairingArrivals = (int)(kpdParameters->getArrivals() + 0.5);
 	int nNDDArrivals = (int)(kpdParameters->getNDDs() + 0.5);
@@ -203,7 +205,7 @@ void KPDRecord::selectNodesFixed(){
 			nNDDs++;
 			
 			//Generate donor based on donor assignment scheme
-			if (donorAssignmentScheme == RANDOM_DONORS){
+			if (donorAssignmentScheme == DONOR_ASSIGNMENT_RANDOM){
 				KPDDonor * newNDD = generateNDD();
 				KPDNode * newNode = new KPDNode(nodeID, inTime, newNDD);
 				nodeVector.push_back(newNode);
@@ -234,7 +236,7 @@ void KPDRecord::selectNodesFixed(){
 			std::vector<KPDDonor *> associatedDonors;
 			associatedDonors.push_back(new KPDDonor());
 			
-			if (donorAssignmentScheme == RANDOM_DONORS) {
+			if (donorAssignmentScheme == DONOR_ASSIGNMENT_RANDOM) {
 
 				double uCandidate = rngSelection.runif();
 
@@ -299,7 +301,7 @@ void KPDRecord::selectNodesStochastic(){
 	kpdRecordLog << "Selecting Nodes:" << std::endl;
 	std::cout << "Selecting Nodes..." << std::endl;
 	
-	KPDDonorAssignmentScheme donorAssignmentScheme = kpdParameters->getDonorAssignmentScheme();
+	KPDDonorAssignment donorAssignmentScheme = kpdParameters->getDonorAssignment();
 
 	double nodeArrivalLambda = kpdParameters->getArrivals();
 	double probNDDArrival = kpdParameters->getNDDs();
@@ -331,7 +333,7 @@ void KPDRecord::selectNodesStochastic(){
 				nNDDs++;
 
 				//Generate donor based on donor assignment scheme
-				if (donorAssignmentScheme == RANDOM_DONORS) {
+				if (donorAssignmentScheme == DONOR_ASSIGNMENT_RANDOM) {
 					KPDDonor * newNDD = generateNDD();
 					KPDNode * newNode = new KPDNode(nodeID, inTime, newNDD);
 					nodeVector.push_back(newNode);
@@ -363,7 +365,7 @@ void KPDRecord::selectNodesStochastic(){
 				std::vector<KPDDonor *>  associatedDonors;
 				associatedDonors.push_back(new KPDDonor());
 
-				if (donorAssignmentScheme == RANDOM_DONORS) {
+				if (donorAssignmentScheme == DONOR_ASSIGNMENT_RANDOM) {
 
 					double uCandidate = rngSelection.runif();
 
@@ -442,11 +444,11 @@ void KPDRecord::assignNodeProperties() {
 
 	int N = (int)nodeVector.size() - 1;
 
-	candidateStateTransitionMatrix.assign(1, std::deque<KPDUnderlyingStatus>(1, INACTIVE));
+	candidateStateTransitionMatrix.assign(1, std::deque<KPDStatus>(1, STATUS_INACTIVE));
 	candidateStateTransitionTimeMatrix.assign(1, std::deque<double>(1, 0.0));
 
-	donorStateTransitionMatrix.assign(1, std::vector<std::deque<KPDUnderlyingStatus> >(1, std::deque<KPDUnderlyingStatus>(1, INACTIVE)));
-	donorStateTransitionTimeMatrix.assign(1, std::vector<std::deque<double> >(1, std::deque<double>(1, INACTIVE)));
+	donorStateTransitionMatrix.assign(1, std::vector<std::deque<KPDStatus> >(1, std::deque<KPDStatus>(1, STATUS_INACTIVE)));
+	donorStateTransitionTimeMatrix.assign(1, std::vector<std::deque<double> >(1, std::deque<double>(1, STATUS_INACTIVE)));
 
 	double actualNDDActiveToInactive = kpdParameters->getActualNDDActiveToInactive();
 	double actualNDDActiveToWithdrawn = kpdParameters->getActualNDDActiveToWithdrawn();
@@ -470,36 +472,36 @@ void KPDRecord::assignNodeProperties() {
 
 		int numberOfDonors = nodeVector[i]->getNumberOfAssociatedDonors();
 
-		std::deque<KPDUnderlyingStatus> candidateStateTransitions;
+		std::deque<KPDStatus> candidateStateTransitions;
 		std::deque<double> candidateStateTransitionTimes;
-		std::vector<std::deque<KPDUnderlyingStatus> > donorStateTransitions;
+		std::vector<std::deque<KPDStatus> > donorStateTransitions;
 		std::vector<std::deque<double> > donorStateTransitionTimes;
 
 		double startingPoint = nodeVector[i]->getArrivalTime();
-		KPDUnderlyingStatus initialState = ACTIVE;
+		KPDStatus initialState = STATUS_ACTIVE;
 
 		candidateStateTransitions.push_back(initialState);
 		candidateStateTransitionTimes.push_back(startingPoint);
-		donorStateTransitions.assign(1 + numberOfDonors, std::deque<KPDUnderlyingStatus>(1, initialState));
+		donorStateTransitions.assign(1 + numberOfDonors, std::deque<KPDStatus>(1, initialState));
 		donorStateTransitionTimes.assign(1 + numberOfDonors, std::deque<double>(1, startingPoint));
 
 		//State transitions for pairings
 		if (nodeVector[i]->getType() == PAIR) {
 
-			kpdRecordLog << "     " << i << "-Candidate: " << startingPoint << " (" << KPDFunctions::toString(initialState) << ") ";
+			kpdRecordLog << "     " << i << "-Candidate: " << startingPoint << " (" << KPDFunctions::statusToString(initialState) << ") ";
 
 			double changePoint = startingPoint;			
 
-			if (timeline == FIXED_MATCH_RUNS) {
+			if (timeline == TIMELINE_FIXED) {
 				changePoint = changePoint - 0.5;
 			}
-			KPDUnderlyingStatus currentState = initialState;
+			KPDStatus currentState = initialState;
 
 			changePoint += generateChangePoint(currentState, false, false);
 
 			//Candidate state transitions
-			while (changePoint <= (timeSpan + processingTime) && currentState != WITHDRAWN) {
-				KPDUnderlyingStatus newState;
+			while (changePoint <= (timeSpan + processingTime) && currentState != STATUS_WITHDRAWN) {
+				KPDStatus newState;
 
 				newState = generateStateTransition(currentState, changePoint, timeline,
 					actualCandidateActiveToInactive, actualCandidateActiveToWithdrawn, actualCandidateInactiveToActive, actualCandidateInactiveToWithdrawn);
@@ -508,7 +510,7 @@ void KPDRecord::assignNodeProperties() {
 					candidateStateTransitions.push_back(newState);
 					candidateStateTransitionTimes.push_back(changePoint);
 
-					kpdRecordLog << changePoint << " (" << KPDFunctions::toString(newState) << ") ";
+					kpdRecordLog << changePoint << " (" << KPDFunctions::statusToString(newState) << ") ";
 				}
 
 				currentState = newState;
@@ -521,19 +523,19 @@ void KPDRecord::assignNodeProperties() {
 			//Donor state transitions
 			for (int k = 1; k <= numberOfDonors; k++) {
 
-				kpdRecordLog << "     " << i << "-Donor " << k << ": " << startingPoint << " (" << KPDFunctions::toString(initialState) << ") ";
+				kpdRecordLog << "     " << i << "-Donor " << k << ": " << startingPoint << " (" << KPDFunctions::statusToString(initialState) << ") ";
 				
 				changePoint = startingPoint;
 				
-				if (timeline == FIXED_MATCH_RUNS) {
+				if (timeline == TIMELINE_FIXED) {
 					changePoint = changePoint - 0.5;
 				}
 				currentState = initialState;
 
 				changePoint += generateChangePoint(currentState, true, false);
 
-				while (changePoint <= (timeSpan + processingTime) && currentState != WITHDRAWN) {
-					KPDUnderlyingStatus newState;
+				while (changePoint <= (timeSpan + processingTime) && currentState != STATUS_WITHDRAWN) {
+					KPDStatus newState;
 
 					newState = generateStateTransition(currentState, changePoint, timeline,
 						actualDonorActiveToInactive, actualDonorActiveToWithdrawn, actualDonorInactiveToActive, actualDonorInactiveToWithdrawn);
@@ -542,7 +544,7 @@ void KPDRecord::assignNodeProperties() {
 						donorStateTransitions[k].push_back(newState);
 						donorStateTransitionTimes[k].push_back(changePoint);
 
-						kpdRecordLog << changePoint << " (" << KPDFunctions::toString(newState) << ") ";
+						kpdRecordLog << changePoint << " (" << KPDFunctions::statusToString(newState) << ") ";
 					}
 
 					currentState = newState;
@@ -556,18 +558,18 @@ void KPDRecord::assignNodeProperties() {
 
 		else {
 
-			kpdRecordLog << "     " << i << "-NDD: " << startingPoint << " (" << KPDFunctions::toString(initialState) << ") ";
+			kpdRecordLog << "     " << i << "-NDD: " << startingPoint << " (" << KPDFunctions::statusToString(initialState) << ") ";
 
 			double changePoint = startingPoint;
-			if (timeline == FIXED_MATCH_RUNS) {
+			if (timeline == TIMELINE_FIXED) {
 				changePoint = changePoint - 0.5;
 			}
-			KPDUnderlyingStatus currentState = initialState;
+			KPDStatus currentState = initialState;
 
 			changePoint += generateChangePoint(currentState, true, true);
 
-			while (changePoint <= (timeSpan + processingTime) && currentState != WITHDRAWN) {
-				KPDUnderlyingStatus newState;
+			while (changePoint <= (timeSpan + processingTime) && currentState != STATUS_WITHDRAWN) {
+				KPDStatus newState;
 
 				newState = generateStateTransition(currentState, changePoint, timeline,
 					actualNDDActiveToInactive, actualNDDActiveToWithdrawn, actualNDDInactiveToActive, actualNDDInactiveToWithdrawn);
@@ -602,6 +604,7 @@ void KPDRecord::assignMatchProperties() {
 	int N = (int)nodeVector.size() - 1;
 
 	incidenceMatrix.assign(1 + N, std::vector<bool>(1 + N, false));
+	incidenceMatrixReduced.assign(1 + N, std::vector<bool>(1 + N, false));
 	matchMatrix.assign(1 + N, std::vector<std::vector<KPDMatch *> >(1 + N, std::vector<KPDMatch *>(1, new KPDMatch())));
 
 	//Iterate through donor nodes
@@ -615,7 +618,9 @@ void KPDRecord::assignMatchProperties() {
 		for (int j = 1; j <= N; j++) {
 
 			//Initialize matrices
-			matchMatrix[i][j].assign(1 + numDonors, new KPDMatch());
+			for (int k = 0; k <= numDonors; k++) {
+				matchMatrix[i][j].push_back(new KPDMatch());
+			}
 
 			if (i != j) {
 				// Pairing -> NDD (Implicit Backward Edge from all Donors to the NDD)
@@ -640,11 +645,12 @@ void KPDRecord::assignMatchProperties() {
 					for (int k = 1; k <= numDonors; k++) {
 
 						//Perform virtual crossmatch
-						KPDCrossmatchResult virtualCrossmatchResult = kpdData->performCrossmatch(nodeVector[j]->getCandidate(), donors[k]);
+						KPDCrossmatch virtualCrossmatchResult = kpdData->performCrossmatch(nodeVector[j]->getCandidate(), donors[k]);
 
 						if (allowableMatch(virtualCrossmatchResult)) {
 
 							incidenceMatrix[i][j] = true;
+							incidenceMatrixReduced[i][j] = true;
 
 							//Assign utility values
 							double fiveYearSurvival;
@@ -669,10 +675,10 @@ void KPDRecord::assignMatchProperties() {
 							double assumedMatchSuccessProbability = 1.0;
 							double actualMatchSuccessProbability = 1.0;
 
-							KPDMatchFailureScheme assumedMatchFailureScheme = kpdParameters->getAssumedMatchFailureScheme();
-							KPDMatchFailureScheme actualMatchFailureScheme = kpdParameters->getActualMatchFailureScheme();
+							KPDMatchFailure assumedMatchFailureScheme = kpdParameters->getAssumedMatchFailure();
+							KPDMatchFailure actualMatchFailureScheme = kpdParameters->getActualMatchFailure();
 
-							if (assumedMatchFailureScheme == PRA_BASED_MATCH_FAILURE) {
+							if (assumedMatchFailureScheme == MATCH_FAILURE_PRA_BASED) {
 								if (pra < 25) {
 									assumedMatchSuccessProbability = 0.95;
 								}
@@ -692,7 +698,7 @@ void KPDRecord::assignMatchProperties() {
 
 							assumedMatchSuccessProbability = KPDFunctions::truncateValue(assumedMatchSuccessProbability + kpdParameters->getAssumedMatchFailureAdjustment(), 0, 1);
 
-							if (actualMatchFailureScheme == PRA_BASED_MATCH_FAILURE) {
+							if (actualMatchFailureScheme == MATCH_FAILURE_PRA_BASED) {
 								if (pra < 25) {
 									actualMatchSuccessProbability = 0.95;
 								}
@@ -744,7 +750,7 @@ KPDDonor * KPDRecord::generateNDD() {
 	double uWeight = rngDonorGenerator.runif(40, 100);
 	double uCigaretteUse = rngDonorGenerator.runif();
 
-	KPDRelationToCandidate dRelation = UNRELATED;
+	KPDRelation dRelation = RELATION_UNSPECIFIED;
 
 	//Donor Crossmatch Information
 
@@ -777,7 +783,16 @@ KPDDonor * KPDRecord::generateNDD() {
 	bool dCigaretteUse = kpdData->drawCigaretteUse(uCigaretteUse);
 
 	//Generate Donor
-	KPDDonor * donor = new KPDDonor(dBT, dHLA, dRelation, dAge, dMale, dRace, dHeight, dWeight, dCigaretteUse);
+	KPDDonor * donor = new KPDDonor();
+	donor->setBT(dBT);
+	donor->setHLA(dHLA);
+	donor->setRelation(dRelation);
+	donor->setAge(dAge);
+	donor->setMale(dMale);
+	donor->setRace(dRace);
+	donor->setHeight(dHeight);
+	donor->setWeight(dWeight);
+	donor->setCigaretteUse(dCigaretteUse);
 
 	return donor;
 
@@ -805,7 +820,7 @@ void KPDRecord::generateDonors(std::vector<KPDDonor *> & donors, int numberOfDon
 		double uCigaretteUse = rngDonorGenerator.runif();
 
 		//Donor Relation Information
-		KPDRelationToCandidate dRelation = kpdData->drawRelation(uRelation, candidate->getAge());
+		KPDRelation dRelation = kpdData->drawRelation(uRelation, candidate->getAge());
 
 		//Donor Crossmatch Information
 		KPDBloodType dBT = kpdData->drawBloodType(uBT);
@@ -837,9 +852,18 @@ void KPDRecord::generateDonors(std::vector<KPDDonor *> & donors, int numberOfDon
 		bool dCigaretteUse = kpdData->drawCigaretteUse(uCigaretteUse);
 
 		//Generate Donor
-		KPDDonor * donor = new KPDDonor(dBT, dHLA, dRelation, dAge, dMale, dRace, dHeight, dWeight, dCigaretteUse);
+		KPDDonor * donor = new KPDDonor();
+		donor->setBT(dBT);
+		donor->setHLA(dHLA);
+		donor->setRelation(dRelation);
+		donor->setAge(dAge);
+		donor->setMale(dMale);
+		donor->setRace(dRace);
+		donor->setHeight(dHeight);
+		donor->setWeight(dWeight);
+		donor->setCigaretteUse(dCigaretteUse);
 
-		KPDCrossmatchResult crossmatch = kpdData->performCrossmatch(candidate, donor);
+		KPDCrossmatch crossmatch = kpdData->performCrossmatch(candidate, donor);
 
 		if (!allowableMatch(crossmatch)) {
 			donors.push_back(donor);
@@ -850,18 +874,18 @@ void KPDRecord::generateDonors(std::vector<KPDDonor *> & donors, int numberOfDon
 
 
 //Generates time until next transition time
-double KPDRecord::generateChangePoint(KPDUnderlyingStatus currentState, bool isDonor, bool isNDD) {
+double KPDRecord::generateChangePoint(KPDStatus currentState, bool isDonor, bool isNDD) {
 
 	KPDTimeline timeline = kpdParameters->getTimeline();
 	int freqMatchRun = kpdParameters->getFreqMatchRun();
 
 	double changePoint = 0;
 
-	if (timeline == FIXED_MATCH_RUNS) {
+	if (timeline == TIMELINE_FIXED) {
 		changePoint = freqMatchRun;
 	}
-	else if (timeline == CONTINUOUS_TIMELINE) {
-		if (currentState == ACTIVE) {
+	else if (timeline == TIMELINE_CONTINUOUS) {
+		if (currentState == STATUS_ACTIVE) {
 			if (isDonor) {
 				if (isNDD) {
 					changePoint = rngTransition.rexp(kpdParameters->getActualNDDActiveToInactive() + kpdParameters->getActualNDDActiveToWithdrawn());
@@ -874,7 +898,7 @@ double KPDRecord::generateChangePoint(KPDUnderlyingStatus currentState, bool isD
 				changePoint = rngTransition.rexp(kpdParameters->getActualCandidateActiveToInactive() + kpdParameters->getActualCandidateActiveToWithdrawn());
 			}
 		}
-		else if (currentState == INACTIVE) {
+		else if (currentState == STATUS_INACTIVE) {
 			if (isDonor) {
 				if (isNDD) {
 					changePoint = rngTransition.rexp(kpdParameters->getActualNDDInactiveToActive() + kpdParameters->getActualNDDInactiveToWithdrawn());
@@ -893,84 +917,84 @@ double KPDRecord::generateChangePoint(KPDUnderlyingStatus currentState, bool isD
 }
 
 //Generates the next state transition
-KPDUnderlyingStatus KPDRecord::generateStateTransition(KPDUnderlyingStatus currentState, double changePoint, KPDTimeline timeline, double activeToInactive, double activeToWithdrawn, double inactiveToActive, double inactiveToWithdrawn) {
+KPDStatus KPDRecord::generateStateTransition(KPDStatus currentState, double changePoint, KPDTimeline timeline, double activeToInactive, double activeToWithdrawn, double inactiveToActive, double inactiveToWithdrawn) {
 
-	KPDUnderlyingStatus newState = currentState;
+	KPDStatus newState = currentState;
 
 	double u = rngTransition.runif();
 
-	if (timeline == FIXED_MATCH_RUNS) {
-		if (currentState == ACTIVE) {
+	if (timeline == TIMELINE_FIXED) {
+		if (currentState == STATUS_ACTIVE) {
 			if (u < activeToInactive) {
-				newState = INACTIVE;
+				newState = STATUS_INACTIVE;
 			}
 			else if (u < activeToInactive + activeToWithdrawn) {
-				newState = WITHDRAWN;
+				newState = STATUS_WITHDRAWN;
 			}
 			else {
-				newState = ACTIVE;
+				newState = STATUS_ACTIVE;
 			}
 		}
-		else if (currentState == INACTIVE) {
+		else if (currentState == STATUS_INACTIVE) {
 			if (u < inactiveToActive) {
-				newState = ACTIVE;
+				newState = STATUS_ACTIVE;
 			}
 			else if (u < inactiveToActive + inactiveToWithdrawn) {
-				newState = WITHDRAWN;
+				newState = STATUS_WITHDRAWN;
 			}
 			else {
-				newState = INACTIVE;
+				newState = STATUS_INACTIVE;
 			}
 		}
 		else {
-			newState = WITHDRAWN;
+			newState = STATUS_WITHDRAWN;
 		}
 	}
 
 	else {
-		if (currentState == ACTIVE) {
+		if (currentState == STATUS_ACTIVE) {
 			if (u < activeToInactive / (activeToInactive + activeToWithdrawn)) {
-				newState = INACTIVE;
+				newState = STATUS_INACTIVE;
 			}
 			else {
-				newState = WITHDRAWN;
+				newState = STATUS_WITHDRAWN;
 			}
 		}
-		else if (currentState == INACTIVE) {
+		else if (currentState == STATUS_INACTIVE) {
 			if (u < inactiveToActive / (inactiveToActive + inactiveToWithdrawn)) {
-				newState = ACTIVE;
+				newState = STATUS_ACTIVE;
 			}
 			else {
-				newState = WITHDRAWN;
+				newState = STATUS_WITHDRAWN;
 			}
 		}
 		else {
-			newState = WITHDRAWN;
+			newState = STATUS_WITHDRAWN;
 		}
 	}
 
 	return newState;
 }
 
-bool KPDRecord::allowableMatch(KPDCrossmatchResult crossmatch) {
+bool KPDRecord::allowableMatch(KPDCrossmatch crossmatch) {
 
-	if (crossmatch == SUCCESSFUL_CROSSMATCH){
+	if (crossmatch == CROSSMATCH_SUCCESSFUL){
 		return true;
 	}
 
-	if (crossmatch == REQUIRES_DESENSITIZATION_AND_O_TO_NON_O){
+	if (crossmatch == CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O){
 		if (kpdParameters->allowDesensitization() && !kpdParameters->reserveODonorsForOCandidates()) {
 			return true;
 		}
 	}
 	
-	if (crossmatch == REQUIRES_DESENSITIZATION){
+	if (crossmatch == CROSSMATCH_REQUIRES_DESENSITIZATION){
 		if (kpdParameters->allowDesensitization()) {
 			return true;
 		}
 	}
 
-	if (crossmatch == O_DONOR_TO_NON_O_CANDIDATE) {
+	if (crossmatch == CROSSMATCH_O_DONOR_TO_NON_O_CANDIDATE) {
 		if (!kpdParameters->reserveODonorsForOCandidates()) {
 			return true;
 		}
@@ -994,6 +1018,7 @@ void KPDRecord::generateKPDPool(int iteration){
 	nodeVector.clear();
 	matchMatrix.clear();
 	incidenceMatrix.clear();
+	incidenceMatrixReduced.clear();
 
 	candidateStateTransitionMatrix.clear();
 	candidateStateTransitionTimeMatrix.clear();
@@ -1006,10 +1031,10 @@ void KPDRecord::generateKPDPool(int iteration){
 
 	//Select nodes	
 	KPDTimeline timeline = kpdParameters->getTimeline();
-	if (timeline == FIXED_MATCH_RUNS){
+	if (timeline == TIMELINE_FIXED){
 		selectNodesFixed();
 	}
-	else if (timeline == CONTINUOUS_TIMELINE){
+	else if (timeline == TIMELINE_CONTINUOUS){
 		selectNodesStochastic();
 	}
 
@@ -1094,9 +1119,16 @@ std::vector<std::vector<bool> > KPDRecord::getIncidenceMatrix() {
 	return incidenceMatrixClone;
 }
 
-std::vector<std::deque<KPDUnderlyingStatus> > KPDRecord::getCandidateStateTransitionMatrix() {
+std::vector<std::vector<bool> > KPDRecord::getIncidenceMatrixReduced()
+{
+	std::vector<std::vector<bool> > incidenceMatrixReducedClone(incidenceMatrixReduced);
 
-	std::vector<std::deque<KPDUnderlyingStatus> > candidateStateTransitionMatrixClone(candidateStateTransitionMatrix);
+	return incidenceMatrixReducedClone;
+}
+
+std::vector<std::deque<KPDStatus> > KPDRecord::getCandidateStateTransitionMatrix() {
+
+	std::vector<std::deque<KPDStatus> > candidateStateTransitionMatrixClone(candidateStateTransitionMatrix);
 
 	return candidateStateTransitionMatrixClone;
 }
@@ -1108,9 +1140,9 @@ std::vector<std::deque<double> > KPDRecord::getCandidateStateTransitionTimeMatri
 	return candidateStateTransitionTimeMatrixClone;
 }
 
-std::vector<std::vector<std::deque<KPDUnderlyingStatus> > > KPDRecord::getDonorStateTransitionMatrix() {
+std::vector<std::vector<std::deque<KPDStatus> > > KPDRecord::getDonorStateTransitionMatrix() {
 
-	std::vector<std::vector<std::deque<KPDUnderlyingStatus> > > donorStateTransitionMatrixClone(donorStateTransitionMatrix);
+	std::vector<std::vector<std::deque<KPDStatus> > > donorStateTransitionMatrixClone(donorStateTransitionMatrix);
 
 	return donorStateTransitionMatrixClone;
 }
@@ -1133,7 +1165,7 @@ std::string KPDRecord::getPopulationList(){
 	double candidateAssumedProbability;
 	double candidateActualProbability;
 
-	if (kpdParameters->getTimeline() == FIXED_MATCH_RUNS) {
+	if (kpdParameters->getTimeline() == TIMELINE_FIXED) {
 
 		nddAssumedProbability = 1 - kpdParameters->getAssumedNDDActiveToInactive() + kpdParameters->getAssumedNDDActiveToWithdrawn();
 		nddActualProbability = 1 - kpdParameters->getActualNDDActiveToInactive() + kpdParameters->getActualNDDActiveToWithdrawn();
@@ -1166,7 +1198,7 @@ std::string KPDRecord::getPopulationList(){
 			population << currentIteration << ",";
 			population << (*itNode)->getID() << ",";
 			population << k << ",";
-			population << KPDFunctions::toString(type) << ",";
+			population << KPDFunctions::nodeTypeToString(type) << ",";
 			population << (*itNode)->getArrivalTime() << ",";
 			population << (*itNode)->getCandidateString() << ",";
 			if (type == PAIR) {
@@ -1190,7 +1222,8 @@ std::string KPDRecord::getPopulationList(){
 }
 
 void KPDRecord::printLog(){
-
+	
+	std::string logFile = "output/" + kpdParameters->getOutputFolder() + "/" + kpdParameters->getSubFolder() + "/Log-Record.txt";
 	std::ofstream outputFileLog(logFile.c_str());
 	outputFileLog << kpdRecordLog.str();
 	outputFileLog.close();
