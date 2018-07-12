@@ -111,7 +111,7 @@ private:
 	std::string fileKPDData;
 	std::string fileHLAFrequency;
 	std::string fileHLADictionary;
-	std::string fileCharacteristics;
+	std::string fileSurvivalParameters;
 	std::string fileDeceasedDonors;
 	std::string fileWaitingListCandidates;
 	
@@ -238,7 +238,7 @@ public:
 	std::string getFileKPDData();
 	std::string getFileHLAFrequency();
 	std::string getFileHLADictionary();
-	std::string getFileCharacteristics();
+	std::string getFileSurvivalParameters();
 	std::string getFileDeceasedDonors();
 	std::string getFileWaitingListCandidates();
 
@@ -358,9 +358,9 @@ KPDParameters::KPDParameters(){
 
 	//Files and Folders
 	fileKPDData = "APD Data - KPD Simulations.csv";
-	fileHLAFrequency = "Bone Marrow Registry - KPD Simulations.csv";
-	fileHLADictionary = "HLA Dictionary - KPD Simulations.csv";
-	fileCharacteristics = "Survival Parameters - KPD Simulations.csv";
+	fileHLAFrequency = "HLAFrequency.csv";
+	fileHLADictionary = "HLADictionary.csv";
+	fileSurvivalParameters = "SurvivalParameters.csv";
 	
 	//Random Number Generators Seeds
 	rngSeedCharacteristics = 3030303;
@@ -549,7 +549,7 @@ bool KPDParameters::processParameters(std::string & fileName){
 			if (tokenOne.compare("#filekpddata") == 0) { fileKPDData = tokenTwo; }
 			if (tokenOne.compare("#filehlafrequency") == 0) { fileHLAFrequency = tokenTwo; }
 			if (tokenOne.compare("#filehladictionary") == 0) { fileHLADictionary = tokenTwo; }
-			if (tokenOne.compare("#filecharacteristics") == 0) { fileCharacteristics = tokenTwo; }
+			if (tokenOne.compare("#filesurvivalparameters") == 0) { fileSurvivalParameters = tokenTwo; }
 			if (tokenOne.compare("#filedeceaseddonors") == 0) { fileDeceasedDonors = tokenTwo; }
 			if (tokenOne.compare("#filewaitinglistcandidates") == 0) { fileWaitingListCandidates = tokenTwo; }
 
@@ -797,7 +797,7 @@ void KPDParameters::printLog(){
 	parametersLog << "KPD Data File Name: " << fileKPDData << std::endl;
 	parametersLog << "HLA Frequency File Name: " << fileHLAFrequency << std::endl;
 	parametersLog << "HLA Dictionary File Name: " << fileHLADictionary << std::endl;
-	parametersLog << "Survival Parameters File Name: " << fileCharacteristics << std::endl;
+	parametersLog << "Survival Parameters File Name: " << fileSurvivalParameters << std::endl;
 	parametersLog << "Deceased Donors File Name: " << fileDeceasedDonors << std::endl;
 	parametersLog << "Waiting List Candidates File Name: " << fileWaitingListCandidates << std::endl;
 
@@ -1122,8 +1122,8 @@ std::string KPDParameters::getFileHLADictionary() {
 	return fileHLADictionary;
 }
 
-std::string KPDParameters::getFileCharacteristics() {
-	return fileCharacteristics;
+std::string KPDParameters::getFileSurvivalParameters() {
+	return fileSurvivalParameters;
 }
 
 std::string KPDParameters::getFileDeceasedDonors() {

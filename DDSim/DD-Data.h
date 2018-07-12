@@ -107,7 +107,7 @@ KPDData::KPDData(KPDParameters * params) {
 	// Read data 
 	readDataFromFile(hlaFrequencyData, "data/" + params->getFileHLAFrequency());
 	readDataFromFile(hlaDictionaryData, "data/" + params->getFileHLADictionary());
-	readDataFromFile(characteristicsData, "data/" + params->getFileCharacteristics());
+	readDataFromFile(characteristicsData, "data/" + params->getFileSurvivalParameters());
 	readDataFromFile(kpdData, "data/" + params->getFileKPDData());
 	readDataFromFile(donorData, "data/" + params->getFileDeceasedDonors());
 	readDataFromFile(candidateData, "data/" + params->getFileWaitingListCandidates());
@@ -212,7 +212,7 @@ void KPDData::formDonorHLAFrequency() {
 
 			std::string antigen = (*hla)[0];
 
-			if (antigen.compare("NULL") != 0) {
+			if (antigen.compare("NA") != 0) {
 
 				kpdDataLog << antigen << " ";
 
@@ -318,9 +318,9 @@ void KPDData::formCharacteristicsFrequency(bool excludeAB) {
 		if (characteristic.compare("Donor Race") == 0 || characteristic.compare("Donor Cigarette Use") == 0 || characteristic.compare("Previous Transplant") == 0 ||
 			characteristic.compare("Time On Dialysis") == 0 || characteristic.compare("Recipient Hepatitis C Seriology") == 0 || characteristic.compare("Recipient Insurance") == 0) {
 
-			characteristicsFrequency[characteristic].push_back(atof((*paramRow)[4][0].c_str()));
+			characteristicsFrequency[characteristic].push_back(atof((*paramRow)[6][0].c_str()));
 
-			kpdDataLog << i << ". " << characteristic << ": " << (*paramRow)[4][0] << std::endl;
+			kpdDataLog << i << ". " << characteristic << ": " << (*paramRow)[6][0] << std::endl;
 			i++;
 		}
 	}
@@ -555,99 +555,81 @@ void KPDData::formDeceasedDonorPopulation() {
 		int id = atoi((*srtrRow)[0][0].c_str());
 
 		if (deceasedDonors.count(id) == 0) {
-
-			int recoveryYear = 2018;
-			int recoveryMonth = 1;
-			int recoveryDay = 1;
-
+			
+			int recoveryDaysSinceReference = 0;
 			std::string recoveryDate = (*srtrRow)[1][0];
 			if (recoveryDate.compare("NA") != 0) {
-				recoveryYear = atoi(recoveryDate.substr(0, 4).c_str());
-				recoveryMonth = atoi(recoveryDate.substr(5, 2).c_str());
-				recoveryDay = atoi(recoveryDate.substr(8, 2).c_str());
+				recoveryDaysSinceReference = atoi(recoveryDate.c_str());
 			}
 
 			int centerID = atoi((*srtrRow)[2][0].c_str());
-			//bool organLeft = (*srtrRow)[3][0].compare("Left") == 0;
 
-			KPDBloodTypeEnhanced enhancedBT = KPDFunctions::stringToBloodTypeEnhanced((*srtrRow)[4][0]);
-			KPDBloodType bt = KPDFunctions::stringToBloodType((*srtrRow)[5][0]);
+			KPDBloodType bt = KPDFunctions::stringToBloodType((*srtrRow)[3][0]);
+			bool minorA = (*srtrRow)[4][0].compare("TRUE") == 0;
 
-			//bool transplanted = (*srtrRow)[6][0].compare("Transplanted") == 0;
-
-			int age = atoi((*srtrRow)[7][0].c_str());
-			bool genderMale = (*srtrRow)[8][0].compare("M") == 0;
-			KPDRace race = KPDFunctions::stringToRace((*srtrRow)[9][0]);
-
-			double height = atof((*srtrRow)[10][0].c_str()) / 100.0;
-			double weight = atof((*srtrRow)[11][0].c_str());
-			//double bmi = atof((*srtrRow)[12][0].c_str());
-
-			//std::string cigarette_historical = (*srtrRow)[13][0];
-			//std::string cigarette_continuing = (*srtrRow)[14][0];
-			bool cigarette = (*srtrRow)[15][0].compare("TRUE") == 0;
+			int age = atoi((*srtrRow)[5][0].c_str());
+			bool genderMale = (*srtrRow)[6][0].compare("M") == 0;
+			KPDRace race = KPDFunctions::stringToRace((*srtrRow)[7][0]);
+			double height = atof((*srtrRow)[8][0].c_str()) / 100.0;
+			double weight = atof((*srtrRow)[9][0].c_str());
+			bool cigarette = (*srtrRow)[10][0].compare("TRUE") == 0;
 
 			std::vector<std::string> dHLA;
-			if ((*srtrRow)[16][0].compare("NA") != 0) {
-				dHLA.push_back("A" + (*srtrRow)[16][0]);
+			if ((*srtrRow)[11][0].compare("NA") != 0) {
+				dHLA.push_back("A" + (*srtrRow)[11][0]);
 			}
-			if ((*srtrRow)[17][0].compare("None") != 0 && (*srtrRow)[17][0].compare("NA") != 0) {
-				dHLA.push_back("A" + (*srtrRow)[17][0]);
+			if ((*srtrRow)[12][0].compare("NA") != 0) {
+				dHLA.push_back("A" + (*srtrRow)[12][0]);
 			}
-			if ((*srtrRow)[18][0].compare("NA") != 0) {
-				dHLA.push_back("B" + (*srtrRow)[18][0]);
+			if ((*srtrRow)[13][0].compare("NA") != 0) {
+				dHLA.push_back("B" + (*srtrRow)[13][0]);
 			}
-			if ((*srtrRow)[19][0].compare("None") != 0 && (*srtrRow)[19][0].compare("NA") != 0) {
-				dHLA.push_back("B" + (*srtrRow)[19][0]);
+			if ((*srtrRow)[14][0].compare("NA") != 0) {
+				dHLA.push_back("B" + (*srtrRow)[14][0]);
 			}
-			if ((*srtrRow)[20][0].compare("True") == 0) {
+			if ((*srtrRow)[15][0].compare("True") == 0) {
 				dHLA.push_back("BW4");
 			}
-			if ((*srtrRow)[21][0].compare("True") == 0) {
+			if ((*srtrRow)[16][0].compare("True") == 0) {
 				dHLA.push_back("BW6");
 			}
-			if ((*srtrRow)[22][0].compare("Not Tested") != 0 && (*srtrRow)[22][0].compare("NA") != 0) {
-				dHLA.push_back("CW" + (*srtrRow)[22][0]);
+			if ((*srtrRow)[17][0].compare("NA") != 0) {
+				dHLA.push_back("CW" + (*srtrRow)[17][0]);
 			}
-			if ((*srtrRow)[23][0].compare("Not Tested") != 0 && (*srtrRow)[23][0].compare("None") != 0 && (*srtrRow)[23][0].compare("NA") != 0) {
-				dHLA.push_back("CW" + (*srtrRow)[23][0]);
+			if ((*srtrRow)[18][0].compare("NA") != 0) {
+				dHLA.push_back("CW" + (*srtrRow)[18][0]);
 			}
-			if ((*srtrRow)[24][0].compare("NA") != 0) {
-				dHLA.push_back("DR" + (*srtrRow)[24][0]);
+			if ((*srtrRow)[19][0].compare("NA") != 0) {
+				dHLA.push_back("DR" + (*srtrRow)[19][0]);
 			}
-			if ((*srtrRow)[25][0].compare("None") != 0 && (*srtrRow)[25][0].compare("NA") != 0) {
-				dHLA.push_back("DR" + (*srtrRow)[25][0]);
+			if ((*srtrRow)[20][0].compare("NA") != 0) {
+				dHLA.push_back("DR" + (*srtrRow)[20][0]);
 			}
-			if ((*srtrRow)[26][0].compare("True") == 0) {
+			if ((*srtrRow)[21][0].compare("True") == 0) {
 				dHLA.push_back("DR51");
 			}
-			if ((*srtrRow)[27][0].compare("True") == 0) {
+			if ((*srtrRow)[22][0].compare("True") == 0) {
 				dHLA.push_back("DR52");
 			}
-			if ((*srtrRow)[28][0].compare("True") == 0) {
+			if ((*srtrRow)[23][0].compare("True") == 0) {
 				dHLA.push_back("DR53");
 			}
-			if ((*srtrRow)[29][0].compare("NA") != 0) {
-				dHLA.push_back("DQ" + (*srtrRow)[29][0]);
+			if ((*srtrRow)[24][0].compare("NA") != 0) {
+				dHLA.push_back("DQ" + (*srtrRow)[24][0]);
 			}
-			if ((*srtrRow)[30][0].compare("None") != 0 && (*srtrRow)[30][0].compare("NA") != 0) {
-				dHLA.push_back("DQ" + (*srtrRow)[30][0]);
+			if ((*srtrRow)[25][0].compare("NA") != 0) {
+				dHLA.push_back("DQ" + (*srtrRow)[25][0]);
 			}
-			if ((*srtrRow)[31][0].compare("Not Tested") != 0 && (*srtrRow)[31][0].compare("NA") != 0) {
-				dHLA.push_back("DP" + (*srtrRow)[31][0]);
+			if ((*srtrRow)[26][0].compare("NA") != 0) {
+				dHLA.push_back("DP" + (*srtrRow)[26][0]);
 			}
-			if ((*srtrRow)[32][0].compare("Not Tested") != 0 && (*srtrRow)[32][0].compare("None") != 0 && (*srtrRow)[32][0].compare("NA") != 0) {
-				dHLA.push_back("DP" + (*srtrRow)[32][0]);
+			if ((*srtrRow)[27][0].compare("NA") != 0) {
+				dHLA.push_back("DP" + (*srtrRow)[27][0]);
 			}
 
-			//int candidateID = atoi((*srtrRow)[33][0].c_str());
-			//std::string transplant_type = (*srtrRow)[34][0];
-			//int candidateCenterID = atoi((*srtrRow)[35][0].c_str());
-			//int candidateOPO = atoi((*srtrRow)[36][0].c_str());
-
-			KPDDonor * d = new KPDDonor(id, bt, enhancedBT, 
+			KPDDonor * d = new KPDDonor(id, bt, minorA, 
 				age, genderMale, race, height, weight, cigarette,
-				recoveryYear,recoveryMonth,recoveryDay,centerID);
+				recoveryDaysSinceReference,centerID);
 			
 			d->setHLA(dHLA);
 
@@ -685,139 +667,84 @@ void KPDData::formWaitlistPopulation() {
 	for (std::vector<std::vector<std::vector<std::string> > >::iterator srtrRow = candidateData.begin(); srtrRow != candidateData.end(); srtrRow++) {
 
 		int id = atoi((*srtrRow)[0][0].c_str());
-
-		int statusDateBeginYear = 2018;
-		int statusDateBeginMonth = 1;
-		int statusDateBeginDay = 1;
-
-		std::string statusDateBegin = (*srtrRow)[5][0];
+		
+		int statusDays = 0;
+		std::string statusDateBegin = (*srtrRow)[3][0];
 		if (statusDateBegin.compare("NA") != 0) {
-			statusDateBeginYear = atoi(statusDateBegin.substr(0, 4).c_str());
-			statusDateBeginMonth = atoi(statusDateBegin.substr(5, 2).c_str());
-			statusDateBeginDay = atoi(statusDateBegin.substr(8, 2).c_str());
+			statusDays = atoi(statusDateBegin.c_str());
 		}
-		bool active = (*srtrRow)[7][0].compare("Inactive") != 0; // Urgent, Critical... Designate separately?
+
+		bool active = (*srtrRow)[4][0].compare("Inactive") != 0;
 
 		if (waitlistCandidates.count(id) == 0) {
-
-			//bool activeWaitlist = (*srtrRow)[1][0].compare("Active Waitlist") == 0;
-
-			int listingYear = 2018;
-			int listingMonth = 1;
-			int listingDay = 1;
-
-			std::string listingDate = (*srtrRow)[2][0];
-			if (listingDate.compare("NA") != 0) {
-				listingYear = atoi(listingDate.substr(0, 4).c_str());
-				listingMonth = atoi(listingDate.substr(5, 2).c_str());
-				listingDay = atoi(listingDate.substr(8, 2).c_str());
+			
+			int listingDays = 0;
+			std::string listingDateBegin = (*srtrRow)[1][0];
+			if (listingDateBegin.compare("NA") != 0) {
+				listingDays = atoi(listingDateBegin.c_str());
 			}
 
-			int removalYear = 2018;
-			int removalMonth = 1;
-			int removalDay = 1;
-
-			std::string removalDate = (*srtrRow)[3][0];
-			if (removalDate.compare("NA") != 0) {
-				removalYear = atoi(removalDate.substr(0, 4).c_str());
-				removalMonth = atoi(removalDate.substr(5, 2).c_str());
-				removalDay = atoi(removalDate.substr(8, 2).c_str());
+			int removalDays = 0;
+			std::string removalDateBegin = (*srtrRow)[2][0];
+			if (removalDateBegin.compare("NA") != 0) {
+				removalDays = atoi(removalDateBegin.c_str());
 			}
-			//std::string transplantDate = (*srtrRow)[4][0];
-			//int transpantYear = atoi(transplantDate.substr(0, 4).c_str());
-			//int transplantMonth = atoi(transplantDate.substr(5, 2).c_str());
-			//int transplantDay = atoi(transplantDate.substr(8, 2).c_str());
 
+			int centerID = atoi((*srtrRow)[5][0].c_str());
+			int opoID = atoi((*srtrRow)[6][0].c_str());
 
-			//std::string statusDateEnd = (*srtrRow)[6][0];
-			//int statusDateEndYear = atoi(statusDateEnd.substr(0, 4).c_str());
-			//int statusDateEndMonth = atoi(statusDateEnd.substr(5, 2).c_str());
-			//int statusDateEndDay = atoi(statusDateEnd.substr(8, 2).c_str());
+			KPDBloodType bt = KPDFunctions::stringToBloodType((*srtrRow)[7][0]);
+			bool minorA = (*srtrRow)[8][0].compare("TRUE") == 0;
 
+			KPDAgeCategory ageCategory = KPDFunctions::stringToAgeCategory((*srtrRow)[9][0]); // Discrepancies.... go with category for now
+			bool genderMale = (*srtrRow)[10][0].compare("M") == 0;
+			KPDRace race = KPDFunctions::stringToRace((*srtrRow)[11][0]);
+			int pra = atoi((*srtrRow)[12][0].c_str());
+			double height = atof((*srtrRow)[13][0].c_str()) / 100;
+			double weight = atof((*srtrRow)[14][0].c_str());
+			bool hepC = (*srtrRow)[15][0].compare("Y") == 0;
+			bool previousTransplant = (*srtrRow)[16][0].compare("Yes") == 0;
+			int timeOnDialysis = atoi((*srtrRow)[17][0].c_str());
+			bool diabetes = KPDFunctions::stringToDiagnosis((*srtrRow)[18][0]) == DIAGNOSIS_DIABETES; //Just interested in diabetes
+			KPDInsurance insurance = KPDFunctions::stringToInsurance((*srtrRow)[19][0]);
 
-			int centerID = atoi((*srtrRow)[8][0].c_str());
-			int opoID = atoi((*srtrRow)[9][0].c_str());
-
-			KPDBloodType bt = KPDFunctions::stringToBloodType((*srtrRow)[10][0]);
-			KPDBloodTypeEnhanced enhancedBT = KPDFunctions::stringToBloodTypeEnhanced((*srtrRow)[11][0]);
-
-			//std::string age_at_listing = (*srtrRow)[12][0];
-			KPDAgeCategory ageCategory = KPDFunctions::stringToAgeCategory((*srtrRow)[13][0]); // Discrepancies.... go with category for now
-			bool genderMale = (*srtrRow)[14][0].compare("M") == 0;
-			KPDRace race = KPDFunctions::stringToRace((*srtrRow)[15][0]);
-
-			int pra = atoi((*srtrRow)[16][0].c_str());
-			//std::string pra_group = (*srtrRow)[17][0]; // Make ourselves
-
-			double height = atof((*srtrRow)[18][0].c_str()) / 100;
-			double weight = atof((*srtrRow)[19][0].c_str());
-			//double bmi = atof((*srtrRow)[20][0].c_str());
-			//KPDBMIGroup bmiGroup = KPDFunctions::stringToBMIGroup((*srtrRow)[21][0]); // Make ourselves?
-
-			bool acceptsHCVPositiveDonors = (*srtrRow)[22][0].compare("Y") == 0;
-			bool previousTransplant = (*srtrRow)[23][0].compare("Yes") == 0;
-			//KPDTimeOnWaitlist timeOnWaitlist = KPDFunctions::stringToTimeOnWaitlist((*srtrRow)[24][0]); // Based on active time?
-			int timeOnDialysis = atoi((*srtrRow)[25][0].c_str());
-			//bool dialysis = (*srtrRow)[26][0].compare("TRUE") == 0;
-			bool diabetes = KPDFunctions::stringToDiagnosis((*srtrRow)[27][0]) == DIAGNOSIS_DIABETES; //Just interested in diabetes
-			KPDInsurance payment = KPDFunctions::stringToInsurance((*srtrRow)[28][0]);
-
-			double epts = atof((*srtrRow)[29][0].c_str());
-			bool eptsPriority = (*srtrRow)[30][0].compare("TRUE") == 0;
+			double epts = atof((*srtrRow)[20][0].c_str());
+			bool eptsPriority = (*srtrRow)[21][0].compare("TRUE") == 0;
 
 			std::vector<std::string> cHLA;
-			if ((*srtrRow)[31][0].compare("0") != 0) {
-				cHLA.push_back("A" + (*srtrRow)[31][0]);
+			if ((*srtrRow)[22][0].compare("0") != 0) {
+				cHLA.push_back("A" + (*srtrRow)[22][0]);
 			}
-			if ((*srtrRow)[32][0].compare("0") != 0) {
-				cHLA.push_back("A" + (*srtrRow)[32][0]);
+			if ((*srtrRow)[23][0].compare("0") != 0) {
+				cHLA.push_back("A" + (*srtrRow)[23][0]);
 			}
-			if ((*srtrRow)[33][0].compare("0") != 0) {
-				cHLA.push_back("B" + (*srtrRow)[33][0]);
+			if ((*srtrRow)[24][0].compare("0") != 0) {
+				cHLA.push_back("B" + (*srtrRow)[24][0]);
 			}
-			if ((*srtrRow)[34][0].compare("0") != 0) {
-				cHLA.push_back("B" + (*srtrRow)[34][0]);
+			if ((*srtrRow)[25][0].compare("0") != 0) {
+				cHLA.push_back("B" + (*srtrRow)[25][0]);
 			}
-			if ((*srtrRow)[35][0].compare("0") != 0) {
-				cHLA.push_back("DR" + (*srtrRow)[35][0]);
+			if ((*srtrRow)[26][0].compare("0") != 0) {
+				cHLA.push_back("DR" + (*srtrRow)[26][0]);
 			}
-			if ((*srtrRow)[36][0].compare("0") != 0) {
-				cHLA.push_back("DR" + (*srtrRow)[36][0]);
+			if ((*srtrRow)[27][0].compare("0") != 0) {
+				cHLA.push_back("DR" + (*srtrRow)[27][0]);
 			}
 
+			KPDCandidate * c = new KPDCandidate(id, pra, bt, minorA,
+				ageCategory, genderMale, race, diabetes, height, weight, previousTransplant, timeOnDialysis, hepC, insurance,
+				epts, eptsPriority,
+				listingDays, removalDays, centerID, opoID);
 
-			bool transplanted = (*srtrRow)[37][0].compare("NA") != 0;
-			int donorID = -1;
-			if ((*srtrRow)[37][0].compare("NA") != 0) {
-				donorID = atoi((*srtrRow)[37][0].c_str());
-			}
-			bool livingDonor = (*srtrRow)[38][0].compare("Living") == 0;
-			bool deceasedDonor = (*srtrRow)[38][0].compare("Deceased") == 0;
-			KPDRelation relation = KPDFunctions::stringToRelation((*srtrRow)[39][0]);
-			bool biological = (*srtrRow)[40][0].compare("Biological") == 0;
-			bool nonBiological = (*srtrRow)[40][0].compare("Non-Biological") == 0;
-			bool pairedDonation = (*srtrRow)[41][0].compare("TRUE") == 0; //bool
-			bool nonDirectedDonation = (*srtrRow)[42][0].compare("TRUE") == 0;//bool
-
-			KPDCandidate * c = new KPDCandidate(id, pra, bt, enhancedBT, 
-				ageCategory, genderMale, race, diabetes, height, weight, previousTransplant, timeOnDialysis, payment, acceptsHCVPositiveDonors, epts, eptsPriority,
-				listingYear, listingMonth, listingDay, removalYear, removalMonth, removalDay, centerID, opoID, 
-				transplanted, donorID, livingDonor, deceasedDonor, relation, biological, nonBiological, pairedDonation, nonDirectedDonation);
-			
 			c->setHLA(cHLA);
-			c->addStatusChangeYear(statusDateBeginYear);
-			c->addStatusChangeMonth(statusDateBeginMonth);
-			c->addStatusChangeDay(statusDateBeginDay);
+			c->addStatusChangeDay(statusDays);
 			c->addStatusChange(active);
 
 			waitlistCandidates[id] = c;
 		}
 		else {
 
-			waitlistCandidates[id]->addStatusChangeYear(statusDateBeginYear);
-			waitlistCandidates[id]->addStatusChangeMonth(statusDateBeginMonth);
-			waitlistCandidates[id]->addStatusChangeDay(statusDateBeginDay);
-
+			waitlistCandidates[id]->addStatusChangeDay(statusDays);
 			waitlistCandidates[id]->addStatusChange(active);
 		}
 		i++;

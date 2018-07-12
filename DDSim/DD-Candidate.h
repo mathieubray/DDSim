@@ -25,7 +25,7 @@ private:
 	//Crossmatch Information
 	int candidatePRA;
 	KPDBloodType candidateBT;
-	KPDBloodTypeEnhanced candidateEnhancedBT;
+	bool candidateMinorA;
 
 	std::vector<std::string> candidateUnacceptableHLA;
 	std::vector<std::string> candidateDesensitizableHLA;
@@ -42,36 +42,18 @@ private:
 	double candidateTOD;
 	bool candidateHepC;
 	KPDInsurance candidateInsurance;
-	bool candidateAcceptsHCVPositive;
 	double candidateEPTS;
 	bool candidateEPTSPriority;
 	std::vector<std::string> candidateHLA;
 
 	//Waitlist Candidate Characteristics
 	bool candidateWaitlist;
-	int candidateListingYear;
-	int candidateListingMonth;
-	int candidateListingDay;
-	int candidateRemovalYear;
-	int candidateRemovalMonth;
-	int candidateRemovalDay;
-	std::vector<int> candidateStatusChangeYear;
-	std::vector<int> candidateStatusChangeMonth;
-	std::vector<int> candidateStatusChangeDay;
+	int candidateListingDate;
+	int candidateRemovalDate;
+	std::vector<int> candidateStatusChangeDate;
 	std::vector<bool> candidateStatusActive;
 	int candidateCenterID;
 	int candidateOPO;
-
-	//Transplant Characteristics (Remove?)
-	bool candidateTransplanted;
-	int transplantDonorID;
-	bool transplantLivingDonor;
-	bool transplantDeceasedDonor;
-	KPDRelation transplantRelation;
-	bool transplantBiological;
-	bool transplantNonBiological;
-	bool transplantPairedDonation;
-	bool transplantNonDirectedDonation;
 
 
 public:
@@ -84,15 +66,13 @@ public:
 	KPDCandidate(int mID, int uID, int pra, KPDBloodType bt,
 		int age, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance);
 	//Constructs a waitlist candidate from SRTR data
-	KPDCandidate(int uID, int pra, KPDBloodType bt, KPDBloodTypeEnhanced bte,
-		KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, KPDInsurance insurance, bool acceptsHCV, double epts, bool eptsPriority,
-		int listingYear, int listingMonth, int listingDay, int removalYear, int removalMonth, int removalDay, int centerID, int opoID,
-		bool transplanted, int dID, bool living, bool deceased, KPDRelation relation, bool biological, bool nonBiological, bool pairedDonation, bool nonDirectedDonation);
+	KPDCandidate(int uID, int pra, KPDBloodType bt, bool minorA,
+		KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance,  double epts, bool eptsPriority,
+		int listingDate, int removalDate, int centerID, int opoID);
 	//Constructs a candidate with all defined candidate characteristics
-	KPDCandidate(int mID, int uID, int pra, KPDBloodType bt, KPDBloodTypeEnhanced bte,
-		int age, KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance, bool acceptsHCV, double epts, bool eptsPriority,
-		bool waitlist, int listingYear, int listingMonth, int listingDay, int removalYear, int removalMonth, int removalDay, int centerID, int opoID,
-		bool transplanted, int dID, bool living, bool deceased, KPDRelation relation, bool biological, bool nonBiological, bool pairedDonation, bool nonDirectedDonation);
+	KPDCandidate(int mID, int uID, int pra, KPDBloodType bt, bool minorA,
+		int age, KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance, double epts, bool eptsPriority,
+		bool waitlist, int listingDate, int removalDate, int centerID, int opoID);
 	~KPDCandidate();
 	
 	//Getters
@@ -101,7 +81,7 @@ public:
 
 	int getPRA();
 	KPDBloodType getBT();
-	KPDBloodTypeEnhanced getEnhancedBT();
+	bool getMinorA();
 
 	std::vector<std::string> getUnacceptableHLA();
 	std::vector<std::string> getDesensitizableHLA();
@@ -118,34 +98,17 @@ public:
 	double getTOD();
 	bool getHepC();
 	KPDInsurance getInsurance();
-	bool getAcceptsHCVPostiive();
 	double getEPTS();
 	bool getEPTSPriority();
 	std::vector<std::string> getHLA();
 
 	bool getWaitlist();
-	int getListingYear();
-	int getListingMonth();
-	int getListingDay();
-	int getRemovalYear();
-	int getRemovalMonth();
-	int getRemovalDay();
-	std::vector<int> getStatusChangeYears();
-	std::vector<int> getStatusChangeMonths();
-	std::vector<int> getStatusChangeDays();
+	int getListingDate();
+	int getRemovalDate();
+	std::vector<int> getStatusChangeDates();
 	std::vector<bool> getStatuses();
 	int getCenterID();
 	int getOPO();
-
-	bool getCandidateTransplanted();
-	int getTransplantDonorID();
-	bool getTransplantLivingDonor();
-	bool getTransplantDeceasedDonor();
-	KPDRelation getTransplantRelation();
-	bool getTransplantBiological();
-	bool getTransplantNonBiological();
-	bool getTransplantPairedDonation();
-	bool getTransplantNonDirectedDonation();
 
 	//Setters
 	void setMatchingID(int id);
@@ -153,7 +116,7 @@ public:
 
 	void setPRA(int pra);
 	void setBT(KPDBloodType bt);
-	void setEnhancedBT(KPDBloodTypeEnhanced bte);
+	void setMinorA(bool minorA);
 
 	void setUnacceptableHLA(std::vector<std::string> hla);
 	void setDesensitizableHLA(std::vector<std::string> hla);
@@ -169,38 +132,19 @@ public:
 	void setTOD(double tod);
 	void setHepC(bool hepC);
 	void setInsurance(KPDInsurance insurance);
-	void setAccpetsHCVPositive(bool accepts);
 	void setEPTS(double epts);
 	void setEPTSPriority(bool priority);
 	void setHLA(std::vector<std::string> hla);
 
 	void setWaitlist(bool waitlist);
-	void setListingYear(int year);
-	void setListingMonth(int month);
-	void setListingDay(int day);
-	void setRemovalYear(int year);
-	void setRemovalMonth(int month);
-	void setRemovalDay(int day);
-	void setStatusChangeYear(std::vector<int> years);
-	void setStatusChangeMonth(std::vector<int> months);
-	void setStatusChangeDay(std::vector<int> days);
+	void setListingDate(int date);
+	void setRemovalDate(int date);
+	void setStatusChangeDate(std::vector<int> date);
 	void setStatusChange(std::vector<bool> statuses);
-	void addStatusChangeYear(int year);
-	void addStatusChangeMonth(int month);
-	void addStatusChangeDay(int day);
+	void addStatusChangeDay(int date);
 	void addStatusChange(bool status);
 	void setCenterID(int id);
 	void setOPO(int opo);
-
-	void setCandidateTransplanted(bool transplant);
-	void setTransplantDonorID(int id);
-	void setTransplantLivingDonor(bool living);
-	void setTransplantDeceasedDonor(bool deceased);
-	void setTransplantRelation(KPDRelation relation);
-	void setTransplantBiological(bool biological);
-	void setTransplantNonBiological(bool nonbiological);
-	void setTransplantPairedDonation(bool pairedDonation);
-	void setTransplantNonDirectedDonation(bool ndd);
 
 	//Strings
 	std::string candidateString(); // Returns a comma-separated string
@@ -218,7 +162,7 @@ KPDCandidate::KPDCandidate() {
 	
 	candidatePRA = 0;
 	candidateBT = BT_UNSPECIFIED;
-	candidateEnhancedBT = BTE_UNSPECIFIED;
+	bool minorA = false;
 
 	candidateAge = 40;
 	candidateAgeCategory = AGE_UNSPECIFIED;
@@ -231,29 +175,14 @@ KPDCandidate::KPDCandidate() {
 	candidateTOD = 0;
 	candidateHepC = false;
 	candidateInsurance = INSURANCE_UNSPECIFIED;
-	candidateAcceptsHCVPositive = false;
 	candidateEPTS = 0;
 	candidateEPTSPriority = false;
 	
 	candidateWaitlist = false;
-	candidateListingYear = 0;
-	candidateListingMonth = 0;
-	candidateListingDay = 0;
-	candidateRemovalYear = 0;
-	candidateRemovalMonth = 0;
-	candidateRemovalDay = 0;
+	candidateListingDate = 0;
+	candidateRemovalDate = 0;
 	candidateCenterID = -1;
 	candidateOPO = -1;
-
-	candidateTransplanted = false;
-	transplantDonorID = -1;
-	transplantLivingDonor = false;
-	transplantDeceasedDonor = false;
-	transplantRelation = RELATION_UNSPECIFIED;
-	transplantBiological = false;
-	transplantNonBiological = false;
-	transplantPairedDonation = false;
-	transplantNonDirectedDonation = false;
 }
 
 KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt,
@@ -264,7 +193,7 @@ KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt,
 
 	candidatePRA = pra;
 	candidateBT = bt;
-	candidateEnhancedBT = BTE_UNSPECIFIED;
+	candidateMinorA = false;
 
 	candidateAge = age;
 	candidateAgeCategory = AGE_UNSPECIFIED;
@@ -277,42 +206,27 @@ KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt,
 	candidateTOD = tod;
 	candidateHepC = hepC;
 	candidateInsurance = insurance;
-	candidateAcceptsHCVPositive = false;
 	candidateEPTS = 0;
 	candidateEPTSPriority = false;
 
 	candidateWaitlist = false;
-	candidateListingYear = 0;
-	candidateListingMonth = 0;
-	candidateListingDay = 0;
-	candidateRemovalYear = 0;
-	candidateRemovalMonth = 0;
-	candidateRemovalDay = 0;
+	candidateListingDate = 0;
+	candidateRemovalDate = 0;
 	candidateCenterID = -1;
 	candidateOPO = -1;
-
-	candidateTransplanted = false;
-	transplantDonorID = -1;
-	transplantLivingDonor = false;
-	transplantDeceasedDonor = false;
-	transplantRelation = RELATION_UNSPECIFIED;
-	transplantBiological = false;
-	transplantNonBiological = false;
-	transplantPairedDonation = false;
-	transplantNonDirectedDonation = false;
 }
 
-KPDCandidate::KPDCandidate(int uID, int pra, KPDBloodType bt, KPDBloodTypeEnhanced bte, 
-	KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, KPDInsurance insurance, bool acceptsHCV, double epts, bool eptsPriority, 
-	int listingYear, int listingMonth, int listingDay, int removalYear, int removalMonth, int removalDay, int centerID, int opoID, 
-	bool transplanted, int dID, bool living, bool deceased, KPDRelation relation, bool biological, bool nonBiological, bool pairedDonation, bool nonDirectedDonation) {
+KPDCandidate::KPDCandidate(int uID, int pra, KPDBloodType bt, bool minorA, 
+	KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance,  
+	double epts, bool eptsPriority,
+	int listingDate, int removalDate, int centerID, int opoID) {
 
 	matchingID = -1;
 	uniqueID = uID;
 
 	candidatePRA = pra;
 	candidateBT = bt;
-	candidateEnhancedBT = bte;
+	candidateMinorA = minorA;
 
 	candidateAge = -1;
 	candidateAgeCategory = ageCat;
@@ -323,44 +237,29 @@ KPDCandidate::KPDCandidate(int uID, int pra, KPDBloodType bt, KPDBloodTypeEnhanc
 	candidateWeight = weight;
 	candidatePrevTrans = prevTrans;
 	candidateTOD = tod;
-	candidateHepC = false;
+	candidateHepC = hepC;
 	candidateInsurance = insurance;
-	candidateAcceptsHCVPositive = acceptsHCV;
 	candidateEPTS = epts;
 	candidateEPTSPriority = eptsPriority;
 
 	candidateWaitlist = true;
-	candidateListingYear = listingYear;
-	candidateListingMonth = listingMonth;
-	candidateListingDay = listingDay;
-	candidateRemovalYear = removalYear;
-	candidateRemovalMonth = removalMonth;
-	candidateRemovalDay = removalDay;
+	candidateListingDate = listingDate;
+	candidateRemovalDate = removalDate;
 	candidateCenterID = centerID;
 	candidateOPO = opoID;
-
-	candidateTransplanted = transplanted;
-	transplantDonorID = dID;
-	transplantLivingDonor = living;
-	transplantDeceasedDonor = deceased;
-	transplantRelation = relation;
-	transplantBiological = biological;
-	transplantNonBiological = nonBiological;
-	transplantPairedDonation = pairedDonation;
-	transplantNonDirectedDonation = nonDirectedDonation;
 }
 
-KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt, KPDBloodTypeEnhanced bte,
-	int age, KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance, bool acceptsHCV, double epts, bool eptsPriority,
-	bool waitlist, int listingYear, int listingMonth, int listingDay, int removalYear, int removalMonth, int removalDay, int centerID, int opoID,
-	bool transplanted, int dID, bool living, bool deceased, KPDRelation relation, bool biological, bool nonBiological, bool pairedDonation, bool nonDirectedDonation) {
+KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt, bool minorA,
+	int age, KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance, 
+	double epts, bool eptsPriority,
+	bool waitlist, int listingDate, int removalDate, int centerID, int opoID) {
 
 	matchingID = mID;
 	uniqueID = uID;
 
 	candidatePRA = pra;
 	candidateBT = bt;
-	candidateEnhancedBT = bte;
+	candidateMinorA = minorA;
 
 	candidateAge = age;
 	candidateAgeCategory = ageCat;
@@ -373,29 +272,14 @@ KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt, KPDBloodT
 	candidateTOD = tod;
 	candidateHepC = hepC;
 	candidateInsurance = insurance;
-	candidateAcceptsHCVPositive = acceptsHCV;
 	candidateEPTS = epts;
 	candidateEPTSPriority = eptsPriority;
 
 	candidateWaitlist = waitlist;
-	candidateListingYear = listingYear;
-	candidateListingMonth = listingMonth;
-	candidateListingDay = listingDay;
-	candidateRemovalYear = removalYear;
-	candidateRemovalMonth = removalMonth;
-	candidateRemovalDay = removalDay;
+	candidateListingDate = listingDate;
+	candidateRemovalDate = removalDate;
 	candidateCenterID = centerID;
 	candidateOPO = opoID;
-
-	candidateTransplanted = transplanted;
-	transplantDonorID = dID;
-	transplantLivingDonor = living;
-	transplantDeceasedDonor = deceased;
-	transplantRelation = relation;
-	transplantBiological = biological;
-	transplantNonBiological = nonBiological;
-	transplantPairedDonation = pairedDonation;
-	transplantNonDirectedDonation = nonDirectedDonation;
 
 }
 
@@ -419,8 +303,8 @@ KPDBloodType KPDCandidate::getBT() {
 	return candidateBT;
 }
 
-KPDBloodTypeEnhanced KPDCandidate::getEnhancedBT(){
-	return candidateEnhancedBT;
+bool KPDCandidate::getMinorA(){
+	return candidateMinorA;
 }
 
 std::vector<std::string> KPDCandidate::getUnacceptableHLA() {
@@ -493,10 +377,6 @@ KPDInsurance KPDCandidate::getInsurance() {
 	return candidateInsurance;
 }
 
-bool KPDCandidate::getAcceptsHCVPostiive(){
-	return candidateAcceptsHCVPositive;
-}
-
 double KPDCandidate::getEPTS(){
 	return candidateEPTS;
 }
@@ -513,40 +393,16 @@ bool KPDCandidate::getWaitlist() {
 	return candidateWaitlist;
 }
 
-int KPDCandidate::getListingYear() {
-	return candidateListingYear;
+int KPDCandidate::getListingDate() {
+	return candidateListingDate;
 }
 
-int KPDCandidate::getListingMonth() {
-	return candidateListingMonth;
+int KPDCandidate::getRemovalDate() {
+	return candidateRemovalDate;
 }
 
-int KPDCandidate::getListingDay() {
-	return candidateListingDay;
-}
-
-int KPDCandidate::getRemovalYear() {
-	return candidateRemovalYear;
-}
-
-int KPDCandidate::getRemovalMonth() {
-	return candidateRemovalMonth;
-}
-
-int KPDCandidate::getRemovalDay() {
-	return candidateRemovalDay;
-}
-
-std::vector<int> KPDCandidate::getStatusChangeYears() {
-	return candidateStatusChangeYear;
-}
-
-std::vector<int> KPDCandidate::getStatusChangeMonths() {
-	return candidateStatusChangeMonth;
-}
-
-std::vector<int> KPDCandidate::getStatusChangeDays() {
-	return candidateStatusChangeDay;
+std::vector<int> KPDCandidate::getStatusChangeDates() {
+	return candidateStatusChangeDate;
 }
 
 std::vector<bool> KPDCandidate::getStatuses() {
@@ -559,42 +415,6 @@ int KPDCandidate::getCenterID() {
 
 int KPDCandidate::getOPO() {
 	return candidateOPO;
-}
-
-bool KPDCandidate::getCandidateTransplanted() {
-	return candidateTransplanted;
-}
-
-int KPDCandidate::getTransplantDonorID(){
-	return transplantDonorID;
-}
-
-bool KPDCandidate::getTransplantLivingDonor(){
-	return transplantLivingDonor;
-}
-
-bool KPDCandidate::getTransplantDeceasedDonor(){
-	return transplantDeceasedDonor;
-}
-
-KPDRelation KPDCandidate::getTransplantRelation(){
-	return transplantRelation;
-}
-
-bool KPDCandidate::getTransplantBiological(){
-	return transplantBiological;
-}
-
-bool KPDCandidate::getTransplantNonBiological(){
-	return transplantNonBiological;
-}
-
-bool KPDCandidate::getTransplantPairedDonation(){
-	return transplantPairedDonation;
-}
-
-bool KPDCandidate::getTransplantNonDirectedDonation(){
-	return transplantNonDirectedDonation;
 }
 
 void KPDCandidate::setMatchingID(int id) {
@@ -613,8 +433,8 @@ void KPDCandidate::setBT(KPDBloodType bt){
 	candidateBT = bt;
 }
 
-void KPDCandidate::setEnhancedBT(KPDBloodTypeEnhanced bte){
-	candidateEnhancedBT = bte;
+void KPDCandidate::setMinorA(bool minorA){
+	candidateMinorA = minorA;
 }
 
 void KPDCandidate::setUnacceptableHLA(std::vector<std::string> unacceptableHLA) {
@@ -677,10 +497,6 @@ void KPDCandidate::setInsurance(KPDInsurance insurance) {
 	candidateInsurance = insurance;
 }
 
-void KPDCandidate::setAccpetsHCVPositive(bool accepts){
-	candidateAcceptsHCVPositive = accepts;
-}
-
 void KPDCandidate::setEPTS(double epts){
 	candidateEPTS = epts;
 }
@@ -701,48 +517,18 @@ void KPDCandidate::setWaitlist(bool waitlist) {
 	candidateWaitlist = waitlist;
 }
 
-void KPDCandidate::setListingYear(int year) {
-	candidateListingYear = year;
+void KPDCandidate::setListingDate(int date) {
+	candidateListingDate = date;
 }
 
-void KPDCandidate::setListingMonth(int month) {
-	candidateListingMonth = month;
+void KPDCandidate::setRemovalDate(int date) {
+	candidateRemovalDate = date;
 }
 
-void KPDCandidate::setListingDay(int day) {
-	candidateListingDay = day;
-}
-
-void KPDCandidate::setRemovalYear(int year) {
-	candidateRemovalYear = year;
-}
-
-void KPDCandidate::setRemovalMonth(int month) {
-	candidateRemovalMonth = month;
-}
-
-void KPDCandidate::setRemovalDay(int day) {
-	candidateRemovalDay = day;
-}
-
-void KPDCandidate::setStatusChangeYear(std::vector<int> years) {
-	candidateStatusChangeYear.clear();
-	for (std::vector<int>::iterator it = years.begin(); it != years.end(); it++) {
-		candidateStatusChangeYear.push_back(*it);
-	}
-}
-
-void KPDCandidate::setStatusChangeMonth(std::vector<int> months) {
-	candidateStatusChangeMonth.clear();
-	for (std::vector<int>::iterator it = months.begin(); it != months.end(); it++) {
-		candidateStatusChangeMonth.push_back(*it);
-	}
-}
-
-void KPDCandidate::setStatusChangeDay(std::vector<int> days) {
-	candidateStatusChangeDay.clear();
+void KPDCandidate::setStatusChangeDate(std::vector<int> days) {
+	candidateStatusChangeDate.clear();
 	for (std::vector<int>::iterator it = days.begin(); it != days.end(); it++) {
-		candidateStatusChangeDay.push_back(*it);
+		candidateStatusChangeDate.push_back(*it);
 	}
 }
 
@@ -753,16 +539,8 @@ void KPDCandidate::setStatusChange(std::vector<bool> statuses) {
 	}
 }
 
-void KPDCandidate::addStatusChangeYear(int year) {
-	candidateStatusChangeYear.push_back(year);
-}
-
-void KPDCandidate::addStatusChangeMonth(int month) {
-	candidateStatusChangeMonth.push_back(month);
-}
-
 void KPDCandidate::addStatusChangeDay(int day) {
-	candidateStatusChangeDay.push_back(day);
+	candidateStatusChangeDate.push_back(day);
 }
 
 void KPDCandidate::addStatusChange(bool status) {
@@ -777,49 +555,13 @@ void KPDCandidate::setOPO(int opo) {
 	candidateOPO = opo;
 }
 
-void KPDCandidate::setCandidateTransplanted(bool transplanted) {
-	candidateTransplanted = transplanted;
-}
-
-void KPDCandidate::setTransplantDonorID(int id){
-	transplantDonorID = id;
-}
-
-void KPDCandidate::setTransplantLivingDonor(bool living){
-	transplantLivingDonor = living;
-}
-
-void KPDCandidate::setTransplantDeceasedDonor(bool deceased){
-	transplantDeceasedDonor = deceased;
-}
-
-void KPDCandidate::setTransplantRelation(KPDRelation relation){
-	transplantRelation = relation;
-}
-
-void KPDCandidate::setTransplantBiological(bool biological){
-	transplantBiological = biological;
-}
-
-void KPDCandidate::setTransplantNonBiological(bool nonbiological){
-	transplantNonBiological = nonbiological;
-}
-
-void KPDCandidate::setTransplantPairedDonation(bool pairedDonation){
-	transplantPairedDonation = pairedDonation;
-}
-
-void KPDCandidate::setTransplantNonDirectedDonation(bool ndd){
-	transplantNonDirectedDonation = ndd;
-}
-
 std::string KPDCandidate::candidateString() {
 
 	std::stringstream candidateInfo;
 
 	if (candidateWaitlist) {
 		candidateInfo << KPDFunctions::bloodTypeToString(candidateBT) << ",";
-		candidateInfo << KPDFunctions::bloodTypeEnhancedToString(candidateEnhancedBT) << ",";
+		candidateInfo << KPDFunctions::boolToYesNo(candidateMinorA) << ",";
 		candidateInfo << candidatePRA << ",";
 		candidateInfo << candidateAge << ",";
 		candidateInfo << KPDFunctions::ageCategoryToString(candidateAgeCategory) << ",";
@@ -833,25 +575,12 @@ std::string KPDCandidate::candidateString() {
 		candidateInfo << candidateTOD << ",";
 		candidateInfo << KPDFunctions::boolToYesNo(candidateHepC) << ",";
 		candidateInfo << KPDFunctions::insuranceToString(candidateInsurance);
-		candidateInfo << KPDFunctions::boolToYesNo(candidateAcceptsHCVPositive) << ",";
 		candidateInfo << candidateEPTS << ",";
 		candidateInfo << KPDFunctions::boolToYesNo(candidateEPTSPriority) << ",";
-		candidateInfo << candidateListingYear << ",";
-		candidateInfo << candidateListingMonth << ",";
-		candidateInfo << candidateListingDay << ",";
-		candidateInfo << candidateRemovalYear << ",";
-		candidateInfo << candidateRemovalMonth << ",";
-		candidateInfo << candidateRemovalDay << ",";
+		candidateInfo << candidateListingDate << ",";
+		candidateInfo << candidateRemovalDate << ",";
 		candidateInfo << candidateCenterID << ",";
-		candidateInfo << candidateOPO << ",";
-		candidateInfo << transplantDonorID << ",";
-		candidateInfo << KPDFunctions::boolToYesNo(transplantLivingDonor) << ",";
-		candidateInfo << KPDFunctions::boolToYesNo(transplantDeceasedDonor) << ",";
-		candidateInfo << KPDFunctions::relationToString(transplantRelation) << ",";
-		candidateInfo << KPDFunctions::boolToYesNo(transplantBiological) << ",";
-		candidateInfo << KPDFunctions::boolToYesNo(transplantNonBiological) << ",";
-		candidateInfo << KPDFunctions::boolToYesNo(transplantPairedDonation) << ",";
-		candidateInfo << KPDFunctions::boolToYesNo(transplantNonDirectedDonation) << ",";
+		candidateInfo << candidateOPO;
 	
 	}
 	else {
@@ -881,11 +610,11 @@ std::string KPDCandidate::candidateOutput() {
 	if (candidateWaitlist) {
 
 		candidateInfo << KPDFunctions::indent(tab) << "Candidate: " << uniqueID << std::endl;
-		candidateInfo << KPDFunctions::indent(tab) << "Listing Date: " << candidateListingYear << "-" << candidateListingMonth << "-" << candidateListingDay << std::endl;
-		candidateInfo << KPDFunctions::indent(tab) << "Removal Date: " << candidateRemovalYear << "-" << candidateRemovalMonth << "-" << candidateRemovalDay << std::endl;
+		candidateInfo << KPDFunctions::indent(tab) << "Listing Date: " << candidateListingDate << std::endl;
+		candidateInfo << KPDFunctions::indent(tab) << "Removal Date: " << candidateRemovalDate << std::endl;
 			
-		for (int i = 1; i <= candidateStatusChangeYear.size(); i++) {
-			candidateInfo << KPDFunctions::indent(tab) << "Status at " << candidateStatusChangeYear[i - 1] << "-" << candidateStatusChangeMonth[i - 1] << "-" << candidateStatusChangeDay[i - 1] << ": ";
+		for (int i = 1; i <= candidateStatusChangeDate.size(); i++) {
+			candidateInfo << KPDFunctions::indent(tab) << "Status at " << candidateStatusChangeDate[i - 1] << ": ";
 			if (candidateStatusActive[i - 1]) {
 				candidateInfo << "Active";
 			}
@@ -910,7 +639,7 @@ std::string KPDCandidate::candidateOutput() {
 
 
 
-	candidateInfo << KPDFunctions::indent(tab) << "PRA: " << candidatePRA <<  ", BT: " << KPDFunctions::bloodTypeToString(candidateBT) << ", Enhanced BT: " << KPDFunctions::bloodTypeEnhancedToString(candidateEnhancedBT) << std::endl;
+	candidateInfo << KPDFunctions::indent(tab) << "PRA: " << candidatePRA <<  ", BT: " << KPDFunctions::bloodTypeToString(candidateBT) << ", Minor A2 Subtype: " << KPDFunctions::boolToYesNo(candidateMinorA) << std::endl;
 	candidateInfo << KPDFunctions::indent(tab) << "Unacceptable HLA:";
 	for (std::vector<std::string>::iterator hla = candidateUnacceptableHLA.begin(); hla != candidateUnacceptableHLA.end(); hla++) {
 		candidateInfo << " " << *hla;		
@@ -926,7 +655,6 @@ std::string KPDCandidate::candidateOutput() {
 	candidateInfo << KPDFunctions::indent(tab) << "Height: " << candidateHeight << ", Weight: " << candidateWeight << ", BMI: " << (candidateWeight/candidateHeight)/candidateHeight  << std::endl;
 	candidateInfo << KPDFunctions::indent(tab) << "Previous Transplant: " << KPDFunctions::boolToYesNo(candidatePrevTrans) << ", Time on Dialysis: " << candidateTOD << std::endl;
 	candidateInfo << KPDFunctions::indent(tab) << "Hep C: " << KPDFunctions::boolToYesNo(candidateHepC) << ", Inusrance: " << KPDFunctions::insuranceToString(candidateInsurance) << std::endl;
-	candidateInfo << KPDFunctions::indent(tab) << "Accepts HCV Positive Transplant: " << KPDFunctions::boolToYesNo(candidateAcceptsHCVPositive) << std::endl;
 	candidateInfo << KPDFunctions::indent(tab) << "EPTS: " << candidateEPTS << ", EPTS Priority: " << KPDFunctions::boolToYesNo(candidateEPTSPriority) << std::endl;
 
 	candidateInfo << KPDFunctions::indent(tab) << "HLA:";
@@ -935,33 +663,20 @@ std::string KPDCandidate::candidateOutput() {
 	}
 	candidateInfo << std::endl;
 	
-	if (candidateTransplanted) {
-
-		candidateInfo << KPDFunctions::indent(tab) << "Transplant Information:" << std::endl;
-		candidateInfo << KPDFunctions::indent(tab) << KPDFunctions::indent(tab) << "Donor ID: " << transplantDonorID << ", Living: " << KPDFunctions::boolToYesNo(transplantLivingDonor) << ", Deceased: " << KPDFunctions::boolToYesNo(transplantDeceasedDonor) << std::endl;
-		candidateInfo << KPDFunctions::indent(tab) << KPDFunctions::indent(tab) << "Relation: " << KPDFunctions::relationToString(transplantRelation) << std::endl;
-		candidateInfo << KPDFunctions::indent(tab) << KPDFunctions::indent(tab) << "Biological: " << KPDFunctions::boolToYesNo(transplantBiological) << ", Non-Biological: " << KPDFunctions::boolToYesNo(transplantNonBiological) << std::endl;
-		candidateInfo << KPDFunctions::indent(tab) << KPDFunctions::indent(tab) << "Paired Donation: " << KPDFunctions::boolToYesNo(transplantPairedDonation) << ", Non-Directed Donation: " << KPDFunctions::boolToYesNo(transplantNonDirectedDonation) << std::endl;
-
-	}
-
 	return candidateInfo.str();
 
 }
 
 KPDCandidate * KPDCandidate::copy(){
 	
-	KPDCandidate * copyCandidate = new KPDCandidate(matchingID, uniqueID, candidatePRA, candidateBT, candidateEnhancedBT,
-		candidateAge, candidateAgeCategory, candidateMale, candidateRace, candidateDiabetes, candidateHeight, candidateWeight, candidatePrevTrans, candidateTOD, candidateHepC, candidateInsurance, candidateAcceptsHCVPositive,candidateEPTS, candidateEPTSPriority,
-		candidateWaitlist, candidateListingYear, candidateListingMonth, candidateListingDay, candidateRemovalYear, candidateRemovalMonth, candidateRemovalDay, candidateCenterID, candidateOPO,
-		candidateTransplanted, transplantDonorID, transplantLivingDonor, transplantDeceasedDonor, transplantRelation, transplantBiological, transplantNonBiological, transplantPairedDonation, transplantNonDirectedDonation);
+	KPDCandidate * copyCandidate = new KPDCandidate(matchingID, uniqueID, candidatePRA, candidateBT, candidateMinorA,
+		candidateAge, candidateAgeCategory, candidateMale, candidateRace, candidateDiabetes, candidateHeight, candidateWeight, candidatePrevTrans, candidateTOD, candidateHepC, candidateInsurance, candidateEPTS, candidateEPTSPriority,
+		candidateWaitlist, candidateListingDate, candidateRemovalDate, candidateCenterID, candidateOPO);
 	
 	copyCandidate->setUnacceptableHLA(candidateUnacceptableHLA);
 	copyCandidate->setDesensitizableHLA(candidateDesensitizableHLA);
 	copyCandidate->setHLA(candidateHLA);
-	copyCandidate->setStatusChangeYear(candidateStatusChangeYear);
-	copyCandidate->setStatusChangeMonth(candidateStatusChangeMonth);
-	copyCandidate->setStatusChangeDay(candidateStatusChangeDay);
+	copyCandidate->setStatusChangeDate(candidateStatusChangeDate);
 	copyCandidate->setStatusChange(candidateStatusActive);
 
 	return copyCandidate;
