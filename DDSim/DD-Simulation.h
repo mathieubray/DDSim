@@ -31,44 +31,51 @@ private:
 	// Simulation Progress
 	int currentIteration;
 	int currentMatchRun;
-	double currentTime;
+	double currentDate;
 	
-	// Node Information
-	int nNodes;
-	std::vector<KPDNode *> nodeVector;
-	std::vector<KPDNodeType> nodeTypeVector; // Needs to be separate! Can be updated over the course of the simulation!
-
-	std::vector<KPDStatus> candidateUnderlyingStatus;
-	std::vector<std::vector<KPDStatus> > donorUnderlyingStatus;
-
-	std::vector<KPDTransplant> nodeTransplantationStatus;
-
 	std::deque<int> matchRunTimes;
 
-	std::vector<std::deque<KPDStatus> > candidateStateTransitionMatrix;
-	std::vector<std::deque<double> > candidateStateTransitionTimeMatrix;
-	std::vector<std::vector<std::deque<KPDStatus> > > donorStateTransitionMatrix;
-	std::vector<std::vector<std::deque<double> > > donorStateTransitionTimeMatrix;
+	// Deceased Donors Information
+	std::deque<KPDDonor *> deceasedDonors;
+	std::deque<int> deceasedDonorDate;	
+
+	// Candidate Waitlist Information
+	std::vector<KPDCandidate *> waitlistedCandidates;
+
+	std::vector<KPDStatus> waitlistedCandidateStatus;
+	std::vector<KPDTransplant> waitlistedCandidateTransplanted;
+
+	std::vector<std::deque<KPDStatus> > waitlistedCandidateStateTransitions;
+	std::vector<std::deque<double> > waitlistedCandidateStateTransitionTimes;
+	
+	// KPD Information
+	std::vector<KPDNode *> kpdNodes;
+	std::vector<KPDNodeType> kpdNodeTypes; // Needs to be separate! Can be updated over the course of the simulation!
+
+	std::vector<KPDStatus> kpdNodeStatus;
+	std::vector<KPDTransplant> kpdNodeTransplanted;
+
+	std::vector<std::deque<KPDStatus> > kpdNodeStateTransitions;
+	std::vector<std::deque<double> > kpdNodeStateTransitionTimes;
 
 	// Crossmatch Information
-	std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrix;
-	std::vector<std::vector <bool> > incidenceMatrix;
-	std::vector<std::vector<bool> > incidenceMatrixReduced;
 
-	std::deque<KPDArrangement *> transplantArrangements;
+	std::vector<std::vector<KPDMatch *> > deceasedDonorMatches;
 
-	// Helper Functions
-	std::vector<int> getNextStateTransition();
-	KPDStatus getNodeStatus(int nodeID);
-	void updateStatus(int nodeID, int donorID, double transitionTime, KPDStatus newState);
+	std::vector<std::vector<std::vector<KPDMatch *> > > waitlistedCandidateMatches;
+
+	std::vector<std::vector<std::vector<KPDMatch *> > > kpdMatches;
+	std::vector<std::vector<bool> > adjacencyMatrix;
+	std::vector<std::vector<bool> > adjacencyMatrixReduced;
+
+	std::deque<KPDArrangement *> selectedExchanges;
+
+	// Helper Functions	
+	int getNextStateTransition();	
+	void updateStatus(int nodeID, double transitionTime, KPDStatus newState);
 	void correctBridgeDonor(int id);
-	void removeEdge(int donorNodeID, int recipNodeID, int donorID);	
-	void resetSimulationState();
-
-	// Simulation Stages
-	double stateTransitionStage(int nodeID, int donorID);
-	int matchRunStage(KPDOptimizationScheme scheme);
-	void transplantationStage(double time);
+	void removeMatch(int donorNodeID, int recipNodeID, int donorID);
+	
 	
 	std::stringstream outputExchangeInformation;
 	std::stringstream outputTransplantList;
@@ -81,22 +88,15 @@ public:
 	KPDSimulation(KPDParameters * parameters);
 	~KPDSimulation();
 
-	// Simulation Functions
+	// Simulation Functions	
 	void prepareIteration(int iteration);
+	void resetIteration();
 	void runIteration(KPDOptimizationScheme scheme);
 
-	// Getter Functions
-	std::vector<KPDNode *> getNodes();
-	std::vector<KPDNodeType> getNodeTypes();
-
-	std::vector<KPDStatus> getCandidateUnderlyingStatuses();
-	std::vector<std::vector<KPDStatus> > getDonorUnderlyingStatuses();
-
-	std::vector<KPDTransplant> getNodeTransplantationStatuses();
-	
-	std::vector<std::vector<std::vector<KPDMatch *> > > getMatchMatrix();
-	std::vector<std::vector<bool> > getIncidence();
-	std::vector<std::vector<bool> > getIncidenceReduced();
+	double stateTransitionStage(int nodeID);
+	int matchRunStage(KPDOptimizationScheme scheme);
+	void deceasedDonorArrivalStage();
+	void transplantationStage(double time);
 
 	std::string getOutputExchanges();
 	std::string getOutputResults();
@@ -115,378 +115,230 @@ KPDSimulation::KPDSimulation(KPDParameters * parameters) {
 }
 
 KPDSimulation::~KPDSimulation() {
+
 	printLog();
 
 	delete kpdRecord;
 }
 
-std::vector<int> KPDSimulation::getNextStateTransition() {
-	double upcomingTransitionTime = 0;
-	std::vector<int> upcomingTransition(2, -1); //First value represents Node ID, Second value represents Donor ID (-1 if we're dealing with a candidate)
+int KPDSimulation::getNextStateTransition() {
+
+	double transitionTime = 0;
+	int transition = -1; 
 
 	bool eventsToProcess = false;
 
-	//Iterate thorugh candidates
-	for (unsigned i = 1; i < candidateStateTransitionTimeMatrix.size(); i++) {
-		//If pair has transitions remaining
-		if (candidateStateTransitionTimeMatrix[i].size() > 0) {
-			//If no events have been processed yet, or if we have not reached the time of the next state transition
-			if (!eventsToProcess || (eventsToProcess && candidateStateTransitionTimeMatrix[i].front() < upcomingTransitionTime)) {
+	//Iterate through KPD nodes
+	for (unsigned i = 1; i < kpdNodeStateTransitionTimes.size(); i++) {
+		
+		if (kpdNodeStateTransitionTimes[i].size() > 0) { //If node has transitions remaining...
+			
+			//... and if If no events have been processed yet, or if we have not reached the time of the next state transition
+			if (!(eventsToProcess && kpdNodeStateTransitionTimes[i].front() >= transitionTime)) { 
 				//Update node/donor index and upcoming transition time 
-				upcomingTransition[0] = i;
-				upcomingTransition[1] = -1;
-				upcomingTransitionTime = candidateStateTransitionTimeMatrix[i].front();
+				transition = i;
+				transitionTime = kpdNodeStateTransitionTimes[i].front();
 			}
 			eventsToProcess = true;
 		}
 	}
-
-	//Iterate through donors
-	for (unsigned i = 1; i < donorStateTransitionTimeMatrix.size(); i++) {
-		for (unsigned k = 0; k < donorStateTransitionTimeMatrix[i].size(); k++) {
-			if (donorStateTransitionTimeMatrix[i][k].size() > 0) {
-				//If no events have been processed yet, or if we have not reached the time of the next state transition
-				if (!eventsToProcess || (eventsToProcess && donorStateTransitionTimeMatrix[i][k].front() < upcomingTransitionTime)) {
-					//Update node/donor index and upcoming transition time 
-					upcomingTransition[0] = i;
-					upcomingTransition[1] = k;
-					upcomingTransitionTime = donorStateTransitionTimeMatrix[i][k].front();
-				}
-				eventsToProcess = true;
-			}
-		}
-	}
-
-	return upcomingTransition; // If no upcoming transitions, first element of vector will be -1
+	
+	return transition; // If no upcoming transitions, will be -1
 }
 
-KPDStatus KPDSimulation::getNodeStatus(int nodeID) {
-
-	//If the candidate is withdrawn, then the entire node is withdrawn
-	if (candidateUnderlyingStatus[nodeID] == STATUS_WITHDRAWN) {
-		return STATUS_WITHDRAWN;
-	}
-	else {
-
-		//If the candidate is inactive, then the node is inactive
-		if (candidateUnderlyingStatus[nodeID] == STATUS_INACTIVE) {
-			return STATUS_INACTIVE;
-		}
-		else {
-
-			//If the candidate is active, node status is based on donors
-			//If any donor is active, node is active
-			//If all donors are withdrawn, node is withdrawn
-			//Otherwise, node is inactive
-
-			int withdrawnDonors = 0;
-
-			for (int donorID = 1; donorID <= nodeVector[nodeID]->getNumberOfAssociatedDonors(); donorID++) {
-				if (donorUnderlyingStatus[nodeID][donorID] == STATUS_ACTIVE) { // Active donor exists
-					return STATUS_ACTIVE;
-				}
-				else if (donorUnderlyingStatus[nodeID][donorID] == STATUS_WITHDRAWN) {
-					withdrawnDonors++;
-				}
-			}
-
-			if (withdrawnDonors == nodeVector[nodeID]->getNumberOfAssociatedDonors()) {
-				return STATUS_WITHDRAWN;
-			}
-			else {
-				return STATUS_INACTIVE;
-			}
-		}
-	}
-}
-
-void KPDSimulation::updateStatus(int nodeID, int donorID, double transitionTime, KPDStatus newState) {
+void KPDSimulation::updateStatus(int nodeID, double transitionTime, KPDStatus newState) {
 
 	//Advance Simulation Time
-	currentTime = transitionTime;
+	currentDate = transitionTime;
 
 	//Only consider nodes not already transplanted; ignore bridge donors
-	if (nodeTransplantationStatus[nodeID] != TRANSPLANTED_YES && nodeTypeVector[nodeID] != BRIDGE) {
+	if (kpdNodeTransplanted[nodeID] != TRANSPLANTED_YES && kpdNodeTypes[nodeID] != BRIDGE) {
+
 		KPDStatus oldState;
 
-		//If it is a donor that is changing status
-		if (donorID > 0) {
-			oldState = donorUnderlyingStatus[nodeID][donorID];
+		oldState = kpdNodeStatus[nodeID];
 
-			//If status is indeed changing
-			if (oldState != newState) {
+		//If status is indeed changing ..
+		if (oldState != newState) {
 
-				//Output
-				kpdSimulationLog << transitionTime << ": Donor " << nodeID << "[" << donorID << "]";
-				kpdSimulationLog << " (" << KPDFunctions::statusToString(oldState) << " -> " << KPDFunctions::statusToString(newState) << ")" << std::endl;
-
-				//Before changing status, check if another donor is active
-				bool otherActiveDonorExists = false;
-				int k = 1;
-				while (k <= nodeVector[nodeID]->getNumberOfAssociatedDonors() && !otherActiveDonorExists) {
-					if (donorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE && k != donorID) {
-						otherActiveDonorExists = true;
-					}
-					k++;
+			kpdSimulationLog << transitionTime << ": " << nodeID;
+			kpdSimulationLog << " (" << KPDFunctions::statusToString(oldState) << " -> " << KPDFunctions::statusToString(newState) << ")" << std::endl;
+			
+			// .. and if the new candidate state is active...
+			if (newState == STATUS_ACTIVE) {
+				// .. and if node is not in progress, then node is now active
+				if (kpdNodeTransplanted[nodeID] == NOT_TRANSPLANTED) {
+					kpdSimulationLog << "Node " << nodeID << " Active" << std::endl;
 				}
-
-				//If candidate is active, but no other active donor currently exists...
-				if (candidateUnderlyingStatus[nodeID] == STATUS_ACTIVE && !otherActiveDonorExists) {
-					// ... and if the new donor state is active... 
-					if (newState == STATUS_ACTIVE) {
-						// ... and if node is not in progress, then node is now active
-						if (nodeTransplantationStatus[nodeID] == NOT_TRANSPLANTED) {
-							nNodes++;
-							kpdSimulationLog << "Node " << nodeID << " A {" << nNodes << "}" << std::endl;
-						}
-						// ... and if node is currently in progress, then node will become active if returned to the pool
-						else {
-							kpdSimulationLog << "Node " << nodeID << " A (On Return) {" << nNodes << "}" << std::endl;
-						}
-					}
-					// ... and if the new donor state is inactive...
-					else if (newState == STATUS_INACTIVE) {
-						// .. and if node is not in progress, then node is now inactive
-						if (nodeTransplantationStatus[nodeID] == NOT_TRANSPLANTED) {
-							nNodes--;
-							kpdSimulationLog << "Node " << nodeID << " I {" << nNodes << "}" << std::endl;
-						}
-						// .. and if node is in progress, then add failures to transplant arrangements involving that donor, and node becomes inactive when returned to the pool
-						else {
-							for (std::deque<KPDArrangement *>::iterator it = transplantArrangements.begin(); it != transplantArrangements.end(); it++) {
-								(*it)->setFailure(nodeID, donorID, transitionTime);
-							}
-							kpdSimulationLog << "Node " << nodeID << " I (On Return) {" << nNodes << "}" << std::endl;
-						}
-					}
-					// ... and if the new donor state is withdrawn...
-					else {
-						//.. and if node is not in progress, it is withdrawn
-						if (nodeTransplantationStatus[nodeID] == NOT_TRANSPLANTED) {
-							nNodes--;
-						}
-						//.. and if node is in progress, then add failures to transplant arrangements involving that donor
-						else {
-							for (std::deque<KPDArrangement *>::iterator it = transplantArrangements.begin(); it != transplantArrangements.end(); it++) {
-								(*it)->setFailure(nodeID, donorID, transitionTime);
-							}
-						}
-						kpdSimulationLog << "Node " << nodeID << " W {" << nNodes << "}" << std::endl;
-					}
+				// .. and if node is currently in progress, then node will become active if returned to the pool
+				else {
+					kpdSimulationLog << "Node " << nodeID << " Active (On Return)" << std::endl;
 				}
-
-				//Update donor status
-				donorUnderlyingStatus[nodeID][donorID] = newState;
-				//kpdSimulationLog << "# Nodes: " << nNodes << std::endl;
 			}
-		}
-
-		// If it is a candidate changing status
-		else {
-			oldState = candidateUnderlyingStatus[nodeID];
-
-			//If status is indeed changing
-			if (oldState != newState) {
-
-				// Output
-				kpdSimulationLog << transitionTime << ": Candidate " << nodeID;
-				kpdSimulationLog << " (" << KPDFunctions::statusToString(oldState) << " -> " << KPDFunctions::statusToString(newState) << ")" << std::endl;
-
-				// Before changing status, check if there is an active donor
-				bool activeDonorExists = false;
-				int k = 1;
-				while (k <= nodeVector[nodeID]->getNumberOfAssociatedDonors() && !activeDonorExists) {
-					if (donorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
-						activeDonorExists = true;
-					}
-					k++;
+			// .. and if the new candidate state is inactive...
+			else if (newState == STATUS_INACTIVE) {
+				// .. and if node is not in progress, then node is now inactive
+				if (kpdNodeTransplanted[nodeID] == NOT_TRANSPLANTED) {
+					kpdSimulationLog << "Node " << nodeID << " Inactive" << std::endl;
 				}
-
-				// If there is an active donor...
-				if (activeDonorExists) {
-					// .. and if the new candidate state is active...
-					if (newState == STATUS_ACTIVE) {
-						// .. and if node is not in progress, then node is now active
-						if (nodeTransplantationStatus[nodeID] == NOT_TRANSPLANTED) {
-							nNodes++;
-							kpdSimulationLog << "Node " << nodeID << " A {" << nNodes << "}" << std::endl;
-						}
-						// .. and if node is currently in progress, then node will become active if returned to the pool
-						else {
-							kpdSimulationLog << "Node " << nodeID << " A (On Return) {" << nNodes << "}" << std::endl;
-						}
+				// .. and if node is in progress, then add failures to transplant arrangements involving that candidate, and node becomes inactive when returned to the pool
+				else {
+					for (std::deque<KPDArrangement *>::iterator it = selectedExchanges.begin(); it != selectedExchanges.end(); it++) {
+						(*it)->setFailure(nodeID, -1, transitionTime);
 					}
-					// .. and if the new candidate state is inactive...
-					else if (newState == STATUS_INACTIVE) {
-						// .. and if node is not in progress, then node is now inactive
-						if (nodeTransplantationStatus[nodeID] == NOT_TRANSPLANTED) {
-							nNodes--;
-							kpdSimulationLog << "Node " << nodeID << " I {" << nNodes << "}" << std::endl;
-						}
-						// .. and if node is in progress, then add failures to transplant arrangements involving that candidate, and node becomes inactive when returned to the pool
-						else {
-							for (std::deque<KPDArrangement *>::iterator it = transplantArrangements.begin(); it != transplantArrangements.end(); it++) {
-								(*it)->setFailure(nodeID, donorID, transitionTime);
-							}
-							kpdSimulationLog << "Node " << nodeID << " I (On Return) {" << nNodes << "}" << std::endl;
-						}
-					}
-					// .. and if the new candidate state is withdrawn...
-					else {
-						// .. and if node is not in progress, then node is withdrawn
-						if (nodeTransplantationStatus[nodeID] == NOT_TRANSPLANTED) {
-							nNodes--;
-						}
-						// ... and if node is currently in progress, then add failures to transplant arrangements involving that candidate
-						else {
-							for (std::deque<KPDArrangement *>::iterator it = transplantArrangements.begin(); it != transplantArrangements.end(); it++) {
-								(*it)->setFailure(nodeID, donorID, transitionTime);
-							}
-						}
-						kpdSimulationLog << "Node " << nodeID << " Withdrawn {" << nNodes << "}" << std::endl;
-					}
+					kpdSimulationLog << "Node " << nodeID << " Inactive" << std::endl;
 				}
-
-				// Update state
-				candidateUnderlyingStatus[nodeID] = newState;
-				//kpdSimulationLog << "# Nodes: " << nNodes << std::endl;
 			}
+			// .. and if the new candidate state is withdrawn...
+			else {
+
+				// ... and if node is currently in progress, then add failures to transplant arrangements involving that candidate
+				if (kpdNodeTransplanted[nodeID] != NOT_TRANSPLANTED) {					
+					for (std::deque<KPDArrangement *>::iterator it = selectedExchanges.begin(); it != selectedExchanges.end(); it++) {
+						(*it)->setFailure(nodeID, -1, transitionTime);
+					}
+				}
+				kpdSimulationLog << "Node " << nodeID << " Withdrawn" << std::endl;
+			}
+
+			// Update state
+			kpdNodeStatus[nodeID] = newState;
 		}
 	}
+
 }
 
 void KPDSimulation::correctBridgeDonor(int bridgeDonorID) {
 
 	//Iterate through all other nodes
-	for (unsigned i = 1; i < nodeVector.size(); i++) {
+	for (unsigned i = 1; i < kpdNodes.size(); i++) {
 		if (i != bridgeDonorID) {
-			//Remove edges to new bridge donor node
-			if (incidenceMatrix[i][bridgeDonorID]) {
-				for (int k = 1; k <= nodeVector[i]->getNumberOfAssociatedDonors(); k++) {
-					removeEdge(i, bridgeDonorID, k);
+			//Remove matches to new bridge donor node
+			if (adjacencyMatrix[i][bridgeDonorID]) {
+				for (int k = 1; k <= kpdNodes[i]->getNumberOfAssociatedDonors(); k++) {
+					removeMatch(i, bridgeDonorID, k);
 				}
 			}
 
-			//Remove implict edges to all altruistic or bridge donors
-			if (incidenceMatrix[bridgeDonorID][i] && nodeTypeVector[i] != PAIR) {
-				for (int k = 1; k <= nodeVector[bridgeDonorID]->getNumberOfAssociatedDonors(); k++) { /// CHECK THIS AGAIN!
-					removeEdge(bridgeDonorID, i, k);
+			//Remove implict matches to all altruistic or bridge donors
+			if (adjacencyMatrix[bridgeDonorID][i] && kpdNodeTypes[i] != PAIR) {
+				for (int k = 1; k <= kpdNodes[bridgeDonorID]->getNumberOfAssociatedDonors(); k++) { /// CHECK THIS AGAIN!
+					removeMatch(bridgeDonorID, i, k);
 				}
 			}
 
-			//Add (implicit) edges from all pairs to new bridge donor node
-			if (nodeTypeVector[i] == PAIR) {
-				incidenceMatrix[i][bridgeDonorID] = true;
+			//Add (implicit) matches from all pairs to new bridge donor node
+			if (kpdNodeTypes[i] == PAIR) {
+				adjacencyMatrix[i][bridgeDonorID] = true;
 
-				for (int k = 1; k <= nodeVector[i]->getNumberOfAssociatedDonors(); k++) {
-					matchMatrix[i][bridgeDonorID][k]->setMatchProperties(true, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, CROSSMATCH_SUCCESSFUL, true);
+				for (int k = 1; k <= kpdNodes[i]->getNumberOfAssociatedDonors(); k++) {
+					kpdMatches[i][bridgeDonorID][k]->setMatchProperties(true, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, CROSSMATCH_SUCCESSFUL, true);
 				}
 			}
 		}
 	}
 }
 
-void KPDSimulation::removeEdge(int donorNodeID, int recipNodeID, int donorID) {
+void KPDSimulation::removeMatch(int donorNodeID, int recipNodeID, int donorID) {
 	
-	matchMatrix[donorNodeID][recipNodeID][donorID]->setMatchProperties(false, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, CROSSMATCH_FAILED_LAB, false);
+	kpdMatches[donorNodeID][recipNodeID][donorID]->setMatchProperties(false, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, CROSSMATCH_FAILED_LAB, false);
 
-	// Check if incidence matrix needs to be updated
+	// Check if adjacency matrix needs to be updated
 	bool noAssociatedDonors = true;
 
-	for (int id = 1; id < nodeVector[donorNodeID]->getNumberOfAssociatedDonors(); id++) {
-		if (matchMatrix[donorNodeID][recipNodeID][id]->getIncidence()) {
+	for (int id = 1; id < kpdNodes[donorNodeID]->getNumberOfAssociatedDonors(); id++) {
+		if (kpdMatches[donorNodeID][recipNodeID][id]->getAdjacency()) {
 			noAssociatedDonors = false;
 			break;
 		}
 	}
 
 	if (noAssociatedDonors) {
-		incidenceMatrix[donorNodeID][recipNodeID] = false;
-		incidenceMatrixReduced[donorNodeID][recipNodeID] = false;
+		adjacencyMatrix[donorNodeID][recipNodeID] = false;
+		adjacencyMatrixReduced[donorNodeID][recipNodeID] = false;
 	}
 }
 
-void KPDSimulation::resetSimulationState() {
-
-	// Clear Simulation Information
-
+void KPDSimulation::resetIteration() {
+	
 	currentMatchRun = 0;
-	currentTime = 0;
-
-	nNodes = 0;		
-	nodeVector.clear();
-	nodeTypeVector.clear();
-
-	candidateUnderlyingStatus.clear();
-	donorUnderlyingStatus.clear();
-
-	nodeTransplantationStatus.clear();
+	currentDate = 0;
 
 	matchRunTimes.clear();
 
-	candidateStateTransitionMatrix.clear();
-	candidateStateTransitionTimeMatrix.clear();
-	donorStateTransitionMatrix.clear();
-	donorStateTransitionTimeMatrix.clear();
+	deceasedDonors.clear();
+	deceasedDonorDate.clear();
+
+	waitlistedCandidates.clear();
+
+	waitlistedCandidateStatus.clear();
+	waitlistedCandidateTransplanted.clear();
+
+	waitlistedCandidateStateTransitions.clear();
+	waitlistedCandidateStateTransitionTimes.clear();
+		
+	kpdNodes.clear();
+	kpdNodeTypes.clear();
+
+	kpdNodeStatus.clear();
+	kpdNodeTransplanted.clear();
+
+	kpdNodeStateTransitions.clear();
+	kpdNodeStateTransitionTimes.clear();
 	
-	matchMatrix.clear();
-	incidenceMatrix.clear();
-	incidenceMatrixReduced.clear();
+	deceasedDonorMatches.clear();
+
+	waitlistedCandidateMatches.clear();
+
+	kpdMatches.clear();
+	adjacencyMatrix.clear();
+	adjacencyMatrixReduced.clear();
 	
-	transplantArrangements.clear();
+	selectedExchanges.clear();
 
 	// Collect Matrices from Record
 
-	nodeVector = kpdRecord->getNodes();
-	nodeTypeVector = kpdRecord->getNodeTypes();
+	kpdNodes = kpdRecord->getNodes();
+	kpdNodeTypes = kpdRecord->getNodeTypes();
 
-	int numberOfNodes = (int)nodeVector.size() - 1;
+	int numberOfNodes = (int)kpdNodes.size() - 1;
 
-	candidateUnderlyingStatus.assign(1 + numberOfNodes, STATUS_INACTIVE);
-	donorUnderlyingStatus.assign(1, std::vector<KPDStatus>(1, STATUS_INACTIVE));
-	for (int i = 1; i <= numberOfNodes; i++) {
-		int numberOfDonors = nodeVector[i]->getNumberOfAssociatedDonors();
-		donorUnderlyingStatus.push_back(std::vector<KPDStatus>(1 + numberOfDonors, STATUS_INACTIVE));
-	}
-
-	nodeTransplantationStatus.assign(nodeTypeVector.size(), NOT_TRANSPLANTED);
+	kpdNodeStatus.assign(1 + numberOfNodes, STATUS_INACTIVE);
+	kpdNodeTransplanted.assign(kpdNodeTypes.size(), NOT_TRANSPLANTED);
 
 	matchRunTimes = kpdRecord->getMatchRunTimes();
 
-	candidateStateTransitionMatrix = kpdRecord->getCandidateStateTransitionMatrix();
-	candidateStateTransitionTimeMatrix = kpdRecord->getCandidateStateTransitionTimeMatrix();
-	donorStateTransitionMatrix = kpdRecord->getDonorStateTransitionMatrix();
-	donorStateTransitionTimeMatrix = kpdRecord->getDonorStateTransitionTimeMatrix();
+	kpdNodeStateTransitions = kpdRecord->getCandidateStateTransitionMatrix();
+	kpdNodeStateTransitionTimes = kpdRecord->getCandidateStateTransitionTimeMatrix();
+	
+	kpdMatches = kpdRecord->getMatchMatrix();
+	adjacencyMatrix = kpdRecord->getAdjacencyMatrix();
+	adjacencyMatrixReduced = kpdRecord->getAdjacencyMatrixReduced();
 
-	matchMatrix = kpdRecord->getMatchMatrix();
-	incidenceMatrix = kpdRecord->getIncidenceMatrix();
-	incidenceMatrixReduced = kpdRecord->getIncidenceMatrixReduced();
+
+	outputExchangeInformation.str("");
+	outputTransplantList.str("");
+
+	kpdSimulationLog.str("");
 	
 }
 
-double KPDSimulation::stateTransitionStage(int nodeID, int donorID) {
+double KPDSimulation::stateTransitionStage(int nodeID) {
 
 	KPDStatus newState;
 	double transitionTime;
 
-	if (donorID > -1) { // Donor state transition
-		newState = donorStateTransitionMatrix[nodeID][donorID].front();
-		donorStateTransitionMatrix[nodeID][donorID].pop_front();
-		transitionTime = donorStateTransitionTimeMatrix[nodeID][donorID].front();
-		donorStateTransitionTimeMatrix[nodeID][donorID].pop_front();
-	}
-	else { // Candidate state transition
-		newState = candidateStateTransitionMatrix[nodeID].front();
-		candidateStateTransitionMatrix[nodeID].pop_front();
-		transitionTime = candidateStateTransitionTimeMatrix[nodeID].front();
-		candidateStateTransitionTimeMatrix[nodeID].pop_front();
-	}
-
+	// Candidate state transition
+	newState = kpdNodeStateTransitions[nodeID].front();
+	kpdNodeStateTransitions[nodeID].pop_front();
+	transitionTime = kpdNodeStateTransitionTimes[nodeID].front();
+	kpdNodeStateTransitionTimes[nodeID].pop_front();
+	
 	//Check if there are transplants to perform
 	transplantationStage(transitionTime);
 
 	//Update state
-	updateStatus(nodeID, donorID, transitionTime, newState);
+	updateStatus(nodeID, transitionTime, newState);
 
 	return transitionTime;
 }
@@ -508,9 +360,9 @@ int KPDSimulation::matchRunStage(KPDOptimizationScheme scheme) {
 	std::vector<std::vector<int> > matchRunArrangements;
 	std::vector<double> assignedValueOfMatchRunArrangements;
 
-	KPDMatchRun * matchRun = new KPDMatchRun(kpdParameters, currentIteration, currentMatchRun, currentTime,
-		getNodes(), getNodeTypes(), getCandidateUnderlyingStatuses(), getDonorUnderlyingStatuses(),
-		getNodeTransplantationStatuses(), getMatchMatrix(), getIncidence(), getIncidenceReduced());
+	KPDMatchRun * matchRun = new KPDMatchRun(kpdParameters, currentIteration, currentMatchRun, currentDate,
+		kpdNodes, kpdNodeTypes, kpdNodeStatus,
+		kpdNodeTransplanted, kpdMatches, adjacencyMatrix, adjacencyMatrixReduced);
 
 	// Collect relevant transplant Arrangements
 	if (scheme == LOCALLY_RELEVANT_SUBSETS) {
@@ -552,7 +404,7 @@ int KPDSimulation::matchRunStage(KPDOptimizationScheme scheme) {
 			// Retrieve NDD Status
 			bool ndd = false;
 			for (std::vector<int>::iterator nodeIt = currentArrangement.begin(); nodeIt != currentArrangement.end(); nodeIt++) {
-				if (nodeTypeVector[*nodeIt] != PAIR) {
+				if (kpdNodeTypes[*nodeIt] != PAIR) {
 					ndd = true;
 				}
 			}
@@ -578,18 +430,17 @@ int KPDSimulation::matchRunStage(KPDOptimizationScheme scheme) {
 
 				//Collect All Nodes and Node Types from the Arrangment
 				for (std::vector<int>::iterator nodeIt = currentArrangement.begin(); nodeIt != currentArrangement.end(); nodeIt++) {
-					arrangementNodes.push_back(nodeVector[*nodeIt]->copy()); // Copy Arrangement Nodes				
-					arrangementNodeTypes.push_back(nodeTypeVector[*nodeIt]);
+					arrangementNodes.push_back(kpdNodes[*nodeIt]->copy()); // Copy Arrangement Nodes				
+					arrangementNodeTypes.push_back(kpdNodeTypes[*nodeIt]);
 
-					nodeTransplantationStatus[*nodeIt] = TRANSPLANT_IN_PROGRESS; // Mark Nodes in Arrangement as TRANSPLANT_IN_PROGRESS
-					nNodes--; // Reduce Node Count
+					kpdNodeTransplanted[*nodeIt] = TRANSPLANT_IN_PROGRESS; // Mark Nodes in Arrangement as TRANSPLANT_IN_PROGRESS
 				}
 
 				//Create New Arrangement Object and Add to Those In Progress
-				KPDArrangement * newArrangement = new KPDArrangement(kpdParameters, currentIteration, currentMatchRun, currentTime, kpdParameters->getProcessingTime(), arrangementUtility,
-					arrangementNodes, arrangementNodeTypes, matchMatrix, donorUnderlyingStatus, ndd, scheme);
+				KPDArrangement * newArrangement = new KPDArrangement(kpdParameters, currentIteration, currentMatchRun, currentDate, kpdParameters->getProcessingTime(), arrangementUtility,
+					arrangementNodes, arrangementNodeTypes, kpdMatches, ndd, scheme);
 
-				transplantArrangements.push_back(newArrangement);
+				selectedExchanges.push_back(newArrangement);
 
 				//Output to Simulation Log
 				if (scheme == LOCALLY_RELEVANT_SUBSETS) {
@@ -604,7 +455,7 @@ int KPDSimulation::matchRunStage(KPDOptimizationScheme scheme) {
 			}
 
 			//Output to Arrangement List
-			outputExchangeInformation << currentIteration << "," << currentMatchRun << "," << currentTime << "," << kpdParameters->getProcessingTime() << "," << currentArrangement.size() << ",";
+			outputExchangeInformation << currentIteration << "," << currentMatchRun << "," << currentDate << "," << kpdParameters->getProcessingTime() << "," << currentArrangement.size() << ",";
 
 			outputExchangeInformation << *currentArrangement.begin();
 
@@ -624,7 +475,7 @@ int KPDSimulation::matchRunStage(KPDOptimizationScheme scheme) {
 		kpdSimulationLog << std::endl;
 	}
 
-	kpdSimulationLog << "Pool Size: " << nNodes << std::endl << std::endl;
+	//kpdSimulationLog << "Pool Size: " << nNodes << std::endl << std::endl;
 
 	std::cout << std::endl;
 
@@ -633,18 +484,22 @@ int KPDSimulation::matchRunStage(KPDOptimizationScheme scheme) {
 	return matchRunTime;
 }
 
+inline void KPDSimulation::deceasedDonorArrivalStage()
+{
+}
+
 
 void KPDSimulation::transplantationStage(double time) {
 
-	currentTime = time;
+	currentDate = time;
 
 	//If there are transplant arrangements waiting...
-	if (transplantArrangements.size() > 0) {
+	if (selectedExchanges.size() > 0) {
 		// .. and if a transplant arrangement has reached its transplantation time, then... 
-		if (transplantArrangements.front()->getTransplantationTime() <= time) {
+		if (selectedExchanges.front()->getTransplantationTime() <= time) {
 
 			//1. Get Transplant Arrangement Information and Output to File
-			KPDArrangement * transplantArrangement = transplantArrangements.front();
+			KPDArrangement * transplantArrangement = selectedExchanges.front();
 			std::vector<int> nodesInProgress = transplantArrangement->getNodeIDs();
 
 			bool chain = transplantArrangement->hasNDD();
@@ -666,34 +521,34 @@ void KPDSimulation::transplantationStage(double time) {
 			//2. Update Matrices to Reflect Revealed Crossmatches
 			for (std::vector<int>::iterator itCandidateNode = nodesInProgress.begin(); itCandidateNode != nodesInProgress.end(); ++itCandidateNode) {
 
-				if (nodeTypeVector[*itCandidateNode] == PAIR) {
+				if (kpdNodeTypes[*itCandidateNode] == PAIR) {
 					for (std::vector<int>::iterator itDonorNode = nodesInProgress.begin(); itDonorNode != nodesInProgress.end(); ++itDonorNode) {
 
 						//...iterate through all donors...
-						for (int k = 1; k <= nodeVector[*itDonorNode]->getNumberOfAssociatedDonors(); k++) {
+						for (int k = 1; k <= kpdNodes[*itDonorNode]->getNumberOfAssociatedDonors(); k++) {
 
 							//Only consider relevant exchanges within the transplant arrangement
-							if (transplantArrangement->getIncidence(*itDonorNode, *itCandidateNode, k)) {
+							if (transplantArrangement->getAdjacency(*itDonorNode, *itCandidateNode, k)) {
 
 								//... and output availability.
 								kpdSimulationLog << "Donor " << *itDonorNode << "[" << k << "]";
-								if (transplantArrangement->getDonorAvailability(*itDonorNode, k) == 0) { // Not available
-									kpdSimulationLog << " not Available" << std::endl;
-								}
-								else {
+								//if (transplantArrangement->getDonorAvailability(*itDonorNode, k) == 0) { // Not available
+									//kpdSimulationLog << " not Available" << std::endl;
+								//}
+								//else {
 									kpdSimulationLog << " Available" << std::endl;
-								}
+								//}
 
 								//Then reveal results of the lab crossmatch...
-								if (matchMatrix[*itDonorNode][*itCandidateNode][k]->getLabCrossmatchResult()) {
+								if (kpdMatches[*itDonorNode][*itCandidateNode][k]->getLabCrossmatchResult()) {
 									kpdSimulationLog << "Match " << *itDonorNode << "[" << k << "] -> " << *itCandidateNode << " Successful (-> 1)" << std::endl;
-									if (matchMatrix[*itDonorNode][*itCandidateNode][k]->getAssumedSuccessProbability() != 1.0) {
-										matchMatrix[*itDonorNode][*itCandidateNode][k]->setAssumedSuccessProbability(1.0); // Probability updated to reflect successful crossmatch
+									if (kpdMatches[*itDonorNode][*itCandidateNode][k]->getAssumedSuccessProbability() != 1.0) {
+										kpdMatches[*itDonorNode][*itCandidateNode][k]->setAssumedSuccessProbability(1.0); // Probability updated to reflect successful crossmatch
 									}
 								}
 								else {
 									kpdSimulationLog << "Match " << *itDonorNode << "[" << k << "] -> " << *itCandidateNode << " Failed (Removed)" << std::endl;
-									removeEdge(*itDonorNode, *itCandidateNode, k); // Remove edge from KPD graph to reflect unsuccessful crossmatch
+									removeMatch(*itDonorNode, *itCandidateNode, k); // Remove edge from KPD graph to reflect unsuccessful crossmatch
 								}
 							}
 						}
@@ -722,7 +577,7 @@ void KPDSimulation::transplantationStage(double time) {
 
 					std::vector<int> currentOption = *itOptions;
 
-					bool chain = (nodeTypeVector[*currentOption.begin()] != PAIR);
+					bool chain = (kpdNodeTypes[*currentOption.begin()] != PAIR);
 					int length = (int)currentOption.size();
 
 					//Realized Chain
@@ -745,18 +600,18 @@ void KPDSimulation::transplantationStage(double time) {
 
 							transplantArrangement->setSelectedTransplant(*itNodes, *(itNodes + 1), selectedDonor); // Mark Transplant in Arrangement
 
-							nodeTransplantationStatus[*itNodes] = TRANSPLANTED_YES; // Update Transplantation Status of Donor Node
+							kpdNodeTransplanted[*itNodes] = TRANSPLANTED_YES; // Update Transplantation Status of Donor Node
 
 							kpdSimulationLog << "TX: " << *itNodes << "[" << selectedDonor << "] -> " << *(itNodes + 1) << " Recorded" << std::endl; // Output
 						}
 
 						//Set up bridge node and output
 						int bridgeNode = *(currentOption.end() - 1);
-						nodeTypeVector[bridgeNode] = BRIDGE;
-						nodeTransplantationStatus[bridgeNode] = NOT_TRANSPLANTED;
+						kpdNodeTypes[bridgeNode] = BRIDGE;
+						kpdNodeTransplanted[bridgeNode] = NOT_TRANSPLANTED;
 						correctBridgeDonor(bridgeNode);
-						nNodes++;
-						kpdSimulationLog << "Donors " << bridgeNode << " now BD, returned {" << nNodes << "}" << std::endl;
+						//nNodes++;
+						//kpdSimulationLog << "Donors " << bridgeNode << " now BD, returned {" << nNodes << "}" << std::endl;
 					}
 
 					//Realized Cycle
@@ -775,7 +630,7 @@ void KPDSimulation::transplantationStage(double time) {
 
 							transplantArrangement->setSelectedTransplant(*itNodes, *(itNodes + 1), selectedDonor); // Mark Transplant in Arrangement
 
-							nodeTransplantationStatus[*(itNodes + 1)] = TRANSPLANTED_YES; // Update Transplantation Status of Candidate Node
+							kpdNodeTransplanted[*(itNodes + 1)] = TRANSPLANTED_YES; // Update Transplantation Status of Candidate Node
 
 							kpdSimulationLog << "Transplant " << *itNodes << "[" << selectedDonor << "] -> " << *(itNodes + 1) << " Recorded" << std::endl;  //Output							
 						}
@@ -784,7 +639,7 @@ void KPDSimulation::transplantationStage(double time) {
 
 						transplantArrangement->setSelectedTransplant(*(currentOption.end() - 1), *(currentOption.begin()), selectedDonor); // Mark Transplant in Arrangement
 
-						nodeTransplantationStatus[*(currentOption.begin())] = TRANSPLANTED_YES; // Update Transplantation Status of Candidate Node
+						kpdNodeTransplanted[*(currentOption.begin())] = TRANSPLANTED_YES; // Update Transplantation Status of Candidate Node
 
 						kpdSimulationLog << "Transplant " << *(currentOption.end() - 1) << "[" << selectedDonor << "] -> " << *(currentOption.begin()) << " Recorded" << std::endl; //Output
 
@@ -794,24 +649,24 @@ void KPDSimulation::transplantationStage(double time) {
 
 			//4. Return All Untransplanted Nodes to Pool
 			for (unsigned k = 0; k < nodesInProgress.size(); k++) {
-				if (nodeTransplantationStatus[nodesInProgress[k]] == TRANSPLANT_IN_PROGRESS) {
-					nodeTransplantationStatus[nodesInProgress[k]] = NOT_TRANSPLANTED;
-					kpdSimulationLog << KPDFunctions::nodeTypeToString(nodeTypeVector[nodesInProgress[k]]) << " " << nodesInProgress[k] << " returned ";
-					if (getNodeStatus(nodesInProgress[k]) == STATUS_ACTIVE) {
-						nNodes++;
-					}
-					kpdSimulationLog << "(" << KPDFunctions::statusToString(getNodeStatus(nodesInProgress[k])) << " {" << nNodes << "})" << std::endl;
+				if (kpdNodeTransplanted[nodesInProgress[k]] == TRANSPLANT_IN_PROGRESS) {
+					kpdNodeTransplanted[nodesInProgress[k]] = NOT_TRANSPLANTED;
+					kpdSimulationLog << KPDFunctions::nodeTypeToString(kpdNodeTypes[nodesInProgress[k]]) << " " << nodesInProgress[k] << " returned ";
+					//if (getNodeStatus(nodesInProgress[k]) == STATUS_ACTIVE) {
+						//nNodes++;
+					//}
+					//kpdSimulationLog << "(" << KPDFunctions::statusToString(getNodeStatus(nodesInProgress[k])) << " {" << nNodes << "})" << std::endl;
 				}
 			}
 
 			//5. Print Transplant Information to File
 			outputTransplantList << transplantArrangement->toTransplantString();
 
-			kpdSimulationLog << "Pool Size: " << nNodes << std::endl << std::endl;
+			//kpdSimulationLog << "Pool Size: " << nNodes << std::endl << std::endl;
 
-			transplantArrangements.pop_front();
+			selectedExchanges.pop_front();
 
-			transplantationStage(currentTime);
+			transplantationStage(currentDate);
 		}
 	}
 }
@@ -820,39 +675,28 @@ void KPDSimulation::prepareIteration(int iteration){
 
 	outputPopulationList.str("");
 
-	// Set Current Iteration
+	// Set current iteration
 	currentIteration = iteration;
 
 	std::cout << "--------------" << std::endl;
 	std::cout << "Iteration " << currentIteration << std::endl;
 	std::cout << "--------------" << std::endl << std::endl;
 	
-	// Generate New KPD Pool for this Iteration
+	// Generate new KPD pool for this iteration
 	kpdRecord->generateKPDPool(iteration);
 	
-	// Output KPD Pool Population
+	// Output KPD pool population
 	outputPopulationList << kpdRecord->getPopulationList();
 
 }
 
 void KPDSimulation::runIteration(KPDOptimizationScheme scheme) {
 	
-	// Reset simulation matrices
-	resetSimulationState();	
-
-	// Clear Streams
-	outputExchangeInformation.str("");
-	outputTransplantList.str("");
-
-	kpdSimulationLog.str("");
-	
-	// Run simulation
 	kpdSimulationLog << "------------------------" << std::endl;
 	kpdSimulationLog << "Iteration " << currentIteration << ": " << KPDFunctions::optimizationSchemeToString(scheme)  << std::endl;
 	kpdSimulationLog << "------------------------" << std::endl << std::endl;
 
 	std::cout << "*** " << KPDFunctions::optimizationSchemeToString(scheme) << " ***" << std::endl << std::endl;
-	
 	
 	double cutOff = kpdParameters->getTimeSpan() + kpdParameters->getProcessingTime();
 	bool continueSimulation = true;
@@ -860,25 +704,22 @@ void KPDSimulation::runIteration(KPDOptimizationScheme scheme) {
 	while (continueSimulation) {
 
 		// Obtain next state transition
-		std::vector<int> transition = getNextStateTransition();
-		int nodeID = transition[0];
-		int donorID = transition[1];
+		int nodeID = getNextStateTransition();
 
 		if (nodeID > 0) { // State transitions remain
 			if (matchRunTimes.size() > 0) { // Match runs remain
-				if ((donorID > -1 && matchRunTimes.front() < donorStateTransitionTimeMatrix[nodeID][donorID].front()) ||
-					(donorID == -1 && matchRunTimes.front() < candidateStateTransitionTimeMatrix[nodeID].front())) { // Match run takes place before next state transition
+				if (matchRunTimes.front() < kpdNodeStateTransitionTimes[nodeID].front()) { // Match run takes place before next state transition
 										
-					currentTime = matchRunStage(scheme); // Perform match run
+					currentDate = matchRunStage(scheme); // Perform match run
 				}
 
 				else { // State transition takes place before match run
-					currentTime = stateTransitionStage(nodeID, donorID);
+					currentDate = stateTransitionStage(nodeID);
 				}
 			}
 
 			else { // No more match runs
-				currentTime = stateTransitionStage(nodeID, donorID);
+				currentDate = stateTransitionStage(nodeID);
 			}
 		}
 
@@ -899,91 +740,6 @@ void KPDSimulation::runIteration(KPDOptimizationScheme scheme) {
 
 }
 
-std::vector<KPDNode*> KPDSimulation::getNodes(){
-
-	std::vector<KPDNode *> nodes; // Starts at 1
-
-	nodes.push_back(new KPDNode());
-
-	for (std::vector<KPDNode*>::iterator it = nodeVector.begin() + 1; it != nodeVector.end(); it++) {
-		nodes.push_back((*it)->copy()); // Deep Copy
-	}
-
-	return nodes;
-}
-
-std::vector<KPDNodeType> KPDSimulation::getNodeTypes(){
-
-	std::vector<KPDNodeType> nodeTypes; // Starts at 1
-
-	nodeTypes.push_back(PAIR);
-
-	for (std::vector<KPDNode*>::iterator it = nodeVector.begin() + 1; it != nodeVector.end(); it++) {
-		nodeTypes.push_back((*it)->getType());
-	}
-
-	return nodeTypes;
-}
-
-std::vector<KPDStatus> KPDSimulation::getCandidateUnderlyingStatuses() {
-
-	std::vector<KPDStatus> candidateUnderlyingStatusClone(candidateUnderlyingStatus);
-
-	return candidateUnderlyingStatusClone;
-}
-
-std::vector<std::vector<KPDStatus> > KPDSimulation::getDonorUnderlyingStatuses(){
-
-	std::vector<std::vector<KPDStatus> > donorUnderlyingStatusClone(donorUnderlyingStatus);
-
-	return donorUnderlyingStatusClone;
-}
-
-std::vector<KPDTransplant> KPDSimulation::getNodeTransplantationStatuses(){
-
-	std::vector<KPDTransplant> nodeTransplantationStatusClone(nodeTransplantationStatus);
-
-	return nodeTransplantationStatusClone;
-}
-
-std::vector<std::vector<std::vector<KPDMatch*> > > KPDSimulation::getMatchMatrix(){
-
-	std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrixCopy; // Starts at 1
-
-	for (std::vector<std::vector<std::vector<KPDMatch *> > >::iterator itRow = matchMatrix.begin(); itRow != matchMatrix.end(); itRow++) {
-
-		std::vector<std::vector<KPDMatch *> > matchMatrixRowCopy;
-
-		for (std::vector<std::vector<KPDMatch *> >::iterator itColumn = (*itRow).begin(); itColumn != (*itRow).end(); itColumn++) {
-
-			std::vector<KPDMatch *> donorMatchesCopy;
-
-			for (std::vector<KPDMatch *>::iterator itDonors = (*itColumn).begin(); itDonors != (*itColumn).end(); itDonors++) {
-				donorMatchesCopy.push_back((*itDonors)->copy());
-			}
-
-			matchMatrixRowCopy.push_back(donorMatchesCopy);
-		}
-
-		matchMatrixCopy.push_back(matchMatrixRowCopy);
-	}
-
-	return matchMatrixCopy;
-}
-
-std::vector<std::vector<bool> > KPDSimulation::getIncidence(){
-
-	std::vector<std::vector<bool> > incidenceMatrixClone(incidenceMatrix);
-
-	return incidenceMatrixClone;
-}
-
-std::vector<std::vector<bool>> KPDSimulation::getIncidenceReduced()
-{
-	std::vector<std::vector<bool> > incidenceMatrixReducedClone(incidenceMatrixReduced);
-
-	return incidenceMatrixReducedClone;
-}
 
 std::string KPDSimulation::getOutputExchanges() {
 	return outputExchangeInformation.str();

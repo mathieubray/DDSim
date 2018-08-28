@@ -37,8 +37,8 @@ private:
 	std::vector<KPDNode *> nodeVector;
 	std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrix;
 
-	std::vector<std::vector<bool> > incidenceMatrix;
-	std::vector<std::vector<bool> > incidenceMatrixReduced;
+	std::vector<std::vector<bool> > adjacencyMatrix;
+	std::vector<std::vector<bool> > adjacencyMatrixReduced;
 	
 	std::vector<std::deque<KPDStatus> > candidateStateTransitionMatrix;
 	std::vector<std::deque<double> > candidateStateTransitionTimeMatrix;
@@ -94,8 +94,8 @@ public:
 	std::vector<KPDNodeType> getNodeTypes();
 	std::vector<std::vector<std::vector<KPDMatch *> > > getMatchMatrix();
 
-	std::vector<std::vector<bool> > getIncidenceMatrix();
-	std::vector<std::vector<bool> > getIncidenceMatrixReduced();
+	std::vector<std::vector<bool> > getAdjacencyMatrix();
+	std::vector<std::vector<bool> > getAdjacencyMatrixReduced();
 	
 	std::vector<std::deque<KPDStatus> > getCandidateStateTransitionMatrix();
 	std::vector<std::deque<double> > getCandidateStateTransitionTimeMatrix();
@@ -603,8 +603,8 @@ void KPDRecord::assignMatchProperties() {
 
 	int N = (int)nodeVector.size() - 1;
 
-	incidenceMatrix.assign(1 + N, std::vector<bool>(1 + N, false));
-	incidenceMatrixReduced.assign(1 + N, std::vector<bool>(1 + N, false));
+	adjacencyMatrix.assign(1 + N, std::vector<bool>(1 + N, false));
+	adjacencyMatrixReduced.assign(1 + N, std::vector<bool>(1 + N, false));
 	matchMatrix.assign(1 + N, std::vector<std::vector<KPDMatch *> >(1 + N, std::vector<KPDMatch *>(1, new KPDMatch())));
 
 	//Iterate through donor nodes
@@ -625,10 +625,10 @@ void KPDRecord::assignMatchProperties() {
 			if (i != j) {
 				// Pairing -> NDD (Implicit Backward Edge from all Donors to the NDD)
 				if (nodeVector[i]->getType() == PAIR && nodeVector[j]->getType() == NDD) {
-					incidenceMatrix[i][j] = true;
+					adjacencyMatrix[i][j] = true;
 
 					for (int k = 1; k <= numDonors; k++) { // These are all probably unnecessary, but are good for placeholding
-						matchMatrix[i][j][k]->setIncidence(true);
+						matchMatrix[i][j][k]->setAdjacency(true);
 						matchMatrix[i][j][k]->setAssumedSuccessProbability(1.0);
 						matchMatrix[i][j][k]->setActualSuccessProbability(1.0);
 						matchMatrix[i][j][k]->setLabCrossmatchResult(true);
@@ -649,8 +649,8 @@ void KPDRecord::assignMatchProperties() {
 
 						if (allowableMatch(virtualCrossmatchResult)) {
 
-							incidenceMatrix[i][j] = true;
-							incidenceMatrixReduced[i][j] = true;
+							adjacencyMatrix[i][j] = true;
+							adjacencyMatrixReduced[i][j] = true;
 
 							//Assign utility values
 							double fiveYearSurvival;
@@ -1017,8 +1017,8 @@ void KPDRecord::generateKPDPool(int iteration){
 
 	nodeVector.clear();
 	matchMatrix.clear();
-	incidenceMatrix.clear();
-	incidenceMatrixReduced.clear();
+	adjacencyMatrix.clear();
+	adjacencyMatrixReduced.clear();
 
 	candidateStateTransitionMatrix.clear();
 	candidateStateTransitionTimeMatrix.clear();
@@ -1112,18 +1112,18 @@ std::vector<std::vector<std::vector<KPDMatch *> > > KPDRecord::getMatchMatrix() 
 	return matchMatrixCopy;
 }
 
-std::vector<std::vector<bool> > KPDRecord::getIncidenceMatrix() {
+std::vector<std::vector<bool> > KPDRecord::getAdjacencyMatrix() {
 
-	std::vector<std::vector<bool> > incidenceMatrixClone(incidenceMatrix);
+	std::vector<std::vector<bool> > adjacencyMatrixClone(adjacencyMatrix);
 
-	return incidenceMatrixClone;
+	return adjacencyMatrixClone;
 }
 
-std::vector<std::vector<bool> > KPDRecord::getIncidenceMatrixReduced()
+std::vector<std::vector<bool> > KPDRecord::getAdjacencyMatrixReduced()
 {
-	std::vector<std::vector<bool> > incidenceMatrixReducedClone(incidenceMatrixReduced);
+	std::vector<std::vector<bool> > adjacencyMatrixReducedClone(adjacencyMatrixReduced);
 
-	return incidenceMatrixReducedClone;
+	return adjacencyMatrixReducedClone;
 }
 
 std::vector<std::deque<KPDStatus> > KPDRecord::getCandidateStateTransitionMatrix() {

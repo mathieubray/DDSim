@@ -50,10 +50,10 @@ std::string filePopulationInformation;
 
 void buildDirectoryStructure(){
 
-	//Column names
-	std::string resultsColumnNames = "Simulation,MatchRun,MatchRunTime,TransplantationTime,DonorType,DonorNodeID,DonorID,DonorArrivalTime,DonorAvailable,CandidateNodeID,CandidateArrivalTime,CandidateAssociatedDonors,CandidateAvailable,Surv5Year,Surv10Year,Score,RandomUtility,TransplantAssumedProb,TransplantActualProb,VirtualCrossmatch,LabCrossmatch,Transplanted";
-	std::string exchangesColumnNames = "Simulation,MatchRun,MatchRunTime,TimeToTransplantation,Nodes,NodeIDs,HasNDD,AssignedValue,Selected";
-	std::string populationColumnNames = "Simulation,NodeID,DonorID,NodeType,ArrivalTime,rBT,rPRA,rAge,rMale,rRace,rDiabetes,rHeight,rWeight,rBMI,rPrevTrans,rTOD,rHepC,rInsurance,rAssumedProb,rActualProb,dBT,relationToCandidate,dAge,dMale,dRace,dHeight,dWeight,dBMI,dCigaretteUse,dAssumedProb,dActualProb";
+	//Variable names
+	std::string resultsVariableNames = "Simulation,MatchRun,MatchRunTime,TransplantationTime,DonorType,DonorNodeID,DonorID,DonorArrivalTime,DonorAvailable,CandidateNodeID,CandidateArrivalTime,CandidateAssociatedDonors,CandidateAvailable,Surv5Year,Surv10Year,Score,RandomUtility,TransplantAssumedProb,TransplantActualProb,VirtualCrossmatch,LabCrossmatch,Transplanted";
+	std::string exchangesVariableNames = "Simulation,MatchRun,MatchRunTime,TimeToTransplantation,Nodes,NodeIDs,HasNDD,AssignedValue,Selected";
+	std::string populationVariableNames = "Simulation,NodeID,DonorID,NodeType,ArrivalTime,rBT,rPRA,rAge,rMale,rRace,rDiabetes,rHeight,rWeight,rBMI,rPrevTrans,rTOD,rHepC,rInsurance,rAssumedProb,rActualProb,dBT,relationToCandidate,dAge,dMale,dRace,dHeight,dWeight,dBMI,dCigaretteUse,dAssumedProb,dActualProb";
 
 	//Set up main output directory
 	std::string outputFolder = kpdParameters->getOutputFolder();	
@@ -77,60 +77,74 @@ void buildDirectoryStructure(){
 	mkdir(folderPath.c_str(), 0777);
 	#endif
 
-	//Add files to sub-directories	
+	//Add files to sub-directories...
+
+	// Cycles and Chains
 	if (kpdParameters->runCyclesAndChains()){
+
+		// 'Cycles and Chains' results file
 		fileCyclesAndChainsResults = folderPath + "/Results_CyclesAndChains.csv";
 
 		outputStream.open(fileCyclesAndChainsResults.c_str());
-		outputStream << resultsColumnNames << std::endl;
+		outputStream << resultsVariableNames << std::endl;
 		outputStream.close();
 
+		// 'Cycles and Chains' exchange information file
 		if (!kpdParameters->suppressExchangeOutput()) {
 			fileCyclesAndChainsExchanges = folderPath + "/Exchanges_CyclesAndChains.csv";
 
 			outputStream.open(fileCyclesAndChainsExchanges.c_str());
-			outputStream << exchangesColumnNames << std::endl;
+			outputStream << exchangesVariableNames << std::endl;
 			outputStream.close();
 		}
 	}
 
+	// Cycles and Chains with Fallbacks
 	if (kpdParameters->runCyclesAndChainsWithFallbacks()) {
+
+		// 'Fallbacks' results file
 		fileFallbacksResults = folderPath + "/Results_Fallbacks.csv";
 
 		outputStream.open(fileFallbacksResults.c_str());
-		outputStream << resultsColumnNames << std::endl;
+		outputStream << resultsVariableNames << std::endl;
 		outputStream.close();
 
+		// 'Fallbacks' exchange information file
 		if (!kpdParameters->suppressExchangeOutput()) {
 			fileFallbacksExchanges = folderPath + "/Exchanges_Fallbacks.csv";
 
 			outputStream.open(fileFallbacksExchanges.c_str());
-			outputStream << exchangesColumnNames << std::endl;
+			outputStream << exchangesVariableNames << std::endl;
 			outputStream.close();
 		}
 	}
 
+	// Locally Relevant Subgraphs
 	if (kpdParameters->runLocallyRelevantSubgraphs()) {
+
+		// 'LRS' results file
 		fileLRSResults = folderPath + "/Results_LRS.csv";
 
 		outputStream.open(fileLRSResults.c_str());
-		outputStream << resultsColumnNames << std::endl;
+		outputStream << resultsVariableNames << std::endl;
 		outputStream.close();
 
+		// 'LRS' exchange information file
 		if (!kpdParameters->suppressExchangeOutput()) {
 			fileLRSExchanges = folderPath + "/Exchanges_LRS.csv";
 
 			outputStream.open(fileLRSExchanges.c_str());
-			outputStream << exchangesColumnNames << std::endl;
+			outputStream << exchangesVariableNames << std::endl;
 			outputStream.close();
 		}
 	}
 	
+	// Population information file
 	if (!kpdParameters->suppressPopulationOutput()){
 		filePopulationInformation = folderPath + "/PopulationList.csv";
 
 		outputStream.open(filePopulationInformation.c_str());
-		outputStream << populationColumnNames << std::endl;
+		outputStream << populationVariableNames << std::endl;
 		outputStream.close();
 	}
 }
@@ -150,33 +164,35 @@ int main(int argc, const char* argv[]){
 	// Set up output directories
 	buildDirectoryStructure();
 	
-	// Screen output
-	bool runCyclesAndChains = kpdParameters->runCyclesAndChains();
-	bool runCyclesAndChainsWithFallbacks = kpdParameters->runCyclesAndChainsWithFallbacks();
-	bool runLocallyRelevantSubgraphs = kpdParameters->runLocallyRelevantSubgraphs();
-
-	std::cout << "Output Folder: output/" << kpdParameters->getOutputFolder() << "/" << kpdParameters->getSubFolder() << std::endl << std::endl;
-		
 	//Run simulation
+	std::cout << "Output Folder: output/" << kpdParameters->getOutputFolder() << "/" << kpdParameters->getSubFolder() << std::endl;
+	std::cout << std::endl;
 	std::cout << "Beginning Simulation" << std::endl;
+	
 	KPDSimulation * kpdSimulation = new KPDSimulation(kpdParameters);
 
 	int numberOfIterations = kpdParameters->getNumberOfIterations();
 	int startingIteration = kpdParameters->getStartingIterationID();
 	int currentIteration = startingIteration;
+	bool runCyclesAndChains = kpdParameters->runCyclesAndChains();
+	bool runCyclesAndChainsWithFallbacks = kpdParameters->runCyclesAndChainsWithFallbacks();
+	bool runLocallyRelevantSubgraphs = kpdParameters->runLocallyRelevantSubgraphs();
 
 	while(currentIteration < numberOfIterations + startingIteration){ // Run for 'numberOfIterations' iterations, starting from 'startingIteration'
 		
+		//Initialize current iteration
 		kpdSimulation->prepareIteration(currentIteration);
 
 		//Cycles and Chains
 		if (runCyclesAndChains){
 			kpdSimulation->runIteration(CYCLES_AND_CHAINS);
 			
+			//Print 'Cycles and Chains' results
 			outputStream.open(fileCyclesAndChainsResults.c_str(), std::ofstream::app);
 			outputStream << kpdSimulation->getOutputResults();
 			outputStream.close();
 
+			//Print 'Cycles and Chains' exchange information
 			if (!kpdParameters->suppressExchangeOutput()) {
 				outputStream.open(fileCyclesAndChainsExchanges.c_str(), std::ofstream::app);
 				outputStream << kpdSimulation->getOutputExchanges();
@@ -189,10 +205,12 @@ int main(int argc, const char* argv[]){
 		if (runCyclesAndChainsWithFallbacks){			
 			kpdSimulation->runIteration(CYCLES_AND_CHAINS_WITH_FALLBACKS);
 			
+			//Print 'Fallbacks' results
 			outputStream.open(fileFallbacksResults.c_str(), std::ofstream::app);
 			outputStream << kpdSimulation->getOutputResults();
 			outputStream.close();
 
+			//Print 'Fallbacks' exchange information
 			if (!kpdParameters->suppressExchangeOutput()) {
 				outputStream.open(fileFallbacksExchanges.c_str(), std::ofstream::app);
 				outputStream << kpdSimulation->getOutputExchanges();
@@ -204,10 +222,12 @@ int main(int argc, const char* argv[]){
 		if (runLocallyRelevantSubgraphs){
 			kpdSimulation->runIteration(LOCALLY_RELEVANT_SUBSETS);
 			
+			//Print 'LRS' results
 			outputStream.open(fileLRSResults.c_str(), std::ofstream::app);
 			outputStream << kpdSimulation->getOutputResults();
 			outputStream.close();
 
+			//Print 'LRS' exchange information
 			if (!kpdParameters->suppressExchangeOutput()) {
 				outputStream.open(fileLRSExchanges.c_str(), std::ofstream::app);
 				outputStream << kpdSimulation->getOutputExchanges();
@@ -215,6 +235,7 @@ int main(int argc, const char* argv[]){
 			}
 		}
 
+		//Print population information
 		if (!kpdParameters->suppressPopulationOutput()) {
 			outputStream.open(filePopulationInformation.c_str(), std::ofstream::app);
 			outputStream << kpdSimulation->getOutputPopulation();

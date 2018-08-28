@@ -30,16 +30,15 @@ private:
 	std::vector<KPDNodeType> matchRunNodeTypeVector;
 
 	std::vector<KPDStatus> matchRunCandidateUnderlyingStatus;
-	std::vector<std::vector<KPDStatus> > matchRunDonorUnderlyingStatus;
 
 	std::vector<KPDTransplant> matchRunNodeTransplantationStatus;
 
 	std::vector<std::vector<std::vector<KPDMatch *> > > matchRunMatchMatrix;
-	std::vector<std::vector <bool> > matchRunIncidenceMatrix;
-	std::vector<std::vector<bool > > matchRunIncidenceMatrixReduced;
+	std::vector<std::vector <bool> > matchRunAdjacencyMatrix;
+	std::vector<std::vector<bool > > matchRunAdjacencyMatrixReduced;
 
-	std::vector<std::vector <bool> > matchRunSubIncidenceMatrix;
-	std::vector<std::vector <bool> > matchRunSubIncidenceMatrixReduced; // No Implicit Transplants
+	std::vector<std::vector <bool> > matchRunSubAdjacencyMatrix;
+	std::vector<std::vector <bool> > matchRunSubAdjacencyMatrixReduced; // No Implicit Transplants
 
 	// Match Run Information
 	int matchRunNumberOfPairs;
@@ -70,13 +69,13 @@ private:
 	//Helper Functions For Collecting Arrangements
 	KPDStatus getNodeStatus(int nodeID);
 	int selectDonor(int donorNodeID, int candidateNodeID);
-	int getChild(int start, int v, std::vector<int> &visitedVector, std::vector<std::vector<bool> > &incidence);
+	int getChild(int start, int v, std::vector<int> &visitedVector, std::vector<std::vector<bool> > &adjacency);
 
-	void getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<std::vector<bool> > & incidence);
-	int getChildLRSPairsOnly(std::vector<std::vector<bool> > &incidence, std::vector<int> &tree, std::vector<int> &level, std::vector<int> &nodes, std::vector<int> &pairs, std::vector<bool> &visited, int next, int childLevel);
+	void getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<std::vector<bool> > & adjacency);
+	int getChildLRSPairsOnly(std::vector<std::vector<bool> > &adjacency, std::vector<int> &tree, std::vector<int> &level, std::vector<int> &nodes, std::vector<int> &pairs, std::vector<bool> &visited, int next, int childLevel);
 
-	void getLRSWithNDDs(std::vector<std::vector<int> > & currentMatchRunArrangements, int numberOfNDDs, std::vector<std::vector<bool> > &incidence);
-	int getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence, bool &childIsAdjacentToLowerLevels, std::vector<std::vector<int> > &trees, std::vector<std::vector<int> > &levels, std::vector<int> &inducedLevels,
+	void getLRSWithNDDs(std::vector<std::vector<int> > & currentMatchRunArrangements, int numberOfNDDs, std::vector<std::vector<bool> > &adjacency);
+	int getChildLRSWithNDDs(std::vector<std::vector<bool> > &adjacency, bool &childIsAdjacentToLowerLevels, std::vector<std::vector<int> > &trees, std::vector<std::vector<int> > &levels, std::vector<int> &inducedLevels,
 		std::vector<bool> &visited, int &next, int &nextNDD, int &childLevel, int &childLevelNDD, bool &childCanBeNDD, int &ndds, int &matchRunSize);
 
 	bool validateLRSBounds(std::vector<int> &arrangement, int order);
@@ -85,7 +84,7 @@ private:
 	double calculateExpectedUtility(std::vector<int> &arrangement);
 	double estimateExpectedUtility(std::vector<int> &arrangement);
 	double estimateExpectedUtilityMatrix(std::vector<int> &arrangement, bool print);
-	double calculatePartialUtility(int nV, std::vector<std::vector<bool> > &incidence, std::vector<std::vector<std::vector<double> > > &utility, std::vector<KPDNodeType> &nodeTypes, std::vector<std::vector<KPDBloodType> > &bloodTypes);
+	double calculatePartialUtility(int nV, std::vector<std::vector<bool> > &adjacency, std::vector<std::vector<std::vector<double> > > &utility, std::vector<KPDNodeType> &nodeTypes, std::vector<std::vector<KPDBloodType> > &bloodTypes);
 
 	void checkValidSolution(int nSubCycles, int nVertices, std::vector<int> subCycleFlags, int next, std::vector<std::vector<int> > &subCyclesSubChains, std::vector<std::vector<int> > &possibleSolutions);
 
@@ -99,8 +98,8 @@ public:
 
 	KPDMatchRun(KPDParameters * params, int currentIteration, int currentMatchRun, double currentTime,
 		std::vector<KPDNode *> nodeVector, std::vector<KPDNodeType> nodeTypeVector,
-		std::vector<KPDStatus> candidateUnderlyingStatus, std::vector<std::vector<KPDStatus> > donorUnderlyingStatus, std::vector<KPDTransplant> nodeTransplantationStatus,
-		std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrix, std::vector<std::vector <bool> > incidenceMatrix, std::vector<std::vector<bool> > incidenceMatrixReduced);
+		std::vector<KPDStatus> candidateUnderlyingStatus, std::vector<KPDTransplant> nodeTransplantationStatus,
+		std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrix, std::vector<std::vector <bool> > adjacencyMatrix, std::vector<std::vector<bool> > adjacencyMatrixReduced);
 	~KPDMatchRun();
 
 	//Collect Arrangements
@@ -121,8 +120,8 @@ public:
 
 KPDMatchRun::KPDMatchRun(KPDParameters * params, int currentIteration, int currentMatchRun, double currentTime,
 	std::vector<KPDNode *> nodeVector, std::vector<KPDNodeType> nodeTypeVector,
-	std::vector<KPDStatus> candidateUnderlyingStatus, std::vector<std::vector<KPDStatus> > donorUnderlyingStatus, std::vector<KPDTransplant> nodeTransplantationStatus,
-	std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrix, std::vector<std::vector <bool> > incidenceMatrix, std::vector<std::vector<bool > > incidenceMatrixReduced) {
+	std::vector<KPDStatus> candidateUnderlyingStatus, std::vector<KPDTransplant> nodeTransplantationStatus,
+	std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrix, std::vector<std::vector <bool> > adjacencyMatrix, std::vector<std::vector<bool > > adjacencyMatrixReduced) {
 	
 	matchRunLog << "Match Run " << currentMatchRun << " at Time " << currentTime << std::endl;
 
@@ -131,13 +130,12 @@ KPDMatchRun::KPDMatchRun(KPDParameters * params, int currentIteration, int curre
 	matchRunNodeTypeVector = nodeTypeVector;
 
 	matchRunCandidateUnderlyingStatus = candidateUnderlyingStatus;
-	matchRunDonorUnderlyingStatus = donorUnderlyingStatus;
 
 	matchRunNodeTransplantationStatus = nodeTransplantationStatus;
 
 	matchRunMatchMatrix = matchMatrix;
-	matchRunIncidenceMatrix = incidenceMatrix;
-	matchRunIncidenceMatrixReduced = incidenceMatrixReduced;
+	matchRunAdjacencyMatrix = adjacencyMatrix;
+	matchRunAdjacencyMatrixReduced = adjacencyMatrixReduced;
 
 	//Retrieve Relevant Parameters
 	maxChainLength = params->getMaxChainLength();
@@ -194,15 +192,15 @@ KPDMatchRun::KPDMatchRun(KPDParameters * params, int currentIteration, int curre
 	// Save Size of Current Match Run
 	matchRunNumberOfNodes = matchRunNumberOfPairs + matchRunNumberOfNDDs;
 
-	// Build Match Run Specific Incidence Matrices
-	matchRunSubIncidenceMatrix.assign(1 + matchRunNumberOfNodes, std::vector<bool>(1 + matchRunNumberOfNodes, false));
-	matchRunSubIncidenceMatrixReduced.assign(1 + matchRunNumberOfNodes, std::vector<bool>(1 + matchRunNumberOfNodes, false));
+	// Build Match Run Specific Adjacency Matrices
+	matchRunSubAdjacencyMatrix.assign(1 + matchRunNumberOfNodes, std::vector<bool>(1 + matchRunNumberOfNodes, false));
+	matchRunSubAdjacencyMatrixReduced.assign(1 + matchRunNumberOfNodes, std::vector<bool>(1 + matchRunNumberOfNodes, false));
 	
 	for (int i = 1; i <= matchRunNumberOfNodes; i++) {
 		for (int j = 1; j <= matchRunNumberOfNodes; j++) {
-			matchRunSubIncidenceMatrix[i][j] = incidenceMatrix[currentMatchRunNodes[i]][currentMatchRunNodes[j]];
+			matchRunSubAdjacencyMatrix[i][j] = adjacencyMatrix[currentMatchRunNodes[i]][currentMatchRunNodes[j]];
 			if (nodeTypeVector[currentMatchRunNodes[j]] == PAIR) {
-				matchRunSubIncidenceMatrixReduced[i][j] = incidenceMatrix[currentMatchRunNodes[i]][currentMatchRunNodes[j]];
+				matchRunSubAdjacencyMatrixReduced[i][j] = adjacencyMatrix[currentMatchRunNodes[i]][currentMatchRunNodes[j]];
 			}
 		}
 	}
@@ -223,7 +221,7 @@ void KPDMatchRun::collectCyclesAndChainsForCurrentMatchRun(std::vector<std::vect
 	while (start <= matchRunNumberOfNodes) {
 		visitedVector[start] = 1;
 		stack_vec.push_back(start);
-		int v = getChild(start, start, visitedVector, matchRunSubIncidenceMatrix);
+		int v = getChild(start, start, visitedVector, matchRunSubAdjacencyMatrix);
 
 		while (!stack_vec.empty()) {
 			if (v == -1) {
@@ -234,14 +232,14 @@ void KPDMatchRun::collectCyclesAndChainsForCurrentMatchRun(std::vector<std::vect
 					break;
 				}
 				visitedVector[top] = 0;
-				v = getChild(top, stack_vec.back(), visitedVector, matchRunSubIncidenceMatrix);
+				v = getChild(top, stack_vec.back(), visitedVector, matchRunSubAdjacencyMatrix);
 			}
 			else {
 				visitedVector[v] = 1;
 				stack_vec.push_back(v);
 
 				//Potential Cycle or Chain Found!
-				if (matchRunSubIncidenceMatrix[v][start]) {
+				if (matchRunSubAdjacencyMatrix[v][start]) {
 
 					int multipleNDDCheck = 0;
 					int index = 0;
@@ -281,7 +279,9 @@ void KPDMatchRun::collectCyclesAndChainsForCurrentMatchRun(std::vector<std::vect
 
 								//If any of the active associated donors have a blood type other than AB, then we're good
 								for (int k = 1; k <= matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getNumberOfAssociatedDonors(); k++) {
-									if (matchRunDonorUnderlyingStatus[*(potentialCycleOrChain.end() - 1)][k] == STATUS_ACTIVE && matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getDonorBT(k) != BT_AB) {
+									//if (matchRunDonorUnderlyingStatus[*(potentialCycleOrChain.end() - 1)][k] == STATUS_ACTIVE && matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getDonorBT(k) != BT_AB) {
+									if (matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getDonorBT(k) != BT_AB) {
+
 										exclude = false;
 									}
 								}
@@ -304,7 +304,7 @@ void KPDMatchRun::collectCyclesAndChainsForCurrentMatchRun(std::vector<std::vect
 				if ((int)stack_vec.size() >= maximum)
 					v = -1;
 				else
-					v = getChild(start, v, visitedVector, matchRunSubIncidenceMatrix);
+					v = getChild(start, v, visitedVector, matchRunSubAdjacencyMatrix);
 
 			}
 		}
@@ -319,10 +319,10 @@ void KPDMatchRun::collectLRSForCurrentMatchRun(std::vector<std::vector<int> > & 
 
 	//Only need to run NDD sub-routine if there are NDDs in the match run (...herp de derp)
 	if (matchRunNumberOfNDDs > 0) {
-		getLRSWithNDDs(currentMatchRunArrangements, matchRunNumberOfNDDs, matchRunSubIncidenceMatrixReduced);
+		getLRSWithNDDs(currentMatchRunArrangements, matchRunNumberOfNDDs, matchRunSubAdjacencyMatrixReduced);
 	}
 
-	getLRSPairsOnly(currentMatchRunArrangements, matchRunSubIncidenceMatrixReduced);
+	getLRSPairsOnly(currentMatchRunArrangements, matchRunSubAdjacencyMatrixReduced);
 }
 
 // Assign Expected Utilities
@@ -532,13 +532,14 @@ KPDStatus KPDMatchRun::getNodeStatus(int nodeID) {
 			//If all donors are withdrawn, node is withdrawn
 			//Otherwise, node is inactive
 
-			int withdrawnDonors = 0;
+			/*int withdrawnDonors = 0;
 
 			for (int donorID = 1; donorID <= matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors(); donorID++) {
-				if (matchRunDonorUnderlyingStatus[nodeID][donorID] == STATUS_ACTIVE) { // Active donor exists
-					return STATUS_ACTIVE;
-				}
-				else if (matchRunDonorUnderlyingStatus[nodeID][donorID] == STATUS_WITHDRAWN) {
+				//if (matchRunDonorUnderlyingStatus[nodeID][donorID] == STATUS_ACTIVE) { // Active donor exists
+					//return STATUS_ACTIVE;
+				//}
+				//else if (matchRunDonorUnderlyingStatus[nodeID][donorID] == STATUS_WITHDRAWN) {
+				else if (matchRunDonorUnderlyingStatus[nodeID][donorID] == STATUS_WITHDRAWN)
 					withdrawnDonors++;
 				}
 			}
@@ -546,9 +547,9 @@ KPDStatus KPDMatchRun::getNodeStatus(int nodeID) {
 			if (withdrawnDonors == matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors()) {
 				return STATUS_WITHDRAWN;
 			}
-			else {
+			else {*/
 				return STATUS_INACTIVE;
-			}
+			//}
 		}
 	}
 }
@@ -561,7 +562,8 @@ int KPDMatchRun::selectDonor(int donorNodeID, int candidateNodeID) {
 	for (int donorID = 1; donorID <= matchRunNodeVector[donorNodeID]->getNumberOfAssociatedDonors(); donorID++) {
 
 		//Only consider donors that match between the donor node and the candidate node, and that are active!
-		if (matchRunMatchMatrix[donorNodeID][candidateNodeID][donorID]->getIncidence() && matchRunDonorUnderlyingStatus[donorNodeID][donorID] == STATUS_ACTIVE) {
+		//if (matchRunMatchMatrix[donorNodeID][candidateNodeID][donorID]->getAdjacency() && matchRunDonorUnderlyingStatus[donorNodeID][donorID] == STATUS_ACTIVE) {
+		if (matchRunMatchMatrix[donorNodeID][candidateNodeID][donorID]->getAdjacency()) {
 
 			//If the donor provides more utility than the current max donor, replace with new donor, and update max utility value
 
@@ -586,10 +588,10 @@ int KPDMatchRun::selectDonor(int donorNodeID, int candidateNodeID) {
 }
 
 
-int KPDMatchRun::getChild(int lower, int current, std::vector<int> &visitedVector, std::vector<std::vector<bool> > &incidence) {
+int KPDMatchRun::getChild(int lower, int current, std::vector<int> &visitedVector, std::vector<std::vector<bool> > &adjacency) {
 	int nV = (int)visitedVector.size() - 1;
 	for (int j = lower + 1; j <= nV; j++) {
-		if (incidence[current][j] == true && visitedVector[j] == 0)
+		if (adjacency[current][j] == true && visitedVector[j] == 0)
 			return j;
 	}
 	return -1;
@@ -597,7 +599,7 @@ int KPDMatchRun::getChild(int lower, int current, std::vector<int> &visitedVecto
 
 // For Collecting Arrangements
 
-void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<std::vector<bool> > &incidence) {
+void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<std::vector<bool> > &adjacency) {
 
 	std::vector<int> pairs;
 	pairs.push_back(0);
@@ -616,7 +618,7 @@ void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchR
 	for (int i = 1; i <= numberOfPairs; i++) {
 		for (int j = 1; j <= numberOfPairs; j++) {
 			if (i != j) {
-				reverseMatrix[j][i] = incidence[pairs[i]][pairs[j]];
+				reverseMatrix[j][i] = adjacency[pairs[i]][pairs[j]];
 			}
 		}
 	}
@@ -645,7 +647,7 @@ void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchR
 		while (!bfsTree.empty()) {
 
 			// Get child
-			child = getChildLRSPairsOnly(incidence, bfsTree, bfsLevel, currentMatchRunNodes, pairs, visited, next, childLevel);
+			child = getChildLRSPairsOnly(adjacency, bfsTree, bfsLevel, currentMatchRunNodes, pairs, visited, next, childLevel);
 
 			// If (i) the size of the bfsTree is at the limit or (ii) no children, bfsLevel is currently at the next bfsLevel of the previous node
 			if ((int)bfsTree.size() == maxLRSSize || (child == -1 && childLevel == bfsLevel.back() + 1)) {
@@ -719,7 +721,7 @@ void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchR
 	}
 }
 
-int KPDMatchRun::getChildLRSPairsOnly(std::vector<std::vector<bool> > &incidence, std::vector<int> &tree, std::vector<int> &level, std::vector<int> &nodes, std::vector<int> &pairs, std::vector<bool> &visited, int next, int childLevel) {
+int KPDMatchRun::getChildLRSPairsOnly(std::vector<std::vector<bool> > &adjacency, std::vector<int> &tree, std::vector<int> &level, std::vector<int> &nodes, std::vector<int> &pairs, std::vector<bool> &visited, int next, int childLevel) {
 
 	int size = (int)pairs.size() - 1;
 
@@ -730,13 +732,13 @@ int KPDMatchRun::getChildLRSPairsOnly(std::vector<std::vector<bool> > &incidence
 			for (int i = 0; i<(int)level.size(); i++) {
 				//At low levels, make sure potential node is not a direct successor
 				if (level[i] < childLevel - 1) {
-					if (incidence[pairs[tree[i]]][pairs[child]]) {
+					if (adjacency[pairs[tree[i]]][pairs[child]]) {
 						break;
 					}
 				}
 				//At previous level, if potential node is a successor, it is the next child
 				if (level[i] == childLevel - 1) {
-					if (incidence[pairs[tree[i]]][pairs[child]]) {
+					if (adjacency[pairs[tree[i]]][pairs[child]]) {
 						return child;
 					}
 				}
@@ -747,7 +749,7 @@ int KPDMatchRun::getChildLRSPairsOnly(std::vector<std::vector<bool> > &incidence
 	return -1;
 }
 
-void KPDMatchRun::getLRSWithNDDs(std::vector<std::vector<int> > & currentMatchRunArrangements, int numberOfNDDs, std::vector<std::vector<bool> > &incidence) {
+void KPDMatchRun::getLRSWithNDDs(std::vector<std::vector<int> > & currentMatchRunArrangements, int numberOfNDDs, std::vector<std::vector<bool> > &adjacency) {
 
 	std::vector<std::vector<int> > listOfBFSTrees;
 	std::vector<std::vector<int> > listOfBFSLevels;
@@ -796,7 +798,7 @@ void KPDMatchRun::getLRSWithNDDs(std::vector<std::vector<int> > & currentMatchRu
 
 		while (!listOfBFSTrees.empty()) {
 
-			child = getChildLRSWithNDDs(incidence, childIsAdjacentToLowerLevels, listOfBFSTrees, listOfBFSLevels, inducedBFSLevel,
+			child = getChildLRSWithNDDs(adjacency, childIsAdjacentToLowerLevels, listOfBFSTrees, listOfBFSLevels, inducedBFSLevel,
 				visited, next, nextNDD, childLevel, childLevelNDD, childCanBeNDD, numberOfNDDs, matchRunNumberOfNodes);
 
 			if (treeSize == maxLRSSize || (child == matchRunNumberOfNodes && listOfBFSLevels.back().back() + 1 == childLevel)) {
@@ -928,7 +930,7 @@ void KPDMatchRun::getLRSWithNDDs(std::vector<std::vector<int> > & currentMatchRu
 	}
 }
 
-int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence, bool &childIsAdjacentToLowerLevels, std::vector<std::vector<int> > &trees, std::vector<std::vector<int> > &levels, std::vector<int> &inducedLevels,
+int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &adjacency, bool &childIsAdjacentToLowerLevels, std::vector<std::vector<int> > &trees, std::vector<std::vector<int> > &levels, std::vector<int> &inducedLevels,
 	std::vector<bool> &visited, int &next, int &nextNDD, int &childLevel, int &childLevelNDD, bool &childCanBeNDD, int &ndds, int &matchRunNumberOfNodes) {
 
 	bool breakFlag;
@@ -947,7 +949,7 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence,
 							int node = trees[i][j] + 1;
 							int potentialChild = child + 1;
 
-							if (incidence[node][potentialChild] || incidence[potentialChild][node]) {
+							if (adjacency[node][potentialChild] || adjacency[potentialChild][node]) {
 								breakFlag = true;
 								break;
 							}
@@ -959,12 +961,12 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence,
 								int node = trees[i][j] + 1;
 								int potentialChild = child + 1;
 
-								if (incidence[node][potentialChild]) {
+								if (adjacency[node][potentialChild]) {
 									breakFlag = true;
 									break;
 								}
 
-								if (incidence[potentialChild][node]) {
+								if (adjacency[potentialChild][node]) {
 									childIsAdjacentToLowerLevels = true;
 								}
 							}
@@ -974,12 +976,12 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence,
 								int node = trees[i][j] + 1;
 								int potentialChild = child + 1;
 
-								if (incidence[potentialChild][node]) {
+								if (adjacency[potentialChild][node]) {
 									breakFlag = true;
 									break;
 								}
 
-								if (incidence[node][potentialChild]) {
+								if (adjacency[node][potentialChild]) {
 									childIsAdjacentToLowerLevels = true;
 								}
 							}
@@ -1017,7 +1019,7 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence,
 								int node = trees[i][j] + 1;
 								int potentialChild = child + 1;
 
-								if (incidence[node][potentialChild]) {
+								if (adjacency[node][potentialChild]) {
 									breakFlag = true;
 									break;
 								}
@@ -1028,7 +1030,7 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence,
 								int node = trees[i][j] + 1;
 								int potentialChild = child + 1;
 
-								if (incidence[node][potentialChild]) {
+								if (adjacency[node][potentialChild]) {
 									return child;
 								}
 							}
@@ -1040,7 +1042,7 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence,
 							int node = trees[i][j] + 1;
 							int potentialChild = child + 1;
 
-							if (incidence[node][potentialChild] || incidence[potentialChild][node]) {
+							if (adjacency[node][potentialChild] || adjacency[potentialChild][node]) {
 								breakFlag = true;
 								break;
 							}
@@ -1055,12 +1057,12 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence,
 								int node = trees[i][j] + 1;
 								int potentialChild = child + 1;
 
-								if (incidence[node][potentialChild]) {
+								if (adjacency[node][potentialChild]) {
 									breakFlag = true;
 									break;
 								}
 
-								if (incidence[potentialChild][node]) {
+								if (adjacency[potentialChild][node]) {
 									childIsAdjacentToLowerLevels = true;
 								}
 							}
@@ -1071,12 +1073,12 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence,
 								int node = trees[i][j] + 1;
 								int potentialChild = child + 1;
 
-								if (incidence[potentialChild][node]) {
+								if (adjacency[potentialChild][node]) {
 									breakFlag = true;
 									break;
 								}
 
-								if (incidence[node][potentialChild]) {
+								if (adjacency[node][potentialChild]) {
 									childIsAdjacentToLowerLevels = true;
 								}
 							}
@@ -1091,7 +1093,7 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &incidence,
 								int node = trees[i][j] + 1;
 								int potentialChild = child + 1;
 
-								if (incidence[node][potentialChild]) {
+								if (adjacency[node][potentialChild]) {
 									breakFlag = true;
 									break;
 								}
@@ -1134,7 +1136,7 @@ bool KPDMatchRun::validateLRSBounds(std::vector<int> &arrangement, int order) {
 
 			int sp = order;
 			for (int q = 0; q <= i - 1; q++) {
-				if (matchRunIncidenceMatrixReduced[arrangement[q]][arrangement[i]]) {
+				if (matchRunAdjacencyMatrixReduced[arrangement[q]][arrangement[i]]) {
 					sp = std::min(sp, shortestPathLengths[j][q] + 1);
 				}
 			}
@@ -1142,7 +1144,7 @@ bool KPDMatchRun::validateLRSBounds(std::vector<int> &arrangement, int order) {
 
 			sp = order;
 			for (int q = 0; q <= i - 1; q++) {
-				if (matchRunIncidenceMatrix[arrangement[i]][arrangement[q]]) {
+				if (matchRunAdjacencyMatrix[arrangement[i]][arrangement[q]]) {
 					sp = std::min(sp, shortestPathLengths[q][j] + 1);
 				}
 			}
@@ -1236,11 +1238,11 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 	for (std::vector<int>::iterator arrangementIt = arrangement.begin(); arrangementIt != arrangement.end(); arrangementIt++) {
 
 		for (int k = 1; k <= matchRunNodeVector[*arrangementIt]->getNumberOfAssociatedDonors(); k++) {
-			if (matchRunDonorUnderlyingStatus[*arrangementIt][k] == STATUS_ACTIVE) {
+			//if (matchRunDonorUnderlyingStatus[*arrangementIt][k] == STATUS_ACTIVE) {
 				donorNodeIndices.push_back(i);
 				donorIndices.push_back(k);
 				numberOfDonors++;
-			}
+			//}
 		}
 		i++;
 	}
@@ -1287,7 +1289,7 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 				//Update with probability of candidate subset
 				if (matchRunNodeTypeVector[nodeID] != PAIR) {
 					for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors(); k++) {
-						if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
+						//if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
 							if (subsetDonorAvailability[i][k]) {
 								if (matchRunNodeTypeVector[nodeID] == NDD) {
 									probNode = probNode * nddAssumedProbability;
@@ -1304,7 +1306,7 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 									probNode = probNode * (1 - donorAssumedProbability);
 								}
 							}
-						}
+						//}
 					}
 				}
 
@@ -1313,14 +1315,14 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 					if (subsetCandidateAvailability[i]) {
 
 						for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors(); k++) {
-							if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
+							//if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
 								if (subsetDonorAvailability[i][k]) {
 									probNode = probNode * donorAssumedProbability;
 								}
 								else {
 									probNode = probNode * (1 - donorAssumedProbability);
 								}
-							}
+							//}
 						}
 
 						probNode = probNode * candidateAssumedProbability;
@@ -1328,9 +1330,9 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 					else {
 
 						for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors(); k++) {
-							if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
+							//if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
 								probNode = probNode * (1 - donorAssumedProbability);
-							}
+							//}
 						}
 
 						probNode = 1 - (1 - probNode) * candidateAssumedProbability;
@@ -1360,10 +1362,10 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 							int candidateNodeID = arrangement[j - 1];
 
-							if (matchRunIncidenceMatrix[donorNodeID][candidateNodeID] && matchRunNodeTypeVector[candidateNodeID] == PAIR) {
+							if (matchRunAdjacencyMatrix[donorNodeID][candidateNodeID] && matchRunNodeTypeVector[candidateNodeID] == PAIR) {
 
 								for (int k = 1; k <= matchRunNodeVector[donorNodeID]->getNumberOfAssociatedDonors(); k++) {
-									if (subsetDonorAvailability[i][k] && subsetCandidateAvailability[j] && matchRunMatchMatrix[donorNodeID][candidateNodeID][k]->getIncidence()) {
+									if (subsetDonorAvailability[i][k] && subsetCandidateAvailability[j] && matchRunMatchMatrix[donorNodeID][candidateNodeID][k]->getAdjacency()) {
 										edgeSubsetDonorNodeIndices.push_back(i);
 										edgeSubsetCandidateIndices.push_back(j);
 										edgeSubsetDonorIDs.push_back(k);
@@ -1385,8 +1387,8 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 					double probEdgeSubset = probSubset;
 
-					std::vector<std::vector<bool> > reducedIncidenceMatrix(1 + N, std::vector<bool>(1 + N, false));
-					std::vector<std::vector<std::vector<bool> > > reducedDonorIncidenceMatrix(1 + N, std::vector<std::vector<bool> >(1 + N, std::vector<bool>(1, false)));
+					std::vector<std::vector<bool> > reducedAdjacencyMatrix(1 + N, std::vector<bool>(1 + N, false));
+					std::vector<std::vector<std::vector<bool> > > reducedDonorAdjacencyMatrix(1 + N, std::vector<std::vector<bool> >(1 + N, std::vector<bool>(1, false)));
 					std::vector<std::vector<std::vector<double> > > reducedUtilityMatrix(1 + N, std::vector<std::vector<double> >(1 + N, std::vector<double>(1, 0.0)));
 
 					std::vector<KPDNodeType> reducedNodeTypeVector(1 + N, PAIR);
@@ -1400,13 +1402,13 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 						int arrangementNodeDonors = matchRunNodeVector[donorNodeID]->getNumberOfAssociatedDonors();
 
 						for (int j = 1; j <= N; j++) {
-							reducedDonorIncidenceMatrix[i][j].assign(1 + arrangementNodeDonors, false);
+							reducedDonorAdjacencyMatrix[i][j].assign(1 + arrangementNodeDonors, false);
 							reducedUtilityMatrix[i][j].assign(1 + arrangementNodeDonors, 0.0);
 
 							//Implicit backward edges
 							int candidateNodeID = arrangement[j - 1];
 							if (matchRunNodeTypeVector[donorNodeID] == PAIR && matchRunNodeTypeVector[candidateNodeID] != PAIR) {
-								reducedIncidenceMatrix[i][j] = true;
+								reducedAdjacencyMatrix[i][j] = true;
 							}
 						}
 
@@ -1431,8 +1433,8 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 							probEdgeSubset = probEdgeSubset * matchRunMatchMatrix[edgeSubsetDonorNodeID][edgeSubsetCandidateNodeID][edgeSubsetDonorID]->getAssumedSuccessProbability();
 
-							reducedDonorIncidenceMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorID] = true;
-							reducedIncidenceMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex] = true;
+							reducedDonorAdjacencyMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorID] = true;
+							reducedAdjacencyMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex] = true;
 
 							if (utilityScheme == UTILITY_TRANSPLANTS) { // Transplants
 								if (matchRunNodeTypeVector[edgeSubsetCandidateNodeID] == PAIR) {
@@ -1454,7 +1456,7 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 					if (probEdgeSubset > 0) {
 
-						double addUtil = calculatePartialUtility(N, reducedIncidenceMatrix, reducedUtilityMatrix, reducedNodeTypeVector, reducedDonorBloodTypes);
+						double addUtil = calculatePartialUtility(N, reducedAdjacencyMatrix, reducedUtilityMatrix, reducedNodeTypeVector, reducedDonorBloodTypes);
 
 						if (addUtil > 0) {
 							utility += probEdgeSubset*addUtil;
@@ -1493,8 +1495,8 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 	for (int sims = 1; sims <= numberOfExpectedUtilityIterations; sims++) {
 
 		//Initialize random matrices
-		std::vector<std::vector<bool> > randomIncidenceMatrix(1 + N, std::vector<bool>(1 + N, false));
-		std::vector<std::vector<std::vector<bool> > > randomDonorIncidenceMatrix(1 + N, std::vector<std::vector<bool> >(1 + N, std::vector<bool>(1, false)));
+		std::vector<std::vector<bool> > randomAdjacencyMatrix(1 + N, std::vector<bool>(1 + N, false));
+		std::vector<std::vector<std::vector<bool> > > randomDonorAdjacencyMatrix(1 + N, std::vector<std::vector<bool> >(1 + N, std::vector<bool>(1, false)));
 		std::vector<std::vector<std::vector<double> > > randomUtilityMatrix(1 + N, std::vector<std::vector<double> >(1 + N, std::vector<double>(1, 0.0)));
 
 		std::vector<bool> randomCandidateAvailabilityVector(1 + N, false);
@@ -1519,7 +1521,7 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 
 			for (int k = 1; k <= numDonors; k++) {
 
-				if (matchRunDonorUnderlyingStatus[*itNodes][k] == STATUS_ACTIVE) {
+				//if (matchRunDonorUnderlyingStatus[*itNodes][k] == STATUS_ACTIVE) {
 
 					double u = rngExpectedUtilityEstimation.runif();
 
@@ -1532,7 +1534,7 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 
 					}
 					subDonorBloodTypeVector[i][k] = matchRunNodeVector[*itNodes]->getDonorBT(k);
-				}
+				//}
 			}
 
 			//Randomly generate candidate availability for PAIRs
@@ -1553,7 +1555,7 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 
 			for (std::vector<int>::iterator itCandidates = arrangement.begin(); itCandidates != arrangement.end(); ++itCandidates, j++) {
 
-				randomDonorIncidenceMatrix[i][j].assign(1 + numDonors, 0);
+				randomDonorAdjacencyMatrix[i][j].assign(1 + numDonors, 0);
 				randomUtilityMatrix[i][j].assign(1 + numDonors, 0.0);
 
 				if (i != j) {
@@ -1562,12 +1564,12 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 					if (randomCandidateAvailabilityVector[i] && randomCandidateAvailabilityVector[j]) {
 
 						//If donor node is a PAIR and candidate node is a NDD or BRIDGE_DONOR, 
-						//insert implicit backward edges from all available donors toward the NDD/BRIDGE node, and set the incidence matrix to true
+						//insert implicit backward edges from all available donors toward the NDD/BRIDGE node, and set the adjacency matrix to true
 						if (subNodeTypeVector[i] == PAIR && subNodeTypeVector[j] != PAIR) {
 							for (int k = 1; k <= numDonors; k++) {
 								if (randomDonorAvailabilityVector[i][k]) {
-									randomDonorIncidenceMatrix[i][j][k] = true;
-									randomIncidenceMatrix[i][j] = true;
+									randomDonorAdjacencyMatrix[i][j][k] = true;
+									randomAdjacencyMatrix[i][j] = true;
 								}
 							}
 						}
@@ -1577,11 +1579,11 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 							//Iterate through donors
 							for (int k = 1; k <= numDonors; k++) {
 								// For existing original matches, and for donors that are available, randomly generate matches
-								if (matchRunMatchMatrix[*itDonors][*itCandidates][k]->getIncidence() && randomDonorAvailabilityVector[i][k]) {
+								if (matchRunMatchMatrix[*itDonors][*itCandidates][k]->getAdjacency() && randomDonorAvailabilityVector[i][k]) {
 
 									if (rngExpectedUtilityEstimation.runif() < matchRunMatchMatrix[*itDonors][*itCandidates][k]->getAssumedSuccessProbability()) {
 
-										randomDonorIncidenceMatrix[i][j][k] = 1;
+										randomDonorAdjacencyMatrix[i][j][k] = 1;
 
 										if (utilityScheme == UTILITY_TRANSPLANTS) {
 											if (matchRunNodeTypeVector[*itCandidates] == PAIR) {
@@ -1596,8 +1598,8 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 											randomUtilityMatrix[i][j][k] += praAdvantageValue;
 										}
 
-										// Set incidence matrix to true
-										randomIncidenceMatrix[i][j] = true;
+										// Set adjacency matrix to true
+										randomAdjacencyMatrix[i][j] = true;
 									}
 								}
 							}
@@ -1610,7 +1612,7 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 		}
 
 		//After generating matrices, calculate utility
-		double partialUtil = calculatePartialUtility(N, randomIncidenceMatrix, randomUtilityMatrix, subNodeTypeVector, subDonorBloodTypeVector);
+		double partialUtil = calculatePartialUtility(N, randomAdjacencyMatrix, randomUtilityMatrix, subNodeTypeVector, subDonorBloodTypeVector);
 		expUtility += partialUtil;
 
 	}
@@ -1637,10 +1639,10 @@ double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement,
 		candidateAssumedProbability = 1;// exp((-1)*(params->getAssumedCandidateActiveToInactive() + params->getAssumedCandidateActiveToWithdrawn())*params->getProcessingTime());
 	}
 
-	//Set up Incidence and Utility Matrices
+	//Set up Adjacency and Utility Matrices
 
 	int nV = (int)arrangement.size();
-	std::vector<std::vector<bool> > incidenceMatrix(1 + nV, std::vector<bool>(1 + nV, false));
+	std::vector<std::vector<bool> > adjacencyMatrix(1 + nV, std::vector<bool>(1 + nV, false));
 	std::vector<std::vector<std::vector<int> > > donorMatrix(1 + nV, std::vector<std::vector<int> >(1 + nV, std::vector<int>(0, 0)));
 	std::vector<std::vector<std::vector<int> > > edgeMatrix(1 + nV, std::vector<std::vector<int> >(1 + nV, std::vector<int>(0, 0)));
 	std::vector<std::vector<std::vector<double> > > utilityMatrix(1 + nV, std::vector<std::vector<double> >(1 + nV, std::vector<double>(0, 0.0)));
@@ -1663,7 +1665,7 @@ double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement,
 				else if (matchRunNodeTypeVector[arrangement[j - 1]] == PAIR) {
 					int index = 0;
 					for (int k = 1; k <= arrangementDonors; k++) {
-						if (matchRunMatchMatrix[arrangement[i - 1]][arrangement[j - 1]][k]->getIncidence()) {
+						if (matchRunMatchMatrix[arrangement[i - 1]][arrangement[j - 1]][k]->getAdjacency()) {
 							incident = true;
 							double utility = 0.0;
 
@@ -1693,7 +1695,7 @@ double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement,
 					}
 				}
 
-				incidenceMatrix[i][j] = incident;
+				adjacencyMatrix[i][j] = incident;
 			}
 		}
 	}
@@ -1710,7 +1712,7 @@ double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement,
 		visitedVector[start] = 1;
 
 		stack_vec.push_back(start);
-		int v = getChild(start, start, visitedVector, incidenceMatrix);
+		int v = getChild(start, start, visitedVector, adjacencyMatrix);
 		while (!stack_vec.empty()) {
 			if (v == -1) {
 				int top = stack_vec.back();
@@ -1720,12 +1722,12 @@ double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement,
 					break;
 				}
 				visitedVector[top] = 0;
-				v = getChild(top, stack_vec.back(), visitedVector, incidenceMatrix);
+				v = getChild(top, stack_vec.back(), visitedVector, adjacencyMatrix);
 			}
 			else {
 				visitedVector[v] = 1;
 				stack_vec.push_back(v);
-				if (incidenceMatrix[v][start]) {
+				if (adjacencyMatrix[v][start]) {
 
 					int multipleNDDCheck = 0;
 					int index = 0;
@@ -1781,7 +1783,7 @@ double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement,
 				if ((int)stack_vec.size() >= maximum)
 					v = -1;
 				else
-					v = getChild(start, v, visitedVector, incidenceMatrix);
+					v = getChild(start, v, visitedVector, adjacencyMatrix);
 			}
 		}
 		start++;
@@ -1868,7 +1870,7 @@ void KPDMatchRun::checkValidSolution(int nSubCycles, int nVertices, std::vector<
 }
 
 
-double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool> > & incidence, std::vector<std::vector<std::vector<double> > > & utility,
+double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool> > & adjacency, std::vector<std::vector<std::vector<double> > > & utility,
 	std::vector<KPDNodeType> & nodeTypes, std::vector<std::vector<KPDBloodType> > & donorBloodTypes) {
 
 	std::vector<std::vector<int> > possibleCyclesOrChains;
@@ -1886,7 +1888,7 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 		visitedVec[start] = 1;
 
 		stack_vec.push_back(start);
-		int v = getChild(start, stack_vec.back(), visitedVec, incidence);
+		int v = getChild(start, stack_vec.back(), visitedVec, adjacency);
 		while (!stack_vec.empty()) {
 			if (v == -1) {
 				int top = stack_vec.back();
@@ -1896,13 +1898,13 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 					break;
 				}
 				visitedVec[top] = 0;
-				v = getChild(top, stack_vec.back(), visitedVec, incidence);
+				v = getChild(top, stack_vec.back(), visitedVec, adjacency);
 			}
 			else {
 				visitedVec[v] = 1;
 				stack_vec.push_back(v);
 
-				if (incidence[v][start] == true) {
+				if (adjacency[v][start] == true) {
 					int multipleNDDCheck = 0;
 					int index = 0;
 
@@ -1999,7 +2001,7 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 				if ((int)stack_vec.size() >= maximum)
 					v = -1;
 				else
-					v = getChild(start, v, visitedVec, incidence);
+					v = getChild(start, v, visitedVec, adjacency);
 
 			}
 		}

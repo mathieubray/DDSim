@@ -17,7 +17,7 @@ class KPDMatch {
 
 private:
 
-	bool incidence;
+	bool adjacency;
 
 	double fiveYearSurvival;
 	double tenYearSurvival;
@@ -41,7 +41,7 @@ public:
 	~KPDMatch();
 
 	//Getters
-	bool getIncidence();
+	bool getAdjacency();
 
 	double getFiveYearSurvival();
 	double getTenYearSurvival();
@@ -58,7 +58,7 @@ public:
 
 
 	//Setters
-	void setIncidence(bool isIncident);
+	void setAdjacency(bool isIncident);
 
 	void setFiveYearSurvival(double surv);
 	void setTenYearSurvival(double surv);
@@ -87,7 +87,7 @@ public:
 
 KPDMatch::KPDMatch(){	
 
-	incidence = false;
+	adjacency = false;
 
 	fiveYearSurvival = 0.0;
 	tenYearSurvival = 0.0; 
@@ -103,7 +103,7 @@ KPDMatch::KPDMatch(){
 
 KPDMatch::KPDMatch(bool inc, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult){
 	
-	incidence = inc;
+	adjacency = inc;
 
 	fiveYearSurvival = fiveYearSurv;
 	tenYearSurvival = tenYearSurv;
@@ -121,8 +121,8 @@ KPDMatch::~KPDMatch(){
 
 }
 
-bool KPDMatch::getIncidence(){
-	return incidence;
+bool KPDMatch::getAdjacency(){
+	return adjacency;
 }
 
 double KPDMatch::getFiveYearSurvival(){
@@ -175,8 +175,8 @@ bool KPDMatch::getLabCrossmatchResult(){
 	return labCrossmatchResult;
 }
 
-void KPDMatch::setIncidence(bool isIncident){
-	incidence = isIncident;
+void KPDMatch::setAdjacency(bool isIncident){
+	adjacency = isIncident;
 }
 
 void KPDMatch::setFiveYearSurvival(double surv){
@@ -228,7 +228,7 @@ void KPDMatch::setLabCrossmatchResult(bool result){
 
 void KPDMatch::setMatchProperties(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult){
 	
-	incidence = isIncident;
+	adjacency = isIncident;
 
 	fiveYearSurvival = fiveYearSurv;
 	tenYearSurvival = tenYearSurv;
@@ -287,7 +287,7 @@ std::string KPDMatch::matchShortOutput() {
 
 KPDMatch * KPDMatch::copy(){
 
-	KPDMatch * copyMatch = new KPDMatch(incidence, fiveYearSurvival, tenYearSurvival, transplantDifficultyScore, randomUtility, assumedSuccessProbability, actualSuccessProbability, virtualCrossmatchResult, labCrossmatchResult);
+	KPDMatch * copyMatch = new KPDMatch(adjacency, fiveYearSurvival, tenYearSurvival, transplantDifficultyScore, randomUtility, assumedSuccessProbability, actualSuccessProbability, virtualCrossmatchResult, labCrossmatchResult);
 
 	return copyMatch;
 }
