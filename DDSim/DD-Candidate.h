@@ -1,7 +1,10 @@
 /* ---------------------------------------------
 DD-Candidate.h
-Stores Information on KPD and Waitlist Candidates
+Stores information about candidates (KPD and waitlist)
 ---------------------------------------------- */
+
+// ---TO DO--- //
+// Fix candidate status changes; include if removal was due to transplant or withdrawal
 
 #ifndef CANDIDATE_H
 #define CANDIDATE_H
@@ -13,6 +16,7 @@ Stores Information on KPD and Waitlist Candidates
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <deque>
 
 class KPDCandidate {
 
@@ -48,10 +52,10 @@ private:
 
 	//Waitlist Candidate Characteristics
 	bool candidateWaitlist;
-	int candidateListingDate;
-	int candidateRemovalDate;
-	std::vector<int> candidateStatusChangeDate;
-	std::vector<bool> candidateStatusActive;
+	int candidateListingTime;
+	int candidateRemovalTime;
+	std::vector<int> candidateStatusChangeTimes;
+	std::vector<KPDStatus> candidateStatuses;
 	int candidateCenterID;
 	int candidateOPO;
 
@@ -68,11 +72,11 @@ public:
 	//Constructs a waitlist candidate from SRTR data
 	KPDCandidate(int uID, int pra, KPDBloodType bt, bool minorA,
 		KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance,  double epts, bool eptsPriority,
-		int listingDate, int removalDate, int centerID, int opoID);
+		int listingTime, int removalTime, int centerID, int opoID);
 	//Constructs a candidate with all defined candidate characteristics
 	KPDCandidate(int mID, int uID, int pra, KPDBloodType bt, bool minorA,
 		int age, KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance, double epts, bool eptsPriority,
-		bool waitlist, int listingDate, int removalDate, int centerID, int opoID);
+		bool waitlist, int listingTime, int removalTime, int centerID, int opoID);
 	~KPDCandidate();
 	
 	//Getters
@@ -103,10 +107,10 @@ public:
 	std::vector<std::string> getHLA();
 
 	bool getWaitlist();
-	int getListingDate();
-	int getRemovalDate();
-	std::vector<int> getStatusChangeDates();
-	std::vector<bool> getStatuses();
+	int getListingTime();
+	int getRemovalTime();
+	std::deque<int> getStatusChangeTimes();
+	std::deque<KPDStatus> getStatuses();
 	int getCenterID();
 	int getOPO();
 
@@ -137,11 +141,12 @@ public:
 	void setHLA(std::vector<std::string> hla);
 
 	void setWaitlist(bool waitlist);
-	void setListingDate(int date);
-	void setRemovalDate(int date);
-	void setStatusChangeDate(std::vector<int> date);
+	void setListingTime(int time);
+	void setRemovalTime(int time);
+	void setStatusChangeTime(std::vector<int> time);
 	void setStatusChange(std::vector<bool> statuses);
-	void addStatusChangeDay(int date);
+	void setStatusChanges(std::vector<KPDStatus> statuses);
+	void addStatusChangeTime(int time);
 	void addStatusChange(bool status);
 	void setCenterID(int id);
 	void setOPO(int opo);
@@ -162,7 +167,7 @@ KPDCandidate::KPDCandidate() {
 	
 	candidatePRA = 0;
 	candidateBT = BT_UNSPECIFIED;
-	bool minorA = false;
+	candidateMinorA = false;
 
 	candidateAge = 40;
 	candidateAgeCategory = AGE_UNSPECIFIED;
@@ -179,8 +184,8 @@ KPDCandidate::KPDCandidate() {
 	candidateEPTSPriority = false;
 	
 	candidateWaitlist = false;
-	candidateListingDate = 0;
-	candidateRemovalDate = 0;
+	candidateListingTime = 0;
+	candidateRemovalTime = 0;
 	candidateCenterID = -1;
 	candidateOPO = -1;
 }
@@ -210,8 +215,8 @@ KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt,
 	candidateEPTSPriority = false;
 
 	candidateWaitlist = false;
-	candidateListingDate = 0;
-	candidateRemovalDate = 0;
+	candidateListingTime = 0;
+	candidateRemovalTime = 0;
 	candidateCenterID = -1;
 	candidateOPO = -1;
 }
@@ -219,7 +224,7 @@ KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt,
 KPDCandidate::KPDCandidate(int uID, int pra, KPDBloodType bt, bool minorA, 
 	KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance,  
 	double epts, bool eptsPriority,
-	int listingDate, int removalDate, int centerID, int opoID) {
+	int listingTime, int removalTime, int centerID, int opoID) {
 
 	matchingID = -1;
 	uniqueID = uID;
@@ -243,8 +248,8 @@ KPDCandidate::KPDCandidate(int uID, int pra, KPDBloodType bt, bool minorA,
 	candidateEPTSPriority = eptsPriority;
 
 	candidateWaitlist = true;
-	candidateListingDate = listingDate;
-	candidateRemovalDate = removalDate;
+	candidateListingTime = listingTime;
+	candidateRemovalTime = removalTime;
 	candidateCenterID = centerID;
 	candidateOPO = opoID;
 }
@@ -252,7 +257,7 @@ KPDCandidate::KPDCandidate(int uID, int pra, KPDBloodType bt, bool minorA,
 KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt, bool minorA,
 	int age, KPDAgeCategory ageCat, bool male, KPDRace race, bool diabetes, double height, double weight, bool prevTrans, double tod, bool hepC, KPDInsurance insurance, 
 	double epts, bool eptsPriority,
-	bool waitlist, int listingDate, int removalDate, int centerID, int opoID) {
+	bool waitlist, int listingTime, int removalTime, int centerID, int opoID) {
 
 	matchingID = mID;
 	uniqueID = uID;
@@ -276,8 +281,8 @@ KPDCandidate::KPDCandidate(int mID, int uID, int pra, KPDBloodType bt, bool mino
 	candidateEPTSPriority = eptsPriority;
 
 	candidateWaitlist = waitlist;
-	candidateListingDate = listingDate;
-	candidateRemovalDate = removalDate;
+	candidateListingTime = listingTime;
+	candidateRemovalTime = removalTime;
 	candidateCenterID = centerID;
 	candidateOPO = opoID;
 
@@ -393,20 +398,30 @@ bool KPDCandidate::getWaitlist() {
 	return candidateWaitlist;
 }
 
-int KPDCandidate::getListingDate() {
-	return candidateListingDate;
+int KPDCandidate::getListingTime() {
+	return candidateListingTime;
 }
 
-int KPDCandidate::getRemovalDate() {
-	return candidateRemovalDate;
+int KPDCandidate::getRemovalTime() {
+	return candidateRemovalTime;
 }
 
-std::vector<int> KPDCandidate::getStatusChangeDates() {
-	return candidateStatusChangeDate;
+std::deque<int> KPDCandidate::getStatusChangeTimes() {
+
+	std::deque<int> statusChangeTimes;
+	for (std::vector<int>::iterator it = candidateStatusChangeTimes.begin(); it != candidateStatusChangeTimes.end(); it++) {
+		statusChangeTimes.push_back(*it);
+	}
+	return statusChangeTimes;
 }
 
-std::vector<bool> KPDCandidate::getStatuses() {
-	return candidateStatusActive;
+std::deque<KPDStatus> KPDCandidate::getStatuses() {
+
+	std::deque<KPDStatus> statuses;
+	for (std::vector<KPDStatus>::iterator it = candidateStatuses.begin(); it != candidateStatuses.end(); it++) {
+		statuses.push_back(*it);
+	}
+	return statuses;
 }
 
 int KPDCandidate::getCenterID() {
@@ -517,34 +532,57 @@ void KPDCandidate::setWaitlist(bool waitlist) {
 	candidateWaitlist = waitlist;
 }
 
-void KPDCandidate::setListingDate(int date) {
-	candidateListingDate = date;
+void KPDCandidate::setListingTime(int time) {
+	candidateListingTime = time;
 }
 
-void KPDCandidate::setRemovalDate(int date) {
-	candidateRemovalDate = date;
+void KPDCandidate::setRemovalTime(int time) {
+	candidateRemovalTime = time;
 }
 
-void KPDCandidate::setStatusChangeDate(std::vector<int> days) {
-	candidateStatusChangeDate.clear();
-	for (std::vector<int>::iterator it = days.begin(); it != days.end(); it++) {
-		candidateStatusChangeDate.push_back(*it);
+void KPDCandidate::setStatusChangeTime(std::vector<int> times) {
+
+	candidateStatusChangeTimes.clear();
+	for (std::vector<int>::iterator it = times.begin(); it != times.end(); it++) {
+		candidateStatusChangeTimes.push_back(*it);
 	}
 }
 
 void KPDCandidate::setStatusChange(std::vector<bool> statuses) {
-	candidateStatusActive.clear();
+
+	candidateStatuses.clear();
 	for (std::vector<bool>::iterator it = statuses.begin(); it != statuses.end(); it++) {
-		candidateStatusActive.push_back(*it);
+
+		if (*it) {
+			candidateStatuses.push_back(STATUS_ACTIVE);
+		}
+		else {
+			candidateStatuses.push_back(STATUS_INACTIVE);
+		}
+		
 	}
 }
 
-void KPDCandidate::addStatusChangeDay(int day) {
-	candidateStatusChangeDate.push_back(day);
+void KPDCandidate::setStatusChanges(std::vector<KPDStatus> statuses) {
+
+	candidateStatuses.clear();
+	for (std::vector<KPDStatus>::iterator it = statuses.begin(); it != statuses.end(); it++) {
+		candidateStatuses.push_back(*it);
+	}
+}
+
+void KPDCandidate::addStatusChangeTime(int time) {
+	candidateStatusChangeTimes.push_back(time);
 }
 
 void KPDCandidate::addStatusChange(bool status) {
-	candidateStatusActive.push_back(status);
+
+	if (status) {
+		candidateStatuses.push_back(STATUS_ACTIVE);
+	}
+	else {
+		candidateStatuses.push_back(STATUS_INACTIVE);
+	}
 }
 
 void KPDCandidate::setCenterID(int id) {
@@ -577,8 +615,8 @@ std::string KPDCandidate::candidateString() {
 		candidateInfo << KPDFunctions::insuranceToString(candidateInsurance);
 		candidateInfo << candidateEPTS << ",";
 		candidateInfo << KPDFunctions::boolToYesNo(candidateEPTSPriority) << ",";
-		candidateInfo << candidateListingDate << ",";
-		candidateInfo << candidateRemovalDate << ",";
+		candidateInfo << candidateListingTime << ",";
+		candidateInfo << candidateRemovalTime << ",";
 		candidateInfo << candidateCenterID << ",";
 		candidateInfo << candidateOPO;
 	
@@ -610,17 +648,11 @@ std::string KPDCandidate::candidateOutput() {
 	if (candidateWaitlist) {
 
 		candidateInfo << KPDFunctions::indent(tab) << "Candidate: " << uniqueID << std::endl;
-		candidateInfo << KPDFunctions::indent(tab) << "Listing Date: " << candidateListingDate << std::endl;
-		candidateInfo << KPDFunctions::indent(tab) << "Removal Date: " << candidateRemovalDate << std::endl;
+		candidateInfo << KPDFunctions::indent(tab) << "Listing Time: " << candidateListingTime << std::endl;
+		candidateInfo << KPDFunctions::indent(tab) << "Removal Time: " << candidateRemovalTime << std::endl;
 			
-		for (int i = 1; i <= candidateStatusChangeDate.size(); i++) {
-			candidateInfo << KPDFunctions::indent(tab) << "Status at " << candidateStatusChangeDate[i - 1] << ": ";
-			if (candidateStatusActive[i - 1]) {
-				candidateInfo << "Active";
-			}
-			else {
-				candidateInfo << "Inactive";
-			}
+		for (int i = 1; i <= candidateStatusChangeTimes.size(); i++) {
+			candidateInfo << KPDFunctions::indent(tab) << "Status at " << candidateStatusChangeTimes[i - 1] << ": " << KPDFunctions::statusToString(candidateStatuses[i - 1]);			
 			candidateInfo << std::endl;
 		}
 
@@ -671,13 +703,13 @@ KPDCandidate * KPDCandidate::copy(){
 	
 	KPDCandidate * copyCandidate = new KPDCandidate(matchingID, uniqueID, candidatePRA, candidateBT, candidateMinorA,
 		candidateAge, candidateAgeCategory, candidateMale, candidateRace, candidateDiabetes, candidateHeight, candidateWeight, candidatePrevTrans, candidateTOD, candidateHepC, candidateInsurance, candidateEPTS, candidateEPTSPriority,
-		candidateWaitlist, candidateListingDate, candidateRemovalDate, candidateCenterID, candidateOPO);
+		candidateWaitlist, candidateListingTime, candidateRemovalTime, candidateCenterID, candidateOPO);
 	
 	copyCandidate->setUnacceptableHLA(candidateUnacceptableHLA);
 	copyCandidate->setDesensitizableHLA(candidateDesensitizableHLA);
 	copyCandidate->setHLA(candidateHLA);
-	copyCandidate->setStatusChangeDate(candidateStatusChangeDate);
-	copyCandidate->setStatusChange(candidateStatusActive);
+	copyCandidate->setStatusChangeTime(candidateStatusChangeTimes);
+	copyCandidate->setStatusChanges(candidateStatuses);
 
 	return copyCandidate;
 }

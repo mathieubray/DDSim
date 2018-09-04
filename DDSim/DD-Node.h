@@ -1,7 +1,6 @@
 /* ---------------------------------------------
 DD-Node.h
-Forms Nodes (Donor-Candidate Pairings or NDDs) 
-for KPD Network
+Forms KPD nodes (donor-candidate pairings or NDDs)
 ---------------------------------------------- */
 
 #ifndef NODE_H
@@ -23,7 +22,7 @@ private:
 	std::vector<KPDDonor *> nodeDonors;
 	KPDCandidate * nodeCandidate;
 
-	double nodeArrivalTime;
+	int nodeArrivalTime;
 	KPDNodeType nodeType;
 	
 public:
@@ -33,9 +32,9 @@ public:
 	//Construct a dummy node
 	KPDNode();
 	//Construct an NDD
-	KPDNode(int id, double arrivalTime, KPDDonor * donor);	
+	KPDNode(int id, int arrivalTime, KPDDonor * donor);	
 	//Construct a donor-candidate pair
-	KPDNode(int id, double arrivalTime, std::vector<KPDDonor * > donors, KPDCandidate * candidate);
+	KPDNode(int id, int arrivalTime, std::vector<KPDDonor * > donors, KPDCandidate * candidate);
 	~KPDNode();
 
 	//IDs
@@ -53,7 +52,7 @@ public:
 	//Donor Information
 	KPDDonor * getDonor(int donorIndex);
 	std::vector<KPDDonor *> getDonors();
-	int getNumberOfAssociatedDonors();
+	int getNumberOfDonors();
 
 	KPDBloodType getDonorBT(int donorIndex);	
 
@@ -61,11 +60,11 @@ public:
 	
 	//Node Type Information
 	KPDNodeType getType();
-	void setType(KPDNodeType type);
+	//void setType(KPDNodeType type);
 
 	//Node Arrival Information
-	double getArrivalTime();		
-	void setArrivalTime(double time);
+	int getArrivalTime();		
+	void setArrivalTime(int time);
 
 	//Strings
 	std::string getCandidateString();
@@ -80,7 +79,7 @@ KPDNode::KPDNode(){
 
 }
 
-KPDNode::KPDNode(int id, double arrivalTime, KPDDonor * donor){
+KPDNode::KPDNode(int id, int arrivalTime, KPDDonor * donor){
 
 	nodeID = id;	
 		
@@ -92,7 +91,7 @@ KPDNode::KPDNode(int id, double arrivalTime, KPDDonor * donor){
 
 }
 
-KPDNode::KPDNode(int id, double arrivalTime, std::vector<KPDDonor *> donors, KPDCandidate * candidate){
+KPDNode::KPDNode(int id, int arrivalTime, std::vector<KPDDonor *> donors, KPDCandidate * candidate){
 
 	nodeID = id;
 
@@ -114,37 +113,30 @@ KPDNode::~KPDNode(){
 }
 
 int KPDNode::getID() {
-
 	return nodeID;
 }
 
 void KPDNode::setID(int id){
-
 	nodeID = id;
 }
 
 KPDCandidate * KPDNode::getCandidate() {
-
 	return nodeCandidate->copy();
 }
 
 KPDBloodType KPDNode::getCandidateBT() {
-
 	return nodeCandidate->getBT();
 }
 
 int	KPDNode::getCandidatePRA() {
-
 	return nodeCandidate->getPRA();
 }
 
 void KPDNode::setCandidate(KPDCandidate * candidate) {
-
 	nodeCandidate = candidate;
 }
 
-KPDDonor * KPDNode::getDonor(int donorIndex) {
-	
+KPDDonor * KPDNode::getDonor(int donorIndex) {	
 	return nodeDonors.at(donorIndex)->copy();
 }
 
@@ -160,13 +152,11 @@ std::vector<KPDDonor *> KPDNode::getDonors() {
 	return donorList;
 }
 
-int KPDNode::getNumberOfAssociatedDonors() {
-
+int KPDNode::getNumberOfDonors() {
 	return (int)nodeDonors.size() - 1;
 }
 
 KPDBloodType KPDNode::getDonorBT(int donorIndex) {
-
 	return nodeDonors.at(donorIndex)->getBT();
 }
 
@@ -182,22 +172,14 @@ void KPDNode::setDonors(std::vector<KPDDonor *> donors) {
 }
 
 KPDNodeType KPDNode::getType() {
-
 	return nodeType;
 }
 
-void KPDNode::setType(KPDNodeType type) {
-
-	nodeType = type;
-}
-
-double KPDNode::getArrivalTime(){
-
+int KPDNode::getArrivalTime(){
 	return nodeArrivalTime;
 }
 
-void KPDNode::setArrivalTime(double time){
-
+void KPDNode::setArrivalTime(int time){
 	nodeArrivalTime = time;
 }
 
@@ -211,8 +193,7 @@ std::string KPDNode::getCandidateString(){
 	}
 }
 
-std::string KPDNode::getDonorString(int donorIndex){
-	
+std::string KPDNode::getDonorString(int donorIndex){	
 	return nodeDonors[donorIndex]->donorString();
 }
 

@@ -1,6 +1,7 @@
 /* ---------------------------------------------
 DD-Match.h
-Stores Information on Donor-Candidate Matches
+Stores information on donor-candidate matches
+(within KPD, DD to KPD, and KPD to Waitlist)
 ---------------------------------------------- */
 
 #ifndef MATCH_H
@@ -37,7 +38,7 @@ public:
 	//Construts a dummy match
 	KPDMatch();
 	//Constructs a match with all defined match characteristics 
-	KPDMatch(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult);
+	KPDMatch(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool labResult);
 	~KPDMatch();
 
 	//Getters
@@ -58,7 +59,7 @@ public:
 
 
 	//Setters
-	void setAdjacency(bool isIncident);
+	void setAdjacency(bool match);
 
 	void setFiveYearSurvival(double surv);
 	void setTenYearSurvival(double surv);
@@ -73,7 +74,7 @@ public:
 	void setVirtualCrossmatchResult(KPDCrossmatch result);
 	void setLabCrossmatchResult(bool result);
 	
-	void setMatchProperties(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult);
+	void setMatchProperties(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool labResult);
 
 	//Strings
 	std::string matchString(); // Returns a comma-separated string
@@ -101,9 +102,9 @@ KPDMatch::KPDMatch(){
 	labCrossmatchResult = false;
 }
 
-KPDMatch::KPDMatch(bool inc, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult){
+KPDMatch::KPDMatch(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool labResult){
 	
-	adjacency = inc;
+	adjacency = match;
 
 	fiveYearSurvival = fiveYearSurv;
 	tenYearSurvival = tenYearSurv;
@@ -113,8 +114,8 @@ KPDMatch::KPDMatch(bool inc, double fiveYearSurv, double tenYearSurv, double sco
 	assumedSuccessProbability = assumedProb;
 	actualSuccessProbability = actualProb;
 
-	virtualCrossmatchResult = vResult;
-	labCrossmatchResult = lResult;
+	virtualCrossmatchResult = virtualResult;
+	labCrossmatchResult = labResult;
 }
 
 KPDMatch::~KPDMatch(){
@@ -175,8 +176,8 @@ bool KPDMatch::getLabCrossmatchResult(){
 	return labCrossmatchResult;
 }
 
-void KPDMatch::setAdjacency(bool isIncident){
-	adjacency = isIncident;
+void KPDMatch::setAdjacency(bool match){
+	adjacency = match;
 }
 
 void KPDMatch::setFiveYearSurvival(double surv){
@@ -226,9 +227,9 @@ void KPDMatch::setLabCrossmatchResult(bool result){
 	labCrossmatchResult = result;
 }
 
-void KPDMatch::setMatchProperties(bool isIncident, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch vResult, bool lResult){
+void KPDMatch::setMatchProperties(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool labResult){
 	
-	adjacency = isIncident;
+	adjacency = match;
 
 	fiveYearSurvival = fiveYearSurv;
 	tenYearSurvival = tenYearSurv;
@@ -238,8 +239,8 @@ void KPDMatch::setMatchProperties(bool isIncident, double fiveYearSurv, double t
 	assumedSuccessProbability = assumedProb;
 	actualSuccessProbability = actualProb;
 
-	virtualCrossmatchResult = vResult;
-	labCrossmatchResult = lResult;
+	virtualCrossmatchResult = virtualResult;
+	labCrossmatchResult = labResult;
 
 }
 

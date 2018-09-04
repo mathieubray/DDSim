@@ -1,6 +1,6 @@
 /* ---------------------------------------------
 DD-Parameters.h
-Stores Simulation Parameters
+Stores simulation parameters
 ---------------------------------------------- */
 
 #ifndef PARAMETERS_H
@@ -23,28 +23,19 @@ private:
 	std::string subFolder;
 	
 	//Simulation Settings
-	bool cyclesAndChains;
-	bool cyclesAndChainsWithFallbacks;
-	bool locallyRelevantSubgraphs;
-
 	KPDUtilityScheme utilityScheme;	
-	KPDDonorAssignment donorAssignment;	
-	KPDTimeline timeline;
-	KPDMatchFailure assumedMatchFailure;
-	KPDMatchFailure actualMatchFailure;
 		
 	//Numerical Parameters	
 	int numberOfIterations;
 	int startingIterationID;
 	
-	double arrivals;
-	double ndds;		
+	int initKPDSize;
+	int pairArrivals;
+	int nddArrivals;		
 
 	int timeSpan;
-	int initMatchRun;
 	int freqMatchRun;
-
-	int processingTime;
+	int postSelectionInactivePeriod;
 
 	int maxCycleSize;
 	int maxChainLength;
@@ -53,59 +44,21 @@ private:
 	double matchUtilityLowerBound;
 	double matchUtilityUpperBound;
 
-	double assumedNDDActiveToInactive;
-	double assumedNDDActiveToWithdrawn;
-	double assumedNDDInactiveToActive;
-	double assumedNDDInactiveToWithdrawn;
+	double probPairActiveToInactive;
+	double probPairInactiveToActive;
+	double probPairAttrition;
+	double probNDDAttrition;
 
-	double actualNDDActiveToInactive;
-	double actualNDDActiveToWithdrawn;
-	double actualNDDInactiveToActive;
-	double actualNDDInactiveToWithdrawn;
-
-	double assumedDonorActiveToInactive;
-	double assumedDonorActiveToWithdrawn;
-	double assumedDonorInactiveToActive;
-	double assumedDonorInactiveToWithdrawn;
-
-	double actualDonorActiveToInactive;
-	double actualDonorActiveToWithdrawn;
-	double actualDonorInactiveToActive;
-	double actualDonorInactiveToWithdrawn;
-
-	double assumedCandidateActiveToInactive;
-	double assumedCandidateActiveToWithdrawn;
-	double assumedCandidateInactiveToActive;
-	double assumedCandidateInactiveToWithdrawn;
-
-	double actualCandidateActiveToInactive;
-	double actualCandidateActiveToWithdrawn;
-	double actualCandidateInactiveToActive;
-	double actualCandidateInactiveToWithdrawn;
-
-	double assumedMatchFailureLowerBound;
-	double assumedMatchFailureUpperBound;
-	double assumedMatchFailureAdjustment;
-	double actualMatchFailureLowerBound;
-	double actualMatchFailureUpperBound;
-	double actualMatchFailureAdjustment;
+	int praEligibilityMin;
+	int praEligibilityMax;
 
 	//Additional Options
-	bool estimateEU;
-	int numberOfEUIterations;
+	bool estimateExpectedUtility;
+	int numberOfExpectedUtilityIterations;
 
-	double twoDonorsProbability;
-	double threeDonorsProbability;
-
-	bool addAdvantage;
-	int advantageCutoff;
-	double advantageValue;
-
-	bool reserveOForO;	
-	bool includeCompatible;
-	bool excludeABDonors;
-	bool allowABBridge;	
-	bool desensitize;
+	bool reserveODonorsForOCandidates;	
+	bool allowABBridgeDonors;
+	bool allowDesensitization;
 
 	//Files
 	std::string fileKPDData;
@@ -150,28 +103,19 @@ public:
 	std::string getSubFolder();
 
 	//Simulation Settings
-	bool runCyclesAndChains();
-	bool runCyclesAndChainsWithFallbacks();
-	bool runLocallyRelevantSubgraphs();
-
 	KPDUtilityScheme getUtilityScheme();
-	KPDDonorAssignment getDonorAssignment();	
-	KPDTimeline getTimeline();
-	KPDMatchFailure getAssumedMatchFailure();
-	KPDMatchFailure getActualMatchFailure();
 	
 	//Numerical Parameters
 	int getNumberOfIterations();
 	int getStartingIterationID();
 		
-	double getArrivals();
-	double getNDDs();	
+	int getInitKPDSize();
+	int getPairArrivals();
+	int getNDDArrivals();	
 
 	int getTimeSpan();
-	int getInitMatchRun();
 	int getFreqMatchRun();
-
-	int getProcessingTime();
+	int getPostSelectionInactivePeriod();
 
 	int getMaxCycleSize();
 	int getMaxChainLength();
@@ -180,59 +124,21 @@ public:
 	double getMatchUtilityLowerBound();
 	double getMatchUtilityUpperBound();
 
-	double getAssumedNDDActiveToInactive();
-	double getAssumedNDDActiveToWithdrawn();
-	double getAssumedNDDInactiveToActive();
-	double getAssumedNDDInactiveToWithdrawn();
+	double getProbPairActiveToInactive();
+	double getProbPairInactiveToActive();
+	double getProbPairAttrition();
+	double getProbNDDAttrition();
 
-	double getActualNDDActiveToInactive();
-	double getActualNDDActiveToWithdrawn();
-	double getActualNDDInactiveToActive();
-	double getActualNDDInactiveToWithdrawn();
-
-	double getAssumedDonorActiveToInactive();
-	double getAssumedDonorActiveToWithdrawn();
-	double getAssumedDonorInactiveToActive();
-	double getAssumedDonorInactiveToWithdrawn();
-
-	double getActualDonorActiveToInactive();
-	double getActualDonorActiveToWithdrawn();
-	double getActualDonorInactiveToActive();
-	double getActualDonorInactiveToWithdrawn();
-
-	double getAssumedCandidateActiveToInactive();
-	double getAssumedCandidateActiveToWithdrawn();
-	double getAssumedCandidateInactiveToActive();
-	double getAssumedCandidateInactiveToWithdrawn();
-
-	double getActualCandidateActiveToInactive();
-	double getActualCandidateActiveToWithdrawn();
-	double getActualCandidateInactiveToActive();
-	double getActualCandidateInactiveToWithdrawn();
-
-	double getAssumedMatchFailureLowerBound();
-	double getAssumedMatchFailureUpperBound();
-	double getAssumedMatchFailureAdjustment();
-	double getActualMatchFailureLowerBound();
-	double getActualMatchFailureUpperBound();
-	double getActualMatchFailureAdjustment();
+	double getPRAEligibilityMin();
+	double getPRAEligibilityMax();
 	
 	//Additional Options
-	bool estimateExpectedUtility();
+	bool getEstimateExpectedUtility();
 	int getNumberOfExpectedUtilityIterations();
 
-	double getTwoDonorsProbability();
-	double getThreeDonorsProbability();
-
-	bool addAdvantageToHighPRACandidates();
-	int getPRAAdvantageCutoff();
-	double getPRAAdvantageValue();
-
-	bool reserveODonorsForOCandidates();	
-	bool includeCompatiblePairs();
-	bool excludeABDonorsFromSimulation();
-	bool allowABBridgeDonors();	
-	bool allowDesensitization();
+	bool getReserveODonorsForOCandidates();
+	bool getAllowABBridgeDonors();	
+	bool getAllowDesensitization();
 	
 	//Files and Folders
 	std::string getFileKPDData();
@@ -266,35 +172,28 @@ public:
 };
 
 KPDParameters::KPDParameters(){
+
+	/* Default Values */
 	
 	//Output Folder
 	outputFolder = "Test";
 	subFolder = "Test";
 
 	//Simulation Settings
-	cyclesAndChains = true;
-	cyclesAndChainsWithFallbacks = false;
-	locallyRelevantSubgraphs = false;
-
 	utilityScheme = UTILITY_TRANSPLANTS;
-	donorAssignment = DONOR_ASSIGNMENT_PAIRED;
-	timeline = TIMELINE_FIXED;
-	assumedMatchFailure = MATCH_FAILURE_RANDOM;
-	actualMatchFailure = MATCH_FAILURE_RANDOM;
 	
 	//Numerical Parameters
 	numberOfIterations= 200;
 	startingIterationID = 1;
 
-	arrivals = 30;
-	ndds = 1;
+	initKPDSize = 200;
+	pairArrivals = 500;
+	nddArrivals = 10;
 
-	timeSpan = 8;
-	initMatchRun = 1;
-	freqMatchRun = 1;
-
-	processingTime = 0;
-
+	timeSpan = 1095; // 3 Years = 365 * 3 Days
+	freqMatchRun = 30;
+	postSelectionInactivePeriod = 30;
+	
 	maxCycleSize = 3;
 	maxChainLength = 3;
 	maxLRSSize = 4;
@@ -302,65 +201,29 @@ KPDParameters::KPDParameters(){
 	matchUtilityLowerBound = 1.0;
 	matchUtilityUpperBound = 1.0;
 
-	assumedNDDActiveToInactive = 0.0;
-	assumedNDDActiveToWithdrawn = 0.0;
-	assumedNDDInactiveToActive = 0.0;
-	assumedNDDInactiveToWithdrawn = 0.0;
+	probPairActiveToInactive = 0.01;
+	probPairInactiveToActive = 0.02;
+	probPairAttrition = 0.005;
+	probNDDAttrition = 0.01;
 
-	actualNDDActiveToInactive = 0.0;
-	actualNDDActiveToWithdrawn = 0.0;
-	actualNDDInactiveToActive = 0.0;
-	actualNDDInactiveToWithdrawn = 0.0;
-
-	assumedDonorActiveToInactive = 0.0;
-	assumedDonorActiveToWithdrawn = 0.0;
-	assumedDonorInactiveToActive = 0.0;
-	assumedDonorInactiveToWithdrawn = 0.0;
-
-	actualDonorActiveToInactive = 0.0;
-	actualDonorActiveToWithdrawn = 0.0;
-	actualDonorInactiveToActive = 0.0;
-	actualDonorInactiveToWithdrawn = 0.0;
-
-	assumedCandidateActiveToInactive = 0.0;
-	assumedCandidateActiveToWithdrawn = 0.0;
-	assumedCandidateInactiveToActive = 0.0;
-	assumedCandidateInactiveToWithdrawn = 0.0;
-
-	actualCandidateActiveToInactive = 0.0;
-	actualCandidateActiveToWithdrawn = 0.0;
-	actualCandidateInactiveToActive = 0.0;
-	actualCandidateInactiveToWithdrawn = 0.0;
-	
-	assumedMatchFailureLowerBound = 0.1;
-	assumedMatchFailureUpperBound = 0.1;
-	assumedMatchFailureAdjustment = 0.0;
-	actualMatchFailureLowerBound = 0.1;
-	actualMatchFailureUpperBound = 0.1;
-	actualMatchFailureAdjustment = 0.0;
+	praEligibilityMin = 58;
+	praEligibilityMax = 98;
 	
 	//Additional Options
-	estimateEU = false;
-	numberOfEUIterations = 100;
+	estimateExpectedUtility = false;
+	numberOfExpectedUtilityIterations = 100;
 
-	twoDonorsProbability = 0.0;
-	threeDonorsProbability = 0.0;
-
-	addAdvantage = false;
-	advantageCutoff = 100;
-	advantageValue = 0.0;
-
-	reserveOForO = false;
-	includeCompatible = false;
-	excludeABDonors = false;
-	allowABBridge = false;
-	desensitize = true;
-
+	reserveODonorsForOCandidates = false;
+	allowABBridgeDonors = false;
+	allowDesensitization = true;
+	
 	//Files and Folders
-	fileKPDData = "APD Data - KPD Simulations.csv";
+	fileKPDData = "APDData.csv";
 	fileHLAFrequency = "HLAFrequency.csv";
 	fileHLADictionary = "HLADictionary.csv";
 	fileSurvivalParameters = "SurvivalParameters.csv";
+	fileDeceasedDonors = "DeceasedDonors.csv";
+	fileWaitingListCandidates = "CandidateWaitlist.csv";
 	
 	//Random Number Generators Seeds
 	rngSeedCharacteristics = 3030303;
@@ -417,47 +280,22 @@ bool KPDParameters::processParameters(std::string & fileName){
 			if (tokenOne.compare("#subfolder") == 0){ subFolder = tokenTwo; }
 
 			//Simulation Settings
-			if (tokenOne.compare("#cyclesandchains") == 0) {
-				if (tokenTwo.compare("TRUE") == 0) { cyclesAndChains = true; }
-				else if (tokenTwo.compare("FALSE") == 0) { cyclesAndChains = false; }
-			}
-			if (tokenOne.compare("#cyclesandchainswithfallbacks") == 0) {
-				if (tokenTwo.compare("TRUE") == 0) { cyclesAndChainsWithFallbacks = true; }
-				else if (tokenTwo.compare("FALSE") == 0) { cyclesAndChainsWithFallbacks = false; }
-			}
-			if (tokenOne.compare("#locallyrelevantsubgraphs") == 0) {
-				if (tokenTwo.compare("TRUE") == 0) { locallyRelevantSubgraphs = true; }
-				else if (tokenTwo.compare("FALSE") == 0) { locallyRelevantSubgraphs = false; }
-			}
 
 			if (tokenOne.compare("#utilityscheme") == 0){
-				utilityScheme = KPDFunctions::stringToUtilityScheme(tokenTwo); //UTILITY_TRANSPLANTS, UTILITY_FIVE_YEAR_SURVIVAL, UTILITY_TEN_YEAR_SURVIVAL, UTILITY_TRANSPLANT_DIFFICULTY, UTILITY_RANDOM
-			}
-			if (tokenOne.compare("#donorassignment") == 0){
-				donorAssignment = KPDFunctions::stringToDonorAssignment(tokenTwo); //DONOR_ASSIGNMENT_PAIRED, DONOR_ASSIGNMENT_RANDOM
-			}			
-			if (tokenOne.compare("#timeline") == 0) {
-				timeline = KPDFunctions::stringToTimeline(tokenTwo); //TIMELINE_FIXED, TIMELINE_CONTINUOUS
-			}			
-			if (tokenOne.compare("#assumedmatchfailure") == 0){
-				assumedMatchFailure = KPDFunctions::stringToMatchFailure(tokenTwo); // MATCH_FAILURE_PRA_BASED, MATCH_FAILURE_RANDOM
-			}
-			if (tokenOne.compare("#actualmatchfailure") == 0) {
-				actualMatchFailure = KPDFunctions::stringToMatchFailure(tokenTwo);
+				utilityScheme = KPDFunctions::stringToUtilityScheme(tokenTwo); //Can be any of: UTILITY_TRANSPLANTS, UTILITY_FIVE_YEAR_SURVIVAL, UTILITY_TEN_YEAR_SURVIVAL, UTILITY_TRANSPLANT_DIFFICULTY, UTILITY_RANDOM
 			}
 
 			//Numerical Parameters
 			if (tokenOne.compare("#numberofiterations") == 0){ numberOfIterations = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#startingiterationid") == 0){ startingIterationID = atoi(tokenTwo.c_str()); }
 
-			if (tokenOne.compare("#arrivals") == 0){ arrivals = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#ndds") == 0){ ndds = atof(tokenTwo.c_str()); }
+			if (tokenOne.compare("#initkpdsize") == 0) { initKPDSize = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#pairarrivals") == 0){ pairArrivals = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#nddarrivals") == 0){ nddArrivals = atoi(tokenTwo.c_str()); }
 
 			if (tokenOne.compare("#timespan") == 0){ timeSpan = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#initmatchrun") == 0){ initMatchRun = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#freqmatchrun") == 0){ freqMatchRun = atoi(tokenTwo.c_str()); }
-
-			if (tokenOne.compare("#processingtime") == 0){ processingTime = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#postselectioninactiveperiod") == 0){ postSelectionInactivePeriod = atoi(tokenTwo.c_str()); }
 
 			if (tokenOne.compare("#maxcyclesize") == 0) { maxCycleSize = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#maxchainlength") == 0) { maxChainLength = atoi(tokenTwo.c_str()); }
@@ -466,83 +304,32 @@ bool KPDParameters::processParameters(std::string & fileName){
 			if (tokenOne.compare("#matchutilitylowerbound") == 0) { matchUtilityLowerBound = atof(tokenTwo.c_str()); }
 			if (tokenOne.compare("#matchutilityupperbound") == 0) { matchUtilityUpperBound = atof(tokenTwo.c_str()); }
 
-			if (tokenOne.compare("#assumednddactivetoinactive") == 0) { assumedNDDActiveToInactive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumednddactivetowithdrawn") == 0) { assumedNDDActiveToWithdrawn = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumednddinactivetoactive") == 0) { assumedNDDInactiveToActive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumednddinactivetowithdrawn") == 0) { assumedNDDInactiveToWithdrawn = atof(tokenTwo.c_str()); }
+			if (tokenOne.compare("#probpairactivetoinactive") == 0) { probPairActiveToInactive = atof(tokenTwo.c_str()); }
+			if (tokenOne.compare("#probpairinactivetoactive") == 0) { probPairInactiveToActive = atof(tokenTwo.c_str()); }
+			if (tokenOne.compare("#probpairattrition") == 0) { probPairAttrition = atof(tokenTwo.c_str()); }
+			if (tokenOne.compare("#probnddattrition") == 0) { probNDDAttrition = atof(tokenTwo.c_str()); }
 
-			if (tokenOne.compare("#actualnddactivetoinactive") == 0) { actualNDDActiveToInactive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualnddactivetowithdrawn") == 0) { actualNDDActiveToWithdrawn = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualnddinactivetoactive") == 0) { actualNDDInactiveToActive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualnddinactivetowithdrawn") == 0) { actualNDDInactiveToWithdrawn = atof(tokenTwo.c_str()); }
-
-			if (tokenOne.compare("#assumeddonoractivetoinactive") == 0) { assumedDonorActiveToInactive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumeddonoractivetowithdrawn") == 0) { assumedDonorActiveToWithdrawn = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumeddonorinactivetoactive") == 0) { assumedDonorInactiveToActive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumeddonorinactivetowithdrawn") == 0) { assumedDonorInactiveToWithdrawn = atof(tokenTwo.c_str()); }
-			
-			if (tokenOne.compare("#actualdonoractivetoinactive") == 0) { actualDonorActiveToInactive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualdonoractivetowithdrawn") == 0) { actualDonorActiveToWithdrawn = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualdonorinactivetoactive") == 0) { actualDonorInactiveToActive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualdonorinactivetowithdrawn") == 0) { actualDonorInactiveToWithdrawn = atof(tokenTwo.c_str()); }
-
-			if (tokenOne.compare("#assumedcandidateactivetoinactive") == 0) { assumedCandidateActiveToInactive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumedcandidateactivetowithdrawn") == 0) { assumedCandidateActiveToWithdrawn = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumedcandidateinactivetoactive") == 0) { assumedCandidateInactiveToActive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumedcandidateinactivetowithdrawn") == 0) { assumedCandidateInactiveToWithdrawn = atof(tokenTwo.c_str()); }
-			
-			if (tokenOne.compare("#actualcandidateactivetoinactive") == 0) { actualCandidateActiveToInactive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualcandidateactivetowithdrawn") == 0) { actualCandidateActiveToWithdrawn = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualcandidateinactivetoactive") == 0) { actualCandidateInactiveToActive = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualcandidateinactivetowithdrawn") == 0) { actualCandidateInactiveToWithdrawn = atof(tokenTwo.c_str()); }
-
-			if (tokenOne.compare("#assumedmatchfailurelowerbound") == 0){ assumedMatchFailureLowerBound = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumedmatchfailureupperbound") == 0) { assumedMatchFailureUpperBound = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#assumedmatchfailureadjustment") == 0) { assumedMatchFailureAdjustment = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualmatchfailurelowerbound") == 0) { actualMatchFailureLowerBound = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualmatchfailureupperbound") == 0) { actualMatchFailureUpperBound = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#actualmatchfailureadjustment") == 0) { actualMatchFailureAdjustment = atof(tokenTwo.c_str()); }
+			if (tokenOne.compare("#praeligibilitymin") == 0) { praEligibilityMin = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#praeligibilitymax") == 0) { praEligibilityMax = atoi(tokenTwo.c_str()); }
 
 			//Additional Options
 			if (tokenOne.compare("#estimateexpectedutility") == 0){
-				if (tokenTwo.compare("TRUE") == 0){ estimateEU = true; }
-				else if (tokenTwo.compare("FALSE") == 0){ estimateEU = false; }
+				if (tokenTwo.compare("TRUE") == 0){ estimateExpectedUtility = true; }
+				else if (tokenTwo.compare("FALSE") == 0){ estimateExpectedUtility = false; }
 			}
-			if (tokenOne.compare("#numberofexpectedutilityiterations") == 0){ numberOfEUIterations = atoi(tokenTwo.c_str()); }
-
-			if (tokenOne.compare("#twodonorsprobability") == 0){ twoDonorsProbability = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#threedonorsprobability") == 0) { threeDonorsProbability = atof(tokenTwo.c_str()); }
-
-			if (tokenOne.compare("#addadvantagetohighpracandidates") == 0){
-				if (tokenTwo.compare("TRUE") == 0){ addAdvantage = true; }
-				else if (tokenTwo.compare("FALSE") == 0){ addAdvantage = false; }
-			}
-			if (tokenOne.compare("#praadvantagecutoff") == 0){
-				advantageCutoff = atoi(tokenTwo.c_str());
-			}
-			if (tokenOne.compare("#praadvantagevalue") == 0){
-				advantageValue = atof(tokenTwo.c_str());
-			}
-
+			if (tokenOne.compare("#numberofexpectedutilityiterations") == 0){ numberOfExpectedUtilityIterations = atoi(tokenTwo.c_str()); }
+			
 			if (tokenOne.compare("#reserveodonorsforocandidates") == 0){
-				if (tokenTwo.compare("TRUE") == 0){ reserveOForO = true; }
-				else if (tokenTwo.compare("FALSE") == 0){ reserveOForO = false; }
-			}
-			if (tokenOne.compare("#includecompatiblepairs") == 0){
-				if (tokenTwo.compare("TRUE") == 0){ includeCompatible = true; }
-				else if (tokenTwo.compare("FALSE") == 0){ includeCompatible = false; }
-			}
-			if (tokenOne.compare("#excludeabdonorsfromsimulation") == 0){
-				if (tokenTwo.compare("TRUE") == 0){ excludeABDonors = true; }
-				else if (tokenTwo.compare("FALSE") == 0){ excludeABDonors = false; }
+				if (tokenTwo.compare("TRUE") == 0){ reserveODonorsForOCandidates = true; }
+				else if (tokenTwo.compare("FALSE") == 0){ reserveODonorsForOCandidates = false; }
 			}
 			if (tokenOne.compare("#allowabbridgedonors") == 0){
-				if (tokenTwo.compare("TRUE") == 0){ allowABBridge = true; }
-				else if (tokenTwo.compare("FALSE") == 0){ allowABBridge = false; }
+				if (tokenTwo.compare("TRUE") == 0){ allowABBridgeDonors = true; }
+				else if (tokenTwo.compare("FALSE") == 0){ allowABBridgeDonors = false; }
 			}
 			if (tokenOne.compare("#allowdesensitization") == 0) {
-				if (tokenTwo.compare("TRUE") == 0) { desensitize = true; }
-				else if (tokenTwo.compare("FALSE") == 0) { desensitize = false; }
+				if (tokenTwo.compare("TRUE") == 0) { allowDesensitization = true; }
+				else if (tokenTwo.compare("FALSE") == 0) { allowDesensitization = false; }
 			}
 
 			//Files and Folders
@@ -604,28 +391,15 @@ void KPDParameters::printLog(){
 	parametersLog << "Simulation Settings" << std::endl;
 	parametersLog << "-----------------" << std::endl << std::endl;
 
-	parametersLog << "Optimization Scheme: " << std::endl;
-	if (cyclesAndChains) { parametersLog << "- Cycles/Chains" << std::endl; }
-	if (cyclesAndChainsWithFallbacks) { parametersLog << "- Cycles/Chains With Fallbacks" << std::endl; }
-	if (locallyRelevantSubgraphs) { parametersLog << "- LRS" << std::endl; }
-	parametersLog << std::endl;
-
 	parametersLog << "Utility Based On: " << KPDFunctions::utilitySchemeToString(utilityScheme);
 	if (utilityScheme == UTILITY_RANDOM) {
 		if (matchUtilityLowerBound == matchUtilityUpperBound) {
-			parametersLog << " = " << matchUtilityLowerBound << " for all transplants";
+			parametersLog << " = " << matchUtilityLowerBound << " for all transplants" << std::endl;
 		}
 		else {
-			parametersLog << " ~ U(" << matchUtilityLowerBound << "," << matchUtilityUpperBound << ")";
+			parametersLog << " ~ U(" << matchUtilityLowerBound << "," << matchUtilityUpperBound << ")" << std::endl;
 		}
 	}
-	parametersLog << std::endl;
-		
-	parametersLog << "Donor Assignment: " << KPDFunctions::donorAssignmentToString(donorAssignment) << std::endl;	
-	parametersLog << "Timeline: " << KPDFunctions::timelineToString(timeline) << std::endl;	
-	parametersLog << "Assumed Match Failure: " << KPDFunctions::matchFailureToString(assumedMatchFailure) << std::endl;
-	parametersLog << "Actual Match Failure: " << KPDFunctions::matchFailureToString(actualMatchFailure) << std::endl;
-
 	parametersLog << std::endl;
 		
 	//Numerical Parameters
@@ -634,159 +408,56 @@ void KPDParameters::printLog(){
 	parametersLog << "--------------------" << std::endl << std::endl;
 
 	parametersLog << "Simulation Iterations: " << numberOfIterations << " (From " << startingIterationID << "-" << startingIterationID + numberOfIterations - 1 << ")" << std::endl;
+	
+	parametersLog << "Initial Expected KPD Size: " << initKPDSize << std::endl;
+	parametersLog << "Expected Pair Arrivals Per Year: " << pairArrivals << std::endl;
+	parametersLog << "Expected NDD Arrivals Per Year: " << nddArrivals << std::endl;
+	parametersLog << std::endl;
+
+	parametersLog << "Time Frame for Simulation: " << timeSpan << " Days" << std::endl;
+	parametersLog << "Match Run Frequency: Every " << freqMatchRun << " Days" << std::endl;
+	parametersLog << "Pairs Inactive for " << postSelectionInactivePeriod << " Days After Selection Before Transplantation" << std::endl;
+	parametersLog << std::endl;
 
 	parametersLog << "Maximum Cycle Size: " << maxCycleSize << std::endl;
 	parametersLog << "Maximum Chain Length: " << maxChainLength << std::endl;
-	if (locallyRelevantSubgraphs) {
-		parametersLog << "Maximum LRS Size: " << maxLRSSize << std::endl;
-	}
-
+	parametersLog << "Maximum LRS Size: " << maxLRSSize << std::endl;
 	parametersLog << std::endl;
 
-	if (timeline == TIMELINE_CONTINUOUS){
-		parametersLog << "Pairs Transition States on Continuous Timeline" << std::endl;
-		parametersLog << "Time Frame: " << timeSpan << " Units" << std::endl;
+	parametersLog << "Daily Probability of Pair Active -> Inactive: " << probPairActiveToInactive << std::endl;
+	parametersLog << "Daily Probability of Pair Inactive -> Active: " << probPairInactiveToActive << std::endl;
+	parametersLog << "Daily Probability of Pair Withdrawing: " << probPairAttrition << std::endl;
+	parametersLog << "Daily Probability of NDD/Bridge Donor Withdrawing: " << probNDDAttrition << std::endl;
 
-		parametersLog << "Arrival Rate: " << arrivals << std::endl;
-		parametersLog << "Chance of NDD Being Added: " << ndds << std::endl;
+	parametersLog << "Minimum PRA for Candidate Eligibility for DD Transplant in KPD: " << praEligibilityMin << std::endl;
+	parametersLog << "Maximum PRA for Candidate Eligibility for DD Transplant in KPD: " << praEligibilityMax << std::endl;
 
-		parametersLog << "Initial Match Run: " << initMatchRun << std::endl;
-		parametersLog << "Match Run Frequency: Every " << freqMatchRun << " Units" << std::endl;
-		parametersLog << "Processing Time: " << processingTime << std::endl;
-
-		parametersLog << "NDD Failure Rates:" << std::endl;
-		parametersLog << "   Active --> Inactive Rate: " << assumedNDDActiveToInactive << " (Assumed), " << actualNDDActiveToInactive << " (Actual)" << std::endl;
-		parametersLog << "   Active --> Withdrawn Rate: " << assumedNDDActiveToWithdrawn << " (Assumed), " << actualNDDActiveToWithdrawn << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Active Rate: " << assumedNDDInactiveToActive << " (Assumed), " << actualNDDInactiveToActive << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Withdrawn Rate: " << assumedNDDInactiveToWithdrawn << " (Assumed), " << actualNDDInactiveToWithdrawn << " (Actual)" << std::endl;
-
-		parametersLog << "Donor Failure Rates:" << std::endl;
-		parametersLog << "   Active --> Inactive Rate: " << assumedDonorActiveToInactive << " (Assumed), " << actualDonorActiveToInactive << " (Actual)" << std::endl;
-		parametersLog << "   Active --> Withdrawn Rate: " << assumedDonorActiveToWithdrawn << " (Assumed), " << actualDonorActiveToWithdrawn << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Active Rate: " << assumedDonorInactiveToActive << " (Assumed), " << actualDonorInactiveToActive << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Withdrawn Rate: " << assumedDonorInactiveToWithdrawn << " (Assumed), " << actualDonorInactiveToWithdrawn << " (Actual)" << std::endl;
-
-		parametersLog << "Candidate Failure Rates:" << std::endl;
-		parametersLog << "   Active --> Inactive Rate: " << assumedCandidateActiveToInactive << " (Assumed), " << actualCandidateActiveToInactive << " (Actual)" << std::endl;
-		parametersLog << "   Active --> Withdrawn Rate: " << assumedCandidateActiveToWithdrawn << " (Assumed), " << actualCandidateActiveToWithdrawn << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Active Rate: " << assumedCandidateInactiveToActive << " (Assumed), " << actualCandidateInactiveToActive << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Withdrawn Rate: " << assumedCandidateInactiveToWithdrawn << " (Assumed), " << actualCandidateInactiveToWithdrawn << " (Actual)" << std::endl;
-			
-		parametersLog << std::endl;
-	}
-	else if (timeline == TIMELINE_FIXED){
-		parametersLog << "Pairs Transition based on Fixed Match Run Intervals" << std::endl;
-		parametersLog << "Time Frame: " << timeSpan << " Units" << std::endl;
-
-		parametersLog << "Pair Arrival Per Match Run: " << arrivals << std::endl;
-		parametersLog << "NDD Arrival Per Match Run: " << ndds << std::endl;
-
-		parametersLog << "Initial Match Run: " << initMatchRun << std::endl;
-		parametersLog << "Match Run Frequency: Every " << freqMatchRun << " Units" << std::endl;
-		parametersLog << "Processing Time: " << processingTime << std::endl;
-
-		parametersLog << "NDD Failure Probabilities:" << std::endl;
-		parametersLog << "   Active --> Inactive Probability: " << assumedNDDActiveToInactive << " (Assumed), " << actualNDDActiveToInactive << " (Actual)" << std::endl;
-		parametersLog << "   Active --> Withdrawn Probability: " << assumedNDDActiveToWithdrawn << " (Assumed), " << actualNDDActiveToWithdrawn << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Active Probability: " << assumedNDDInactiveToActive << " (Assumed), " << actualNDDInactiveToActive << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Withdrawn Probability: " << assumedNDDInactiveToWithdrawn << " (Assumed), " << actualNDDInactiveToWithdrawn << " (Actual)" << std::endl;
-
-		parametersLog << "Donor Failure Probabilities:" << std::endl;
-		parametersLog << "   Active --> Inactive Probability: " << assumedDonorActiveToInactive << " (Assumed), " << actualDonorActiveToInactive << " (Actual)" << std::endl;
-		parametersLog << "   Active --> Withdrawn Probability: " << assumedDonorActiveToWithdrawn << " (Assumed), " << actualDonorActiveToWithdrawn << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Active Probability: " << assumedDonorInactiveToActive << " (Assumed), " << actualDonorInactiveToActive << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Withdrawn Probability: " << assumedDonorInactiveToWithdrawn << " (Assumed), " << actualDonorInactiveToWithdrawn << " (Actual)" << std::endl;
-
-		parametersLog << "Candidate Failure Probabilities:" << std::endl;
-		parametersLog << "   Active --> Inactive Probability: " << assumedCandidateActiveToInactive << " (Assumed), " << actualCandidateActiveToInactive << " (Actual)" << std::endl;
-		parametersLog << "   Active --> Withdrawn Probability: " << assumedCandidateActiveToWithdrawn << " (Assumed), " << actualCandidateActiveToWithdrawn << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Active Probability: " << assumedCandidateInactiveToActive << " (Assumed), " << actualCandidateInactiveToActive << " (Actual)" << std::endl;
-		parametersLog << "   Inactive --> Withdrawn Probability: " << assumedCandidateInactiveToWithdrawn << " (Assumed), " << actualCandidateInactiveToWithdrawn << " (Actual)" << std::endl;
-
-		parametersLog << std::endl;
-	}
-
-	if (assumedMatchFailure == MATCH_FAILURE_RANDOM) {
-		if (assumedMatchFailureLowerBound == assumedMatchFailureUpperBound) {
-			parametersLog << "Assume Match Failure Probability of " << assumedMatchFailureLowerBound + assumedMatchFailureAdjustment;
-		}
-		else {
-			parametersLog << "Assume Match Failure Probability ~ U(" << assumedMatchFailureLowerBound << "," << assumedMatchFailureUpperBound << ")";
-			if (assumedMatchFailureAdjustment > 0) {
-				parametersLog << " + " << assumedMatchFailureAdjustment;
-			}
-		}
-	}
-	else {
-		parametersLog << "Assume Match Failure Probability Based on PRA";
-		if (assumedMatchFailureAdjustment > 0) {
-			parametersLog << " + " << assumedMatchFailureAdjustment;
-		}
-	}
 	parametersLog << std::endl;
-
-	if (actualMatchFailure == MATCH_FAILURE_RANDOM) {
-		if (actualMatchFailureLowerBound == actualMatchFailureUpperBound) {
-			parametersLog << "Actual Match Failure Probability of " << actualMatchFailureLowerBound + actualMatchFailureAdjustment;
-		}
-		else {
-			parametersLog << "Actual Match Failure Probability ~ U(" << actualMatchFailureLowerBound << "," << actualMatchFailureUpperBound << ")";
-			if (actualMatchFailureAdjustment > 0) {
-				parametersLog << " + " << actualMatchFailureAdjustment;
-			}
-		}
-	}
-	else {
-		parametersLog << "Actual Match Failure Probability based on PRA";
-		if (actualMatchFailureAdjustment > 0) {
-			parametersLog << " + " << actualMatchFailureAdjustment;
-		}
-	}
-	parametersLog << std::endl << std::endl;
-
+	
 	//Additional Options
 	parametersLog << "------------------" << std::endl;
 	parametersLog << "Additional Options" << std::endl;
 	parametersLog << "------------------" << std::endl << std::endl;
 	
-	if (estimateEU == true){
-		parametersLog << "Number of Expected Utility Iterations: " << numberOfEUIterations << std::endl;
+	if (estimateExpectedUtility == true){
+		parametersLog << "Number of Expected Utility Iterations: " << numberOfExpectedUtilityIterations << std::endl;
 	}
-
-	if (donorAssignment == DONOR_ASSIGNMENT_RANDOM){
-		parametersLog << "Probability of Pair Having Two Donors: " << twoDonorsProbability << std::endl;
-		parametersLog << "Probability of Pair Having Three Donors: " << threeDonorsProbability << std::endl;
-	}
-
-	if (addAdvantage == true){
-		parametersLog << "Add Advantage to PRA Recipients Above " << advantageCutoff << std::endl;
-		parametersLog << "Additional Utility: " << advantageValue << std::endl;
-	}
-	else {
-		parametersLog << "Do Not Add Advantage to High PRA Recipients" << std::endl;
-	}
-
-	if (reserveOForO == false){
+	
+	if (reserveODonorsForOCandidates == false){
 		parametersLog << "Do Not ";
 	}
 	parametersLog << "Reserve O Donors for O Candidates" << std::endl;	
-	if (includeCompatible == false){
-		parametersLog << "Do Not ";
-	}
-	parametersLog << "Include Compatible Pairs In Match Runs" << std::endl;
-	if (excludeABDonors == false){
-		parametersLog << "Do Not ";
-	}
-	parametersLog << "Exclude AB Donors From Entering Simulation" << std::endl;
-	if (allowABBridge == false){
+		
+	if (allowABBridgeDonors == false){
 		parametersLog << "Do Not ";
 	}
 	parametersLog << "Include Chains Which End With AB Bridge Donor" << std::endl;
-	if (desensitize == false) {
+
+	if (allowDesensitization == false) {
 		parametersLog << "Do Not ";
 	}
-	parametersLog << "Allow Candidate Densitization for Matches That Require Desensitization" << std::endl;
-
+	parametersLog << "Allow Desensitization of Candidates (Affects HLA Considered)" << std::endl;
+	
 	parametersLog << std::endl;
 	
 	//Files and Folders
@@ -858,36 +529,8 @@ std::string KPDParameters::getSubFolder(){
 	return subFolder;
 }
 
-bool KPDParameters::runCyclesAndChains() {
-	return cyclesAndChains;
-}
-
-bool KPDParameters::runCyclesAndChainsWithFallbacks() {
-	return cyclesAndChainsWithFallbacks;
-}
-
-bool KPDParameters::runLocallyRelevantSubgraphs() {
-	return locallyRelevantSubgraphs;
-}
-
 KPDUtilityScheme KPDParameters::getUtilityScheme(){
 	return utilityScheme;
-}
-
-KPDDonorAssignment KPDParameters::getDonorAssignment() {
-	return donorAssignment;
-}
-
-KPDTimeline KPDParameters::getTimeline(){
-	return timeline;
-}
-
-KPDMatchFailure KPDParameters::getAssumedMatchFailure(){
-	return assumedMatchFailure;
-}
-
-KPDMatchFailure KPDParameters::getActualMatchFailure(){
-	return actualMatchFailure;
 }
 
 int KPDParameters::getNumberOfIterations(){
@@ -898,28 +541,28 @@ int KPDParameters::getStartingIterationID(){
 	return startingIterationID;
 }
 
-double KPDParameters::getArrivals(){
-	return arrivals;
+int KPDParameters::getInitKPDSize(){
+	return initKPDSize;
 }
 
-double KPDParameters::getNDDs(){
-	return ndds;
+int KPDParameters::getPairArrivals(){
+	return pairArrivals;
+}
+
+int KPDParameters::getNDDArrivals(){
+	return nddArrivals;
 }
 
 int KPDParameters::getTimeSpan(){
 	return timeSpan;
 }
 
-int KPDParameters::getInitMatchRun(){
-	return initMatchRun;
-}
-
 int KPDParameters::getFreqMatchRun(){
 	return freqMatchRun;
 }
 
-int KPDParameters::getProcessingTime(){
-	return processingTime;
+int KPDParameters::getPostSelectionInactivePeriod(){
+	return postSelectionInactivePeriod;
 }
 
 int KPDParameters::getMaxCycleSize() {
@@ -942,172 +585,48 @@ double KPDParameters::getMatchUtilityUpperBound() {
 	return matchUtilityUpperBound;
 }
 
-double KPDParameters::getAssumedNDDActiveToInactive() {
-	return assumedNDDActiveToInactive;
+double KPDParameters::getProbPairActiveToInactive(){
+	return probPairActiveToInactive;
 }
 
-double KPDParameters::getAssumedNDDActiveToWithdrawn() {
-	return assumedNDDActiveToWithdrawn;
+double KPDParameters::getProbPairInactiveToActive(){
+	return probPairInactiveToActive;
 }
 
-double KPDParameters::getAssumedNDDInactiveToActive() {
-	return assumedNDDInactiveToActive;
+double KPDParameters::getProbPairAttrition(){
+	return probPairAttrition;
 }
 
-double KPDParameters::getAssumedNDDInactiveToWithdrawn() {
-	return assumedNDDInactiveToWithdrawn;
+double KPDParameters::getProbNDDAttrition(){
+	return probNDDAttrition;
 }
 
-double KPDParameters::getActualNDDActiveToInactive() {
-	return actualNDDActiveToInactive;
+double KPDParameters::getPRAEligibilityMin(){
+	return praEligibilityMin;
 }
 
-double KPDParameters::getActualNDDActiveToWithdrawn() {
-	return actualNDDActiveToWithdrawn;
+double KPDParameters::getPRAEligibilityMax(){
+	return praEligibilityMax;
 }
 
-double KPDParameters::getActualNDDInactiveToActive() {
-	return actualNDDInactiveToActive;
-}
-
-double KPDParameters::getActualNDDInactiveToWithdrawn() {
-	return actualNDDInactiveToWithdrawn;
-}
-
-double KPDParameters::getAssumedDonorActiveToInactive() {	
-	return assumedDonorActiveToInactive;
-}
-
-double KPDParameters::getAssumedDonorActiveToWithdrawn() {	
-	return assumedDonorActiveToWithdrawn;
-}
-
-double KPDParameters::getAssumedDonorInactiveToActive() {	
-	return assumedDonorInactiveToActive;
-}
-
-double KPDParameters::getAssumedDonorInactiveToWithdrawn() {	
-	return assumedDonorInactiveToWithdrawn;
-}
-
-double KPDParameters::getActualDonorActiveToInactive() {
-	return actualDonorActiveToInactive;
-}
-
-double KPDParameters::getActualDonorActiveToWithdrawn() {
-	return actualDonorActiveToWithdrawn;
-}
-
-double KPDParameters::getActualDonorInactiveToActive() {
-	return actualDonorInactiveToActive;
-}
-
-double KPDParameters::getActualDonorInactiveToWithdrawn() {
-	return actualDonorInactiveToWithdrawn;
-}
-
-double KPDParameters::getAssumedCandidateActiveToInactive() {
-	return assumedCandidateActiveToInactive;
-}
-
-double KPDParameters::getAssumedCandidateActiveToWithdrawn() {
-	return assumedCandidateActiveToWithdrawn;
-}
-
-double KPDParameters::getAssumedCandidateInactiveToActive() {
-	return assumedCandidateInactiveToActive;
-}
-
-double KPDParameters::getAssumedCandidateInactiveToWithdrawn() {
-	return assumedCandidateInactiveToWithdrawn;
-}
-
-double KPDParameters::getActualCandidateActiveToInactive() {
-	return actualCandidateActiveToInactive;
-}
-
-double KPDParameters::getActualCandidateActiveToWithdrawn() {
-	return actualCandidateActiveToWithdrawn;
-}
-
-double KPDParameters::getActualCandidateInactiveToActive() {
-	return actualCandidateInactiveToActive;
-}
-
-double KPDParameters::getActualCandidateInactiveToWithdrawn() {
-	return actualCandidateInactiveToWithdrawn;
-}
-
-double KPDParameters::getAssumedMatchFailureLowerBound() {
-	return assumedMatchFailureLowerBound;
-}
-
-double KPDParameters::getAssumedMatchFailureUpperBound() {
-	return assumedMatchFailureUpperBound;
-}
-
-double KPDParameters::getAssumedMatchFailureAdjustment() {
-	return assumedMatchFailureAdjustment;
-}
-
-double KPDParameters::getActualMatchFailureLowerBound() {	
-	return actualMatchFailureLowerBound;
-}
-
-double KPDParameters::getActualMatchFailureUpperBound() {
-	return actualMatchFailureLowerBound;
-}
-
-double KPDParameters::getActualMatchFailureAdjustment() {
-	return actualMatchFailureAdjustment;
-}
-
-bool KPDParameters::estimateExpectedUtility(){
-	return estimateEU;
+bool KPDParameters::getEstimateExpectedUtility(){
+	return estimateExpectedUtility;
 }
 
 int KPDParameters::getNumberOfExpectedUtilityIterations(){
-	return numberOfEUIterations;
+	return numberOfExpectedUtilityIterations;
 }
 
-double KPDParameters::getTwoDonorsProbability(){
-	return twoDonorsProbability;
+bool KPDParameters::getReserveODonorsForOCandidates(){
+	return reserveODonorsForOCandidates;
 }
 
-double KPDParameters::getThreeDonorsProbability() {
-	return threeDonorsProbability;
+bool KPDParameters::getAllowABBridgeDonors(){
+	return allowABBridgeDonors;
 }
 
-bool KPDParameters::addAdvantageToHighPRACandidates(){
-	return addAdvantage;
-}
-
-int KPDParameters::getPRAAdvantageCutoff(){
-	return advantageCutoff;
-}
-
-double KPDParameters::getPRAAdvantageValue(){
-	return advantageValue;
-}
-
-bool KPDParameters::reserveODonorsForOCandidates(){
-	return reserveOForO;
-}
-
-bool KPDParameters::includeCompatiblePairs(){
-	return includeCompatible;
-}
-
-bool KPDParameters::excludeABDonorsFromSimulation(){
-	return excludeABDonors;
-}
-
-bool KPDParameters::allowABBridgeDonors(){
-	return allowABBridge;
-}
-
-bool KPDParameters::allowDesensitization(){
-	return desensitize;
+bool KPDParameters::getAllowDesensitization() {
+	return allowDesensitization;
 }
 
 std::string KPDParameters::getFileKPDData() {

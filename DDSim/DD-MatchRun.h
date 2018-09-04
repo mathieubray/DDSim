@@ -48,23 +48,25 @@ private:
 	std::vector<int> currentMatchRunNodes;	
 
 	// Relevant Parameters
-	int maxChainLength;
-	int maxCycleSize;
-	int maximum;
-	int maxLRSSize;
-
-	KPDTimeline timeline;
-	int processingTime;
-	bool estimateEU;
-
 	KPDUtilityScheme utilityScheme;
 
-	bool addAdvantageToHighPRACandidates;
-	double praAdvantageCutoff;
-	double praAdvantageValue;
+	int maxChainLength;
+	int maxCycleSize;
+	int maxLRSSize;
+	int maximum;
+
+	int postSelectionInactivePeriod;
+
+	bool estimateEU;
+	int numberOfExpectedUtilityIterations;
+
 	bool allowABBridgeDonors;
 
-	int numberOfExpectedUtilityIterations;
+	double probPairActiveToInactive;
+	double probPairInactiveToActive;
+	double probPairAttrition;
+	double probNDDAttrition;
+
 
 	//Helper Functions For Collecting Arrangements
 	KPDStatus getNodeStatus(int nodeID);
@@ -143,18 +145,18 @@ KPDMatchRun::KPDMatchRun(KPDParameters * params, int currentIteration, int curre
 	maxLRSSize = params->getMaxLRSSize();
 	maximum = std::max(maxChainLength + 1, maxCycleSize);
 
-	timeline = params->getTimeline();
-	processingTime = params->getProcessingTime();
-	estimateEU = params->estimateExpectedUtility();
+	postSelectionInactivePeriod = params->getPostSelectionInactivePeriod();
+	estimateEU = params->getEstimateExpectedUtility();
 
 	utilityScheme = params->getUtilityScheme();
-
-	addAdvantageToHighPRACandidates = params->addAdvantageToHighPRACandidates();
-	praAdvantageCutoff = params->getPRAAdvantageCutoff();
-	praAdvantageValue = params->getPRAAdvantageValue();
-	allowABBridgeDonors = params->allowABBridgeDonors();
+	allowABBridgeDonors = params->getAllowABBridgeDonors();
 
 	numberOfExpectedUtilityIterations = params->getNumberOfExpectedUtilityIterations();
+
+	probPairActiveToInactive = params->getProbPairActiveToInactive();
+	probPairInactiveToActive = params->getProbPairInactiveToActive();
+	probPairAttrition = params->getProbPairAttrition();
+	probNDDAttrition = params->getProbNDDAttrition();
 
 	//Set Match Run Values
 	rngExpectedUtilityEstimation.setSeed(params->getRNGSeedExpectedUtilityEstimation() * currentIteration + currentMatchRun);
@@ -278,7 +280,7 @@ void KPDMatchRun::collectCyclesAndChainsForCurrentMatchRun(std::vector<std::vect
 								bool exclude = true;
 
 								//If any of the active associated donors have a blood type other than AB, then we're good
-								for (int k = 1; k <= matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getNumberOfAssociatedDonors(); k++) {
+								for (int k = 1; k <= matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getNumberOfDonors(); k++) {
 									//if (matchRunDonorUnderlyingStatus[*(potentialCycleOrChain.end() - 1)][k] == STATUS_ACTIVE && matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getDonorBT(k) != BT_AB) {
 									if (matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getDonorBT(k) != BT_AB) {
 
@@ -346,11 +348,6 @@ void KPDMatchRun::assignUtilitiesForCurrentMatchRun(std::vector<std::vector<int>
 			else {
 				util += matchRunMatchMatrix[*itNodes][*(itNodes + 1)][bestDonorIndex]->getUtility(utilityScheme);
 			}
-
-			// Add additional advantage if specified
-			if (addAdvantageToHighPRACandidates && matchRunNodeVector[*(itNodes + 1)]->getCandidatePRA() >= praAdvantageCutoff) {
-				util += praAdvantageValue;
-			}
 		}
 
 		// For cycles, add the final transplant back to the original candidate
@@ -365,9 +362,6 @@ void KPDMatchRun::assignUtilitiesForCurrentMatchRun(std::vector<std::vector<int>
 				util += matchRunMatchMatrix[*(itArrangements->end() - 1)][*(itArrangements->begin())][bestDonorIndex]->getUtility(utilityScheme);
 			}
 
-			if (addAdvantageToHighPRACandidates && matchRunNodeVector[*(itArrangements->begin())]->getCandidatePRA() >= praAdvantageCutoff) {
-				util += praAdvantageValue;
-			}
 		}
 
 		assignedValueOfCurrentMatchRunArrangements.push_back(util);
@@ -534,7 +528,7 @@ KPDStatus KPDMatchRun::getNodeStatus(int nodeID) {
 
 			/*int withdrawnDonors = 0;
 
-			for (int donorID = 1; donorID <= matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors(); donorID++) {
+			for (int donorID = 1; donorID <= matchRunNodeVector[nodeID]->getNumberOfDonors(); donorID++) {
 				//if (matchRunDonorUnderlyingStatus[nodeID][donorID] == STATUS_ACTIVE) { // Active donor exists
 					//return STATUS_ACTIVE;
 				//}
@@ -544,7 +538,7 @@ KPDStatus KPDMatchRun::getNodeStatus(int nodeID) {
 				}
 			}
 
-			if (withdrawnDonors == matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors()) {
+			if (withdrawnDonors == matchRunNodeVector[nodeID]->getNumberOfDonors()) {
 				return STATUS_WITHDRAWN;
 			}
 			else {*/
@@ -559,7 +553,7 @@ int KPDMatchRun::selectDonor(int donorNodeID, int candidateNodeID) {
 	int maxDonorID = -1; // -1 means no donor is selected
 
 	//Iterate through donors
-	for (int donorID = 1; donorID <= matchRunNodeVector[donorNodeID]->getNumberOfAssociatedDonors(); donorID++) {
+	for (int donorID = 1; donorID <= matchRunNodeVector[donorNodeID]->getNumberOfDonors(); donorID++) {
 
 		//Only consider donors that match between the donor node and the candidate node, and that are active!
 		//if (matchRunMatchMatrix[donorNodeID][candidateNodeID][donorID]->getAdjacency() && matchRunDonorUnderlyingStatus[donorNodeID][donorID] == STATUS_ACTIVE) {
@@ -1209,19 +1203,11 @@ bool KPDMatchRun::validateLRSBounds(std::vector<int> &arrangement, int order) {
 double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 	
 	double nddAssumedProbability;
-	double donorAssumedProbability;
-	double candidateAssumedProbability;
+	double pairAssumedProbability;
+	double donorAssumedProbability = 1;
 
-	if (timeline == TIMELINE_FIXED) {
-		nddAssumedProbability = 1;// 1 - (params->getAssumedNDDActiveToInactive() + params->getAssumedNDDActiveToWithdrawn());
-		donorAssumedProbability = 1;// 1 - (params->getAssumedDonorActiveToInactive() + params->getAssumedDonorActiveToWithdrawn());
-		candidateAssumedProbability = 1;// 1 - (params->getAssumedCandidateActiveToInactive() + params->getAssumedCandidateActiveToWithdrawn());
-	}
-	else {
-		nddAssumedProbability = 1;// exp((-1)*(params->getAssumedNDDActiveToInactive() + params->getAssumedNDDActiveToWithdrawn())*params->getProcessingTime());
-		donorAssumedProbability = 1;// exp((-1)*(params->getAssumedDonorActiveToInactive() + params->getAssumedDonorActiveToWithdrawn())*params->getProcessingTime());
-		candidateAssumedProbability = 1;// exp((-1)*(params->getAssumedCandidateActiveToInactive() + params->getAssumedCandidateActiveToWithdrawn())*params->getProcessingTime());
-	}
+	nddAssumedProbability =  1 - (probNDDAttrition);
+	pairAssumedProbability = 1 - (probPairActiveToInactive + probPairAttrition);
 
 	int N = (int)arrangement.size();
 	double utility = 0;
@@ -1237,7 +1223,7 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 	int i = 1;
 	for (std::vector<int>::iterator arrangementIt = arrangement.begin(); arrangementIt != arrangement.end(); arrangementIt++) {
 
-		for (int k = 1; k <= matchRunNodeVector[*arrangementIt]->getNumberOfAssociatedDonors(); k++) {
+		for (int k = 1; k <= matchRunNodeVector[*arrangementIt]->getNumberOfDonors(); k++) {
 			//if (matchRunDonorUnderlyingStatus[*arrangementIt][k] == STATUS_ACTIVE) {
 				donorNodeIndices.push_back(i);
 				donorIndices.push_back(k);
@@ -1261,7 +1247,7 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 			std::vector<bool> subsetCandidateAvailability(1 + N, false);
 
 			for (int i = 1; i <= N; i++) {
-				int nodeNumberOfDonors = matchRunNodeVector[arrangement[i - 1]]->getNumberOfAssociatedDonors();
+				int nodeNumberOfDonors = matchRunNodeVector[arrangement[i - 1]]->getNumberOfDonors();
 				subsetDonorAvailability[i].assign(1 + nodeNumberOfDonors, false);
 			}
 			//Iterate through nodes and mark availability
@@ -1288,7 +1274,7 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 				//Update with probability of candidate subset
 				if (matchRunNodeTypeVector[nodeID] != PAIR) {
-					for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors(); k++) {
+					for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfDonors(); k++) {
 						//if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
 							if (subsetDonorAvailability[i][k]) {
 								if (matchRunNodeTypeVector[nodeID] == NDD) {
@@ -1314,7 +1300,7 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 					if (subsetCandidateAvailability[i]) {
 
-						for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors(); k++) {
+						for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfDonors(); k++) {
 							//if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
 								if (subsetDonorAvailability[i][k]) {
 									probNode = probNode * donorAssumedProbability;
@@ -1325,17 +1311,17 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 							//}
 						}
 
-						probNode = probNode * candidateAssumedProbability;
+						probNode = probNode * pairAssumedProbability;
 					}
 					else {
 
-						for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfAssociatedDonors(); k++) {
+						for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfDonors(); k++) {
 							//if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
 								probNode = probNode * (1 - donorAssumedProbability);
 							//}
 						}
 
-						probNode = 1 - (1 - probNode) * candidateAssumedProbability;
+						probNode = 1 - (1 - probNode) * pairAssumedProbability;
 					}
 				}
 
@@ -1364,7 +1350,7 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 							if (matchRunAdjacencyMatrix[donorNodeID][candidateNodeID] && matchRunNodeTypeVector[candidateNodeID] == PAIR) {
 
-								for (int k = 1; k <= matchRunNodeVector[donorNodeID]->getNumberOfAssociatedDonors(); k++) {
+								for (int k = 1; k <= matchRunNodeVector[donorNodeID]->getNumberOfDonors(); k++) {
 									if (subsetDonorAvailability[i][k] && subsetCandidateAvailability[j] && matchRunMatchMatrix[donorNodeID][candidateNodeID][k]->getAdjacency()) {
 										edgeSubsetDonorNodeIndices.push_back(i);
 										edgeSubsetCandidateIndices.push_back(j);
@@ -1399,7 +1385,7 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 						int donorNodeID = arrangement[i - 1];
 
-						int arrangementNodeDonors = matchRunNodeVector[donorNodeID]->getNumberOfAssociatedDonors();
+						int arrangementNodeDonors = matchRunNodeVector[donorNodeID]->getNumberOfDonors();
 
 						for (int j = 1; j <= N; j++) {
 							reducedDonorAdjacencyMatrix[i][j].assign(1 + arrangementNodeDonors, false);
@@ -1445,9 +1431,6 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 								reducedUtilityMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorID] = matchRunMatchMatrix[edgeSubsetDonorNodeID][edgeSubsetCandidateNodeID][edgeSubsetDonorID]->getUtility(utilityScheme);
 							}
 
-							if (addAdvantageToHighPRACandidates && matchRunNodeTypeVector[edgeSubsetCandidateNodeID] == PAIR && matchRunNodeVector[edgeSubsetCandidateNodeID]->getCandidatePRA() >= praAdvantageCutoff) {
-								reducedUtilityMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorID] += praAdvantageValue;
-							}
 						}
 						else {
 							probEdgeSubset = probEdgeSubset * (1 - matchRunMatchMatrix[edgeSubsetDonorNodeID][edgeSubsetCandidateNodeID][edgeSubsetDonorID]->getAssumedSuccessProbability());
@@ -1472,21 +1455,12 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 
-
 	double nddAssumedProbability;
-	double donorAssumedProbability;
-	double candidateAssumedProbability;
+	double pairAssumedProbability;
+	double donorAssumedProbability = 1;
 
-	if (timeline == TIMELINE_FIXED) {
-		nddAssumedProbability = 1;// 1 - (params->getAssumedNDDActiveToInactive() + params->getAssumedNDDActiveToWithdrawn());
-		donorAssumedProbability = 1;// 1 - (params->getAssumedDonorActiveToInactive() + params->getAssumedDonorActiveToWithdrawn());
-		candidateAssumedProbability = 1;// 1 - (params->getAssumedCandidateActiveToInactive() + params->getAssumedCandidateActiveToWithdrawn());
-	}
-	else {
-		nddAssumedProbability = 1;//exp((-1)*(params->getAssumedNDDActiveToInactive() + params->getAssumedNDDActiveToWithdrawn())*params->getProcessingTime());
-		donorAssumedProbability = 1;//exp((-1)*(params->getAssumedDonorActiveToInactive() + params->getAssumedDonorActiveToWithdrawn())*params->getProcessingTime());
-		candidateAssumedProbability = 1;// exp((-1)*(params->getAssumedCandidateActiveToInactive() + params->getAssumedCandidateActiveToWithdrawn())*params->getProcessingTime());
-	}
+	nddAssumedProbability = 1 - (probNDDAttrition);
+	pairAssumedProbability = 1 - (probPairActiveToInactive + probPairAttrition);
 
 	int N = (int)arrangement.size();
 
@@ -1514,7 +1488,7 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 			subNodeTypeVector[i] = matchRunNodeTypeVector[*itNodes];
 
 			//Randomly generate donor availability (and store donor blood types)
-			int numDonors = matchRunNodeVector[*itNodes]->getNumberOfAssociatedDonors();
+			int numDonors = matchRunNodeVector[*itNodes]->getNumberOfDonors();
 
 			randomDonorAvailabilityVector[i].assign(1 + numDonors, false);
 			subDonorBloodTypeVector[i].assign(1 + numDonors, BT_AB);
@@ -1539,7 +1513,7 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 
 			//Randomly generate candidate availability for PAIRs
 			if (matchRunNodeTypeVector[*itNodes] == PAIR) {
-				if (rngExpectedUtilityEstimation.runif() < candidateAssumedProbability) {
+				if (rngExpectedUtilityEstimation.runif() < pairAssumedProbability) {
 					randomCandidateAvailabilityVector[i] = true;
 				}
 			}
@@ -1551,7 +1525,7 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 
 		for (std::vector<int>::iterator itDonors = arrangement.begin(); itDonors != arrangement.end(); ++itDonors, i++) {
 
-			int numDonors = matchRunNodeVector[*itDonors]->getNumberOfAssociatedDonors();
+			int numDonors = matchRunNodeVector[*itDonors]->getNumberOfDonors();
 
 			for (std::vector<int>::iterator itCandidates = arrangement.begin(); itCandidates != arrangement.end(); ++itCandidates, j++) {
 
@@ -1594,10 +1568,6 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 											randomUtilityMatrix[i][j][k] = matchRunMatchMatrix[*itDonors][*itCandidates][k]->getUtility(utilityScheme);
 										}
 
-										if (addAdvantageToHighPRACandidates && matchRunNodeVector[*itCandidates]->getCandidatePRA() >= praAdvantageCutoff && matchRunNodeTypeVector[*itCandidates] == PAIR) {
-											randomUtilityMatrix[i][j][k] += praAdvantageValue;
-										}
-
 										// Set adjacency matrix to true
 										randomAdjacencyMatrix[i][j] = true;
 									}
@@ -1625,19 +1595,11 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement, bool print) {	
 
 	double nddAssumedProbability;
-	double donorAssumedProbability;
-	double candidateAssumedProbability;
+	double pairAssumedProbability;
+	double donorAssumedProbability = 1;
 
-	if (timeline == TIMELINE_FIXED) {
-		nddAssumedProbability = 1;// 1 - (params->getAssumedNDDActiveToInactive() + params->getAssumedNDDActiveToWithdrawn());
-		donorAssumedProbability = 1;// 1 - (params->getAssumedDonorActiveToInactive() + params->getAssumedDonorActiveToWithdrawn());
-		candidateAssumedProbability = 1;// 1 - (params->getAssumedCandidateActiveToInactive() + params->getAssumedCandidateActiveToWithdrawn());
-	}
-	else {
-		nddAssumedProbability = 1;// exp((-1)*(params->getAssumedNDDActiveToInactive() + params->getAssumedNDDActiveToWithdrawn())*params->getProcessingTime());
-		donorAssumedProbability = 1;// exp((-1)*(params->getAssumedDonorActiveToInactive() + params->getAssumedDonorActiveToWithdrawn())*params->getProcessingTime());
-		candidateAssumedProbability = 1;// exp((-1)*(params->getAssumedCandidateActiveToInactive() + params->getAssumedCandidateActiveToWithdrawn())*params->getProcessingTime());
-	}
+	nddAssumedProbability = 1 - (probNDDAttrition);
+	pairAssumedProbability = 1 - (probPairActiveToInactive + probPairAttrition);
 
 	//Set up Adjacency and Utility Matrices
 
@@ -1653,7 +1615,7 @@ double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement,
 
 	for (int i = 1; i <= nV; i++) {
 
-		int arrangementDonors = matchRunNodeVector[arrangement[i - 1]]->getNumberOfAssociatedDonors();
+		int arrangementDonors = matchRunNodeVector[arrangement[i - 1]]->getNumberOfDonors();
 
 		for (int j = 1; j <= nV; j++) {
 			if (i != j) {
@@ -1759,7 +1721,7 @@ double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement,
 
 							bool hasNonABBridgeDonor = false;
 
-							for (int k = 1; k <= matchRunNodeVector[arrangement[*(potentialCycleOrChain.end() - 1) - 1]]->getNumberOfAssociatedDonors(); k++) {
+							for (int k = 1; k <= matchRunNodeVector[arrangement[*(potentialCycleOrChain.end() - 1) - 1]]->getNumberOfDonors(); k++) {
 								if (matchRunNodeVector[arrangement[*(potentialCycleOrChain.end() - 1) - 1]]->getDonorBT(k) != BT_AB) {
 									hasNonABBridgeDonor = true;
 								}

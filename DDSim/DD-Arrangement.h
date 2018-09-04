@@ -123,7 +123,7 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 	arrangementTransplantSelected.assign(1 + N, std::vector<std::vector<bool> >(1 + N, std::vector<bool>(1, false)));
 
 	for (int i = 1; i <= N; i++){
-		int numDonors = arrangementNodes[i - 1]->getNumberOfAssociatedDonors();
+		int numDonors = arrangementNodes[i - 1]->getNumberOfDonors();
 
 		for (int j = 1; j <= N; j++){
 
@@ -146,7 +146,7 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 		for (int i = 1; i < N; i++) {
 
 			int donorNodeID = arrangementNodes[i - 1]->getID();
-			int numDonors = arrangementNodes[i - 1]->getNumberOfAssociatedDonors();
+			int numDonors = arrangementNodes[i - 1]->getNumberOfDonors();
 			
 			int candidateNodeID = arrangementNodes[(i+1) - 1]->getID();
 			
@@ -180,7 +180,7 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 		
 		//Final donation (implicit for chains)
 		int donorNodeID = arrangementNodes[N - 1]->getID();
-		int numDonors = arrangementNodes[N - 1]->getNumberOfAssociatedDonors();
+		int numDonors = arrangementNodes[N - 1]->getNumberOfDonors();
 
 		int candidateNodeID = arrangementNodes[0]->getID();
 
@@ -211,7 +211,7 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 		for (int i = 1; i <= N; i++) {
 
 			int donorNodeID = arrangementNodes[i - 1]->getID();
-			int arrangementDonors = arrangementNodes[i - 1]->getNumberOfAssociatedDonors();
+			int arrangementDonors = arrangementNodes[i - 1]->getNumberOfDonors();
 
 			for (int j = 1; j <= N; j++) {
 
@@ -251,7 +251,7 @@ KPDArrangement::KPDArrangement(KPDParameters * params, int iteration, int mr, do
 
 	//Parameters
 	utilityScheme = params->getUtilityScheme();
-	allowABBridgeDonors = params->allowABBridgeDonors();
+	//allowABBridgeDonors = params->allowABBridgeDonors();
 	maxCycleSize = params->getMaxCycleSize();
 	maxChainLength = params->getMaxChainLength();
 }
@@ -348,7 +348,7 @@ int KPDArrangement::selectDonor(int donorNode, int candidateNode, bool convertID
 	double maxVal = 0.0;
 	int maxIndex = -1; // No Donor Found
 
-	int numDonors = arrangementNodes[donorNodeID-1]->getNumberOfAssociatedDonors();
+	int numDonors = arrangementNodes[donorNodeID-1]->getNumberOfDonors();
 
 	for (int k = 1; k <= numDonors; k++) {
 
@@ -384,7 +384,7 @@ void KPDArrangement::collectFallBackOptions(){
 
 	for (int i = 1; i <= N; i++){
 
-		int arrangementDonors = arrangementNodes[i - 1]->getNumberOfAssociatedDonors();
+		int arrangementDonors = arrangementNodes[i - 1]->getNumberOfDonors();
 
 		for (int j = 1; j <= N; j++){
 			if (i != j) {
@@ -468,7 +468,7 @@ void KPDArrangement::collectFallBackOptions(){
 
 							bool hasNonABBridgeDonor = false;
 
-							for (int k = 1; k <= arrangementNodes[*(potentialCycleOrChain.end() - 1) - 1]->getNumberOfAssociatedDonors(); k++){
+							for (int k = 1; k <= arrangementNodes[*(potentialCycleOrChain.end() - 1) - 1]->getNumberOfDonors(); k++){
 								if (arrangementNodes[*(potentialCycleOrChain.end() - 1) - 1]->getDonorBT(k) != BT_AB){
 									hasNonABBridgeDonor = true;
 								}
@@ -667,7 +667,7 @@ std::string KPDArrangement::toTransplantString(){
 		KPDNode * donorNode = arrangementNodes[i - 1];
 		KPDNodeType donorNodeType = arrangementNodeTypes[i - 1];
 
-		int numDonors = donorNode->getNumberOfAssociatedDonors();
+		int numDonors = donorNode->getNumberOfDonors();
 
 		for (int j = 1; j <= N; j++) {
 
@@ -685,7 +685,7 @@ std::string KPDArrangement::toTransplantString(){
 						ss << KPDFunctions::nodeTypeToString(donorNodeType) << "," << donorNode->getID() << "," << k << "," << donorNode->getArrivalTime() << ",";// << KPDFunctions::boolToYesNo(arrangementDonorAvailability[i][k]) << ",";
 						//ss << donorNode->getDonorString(k) << ","; 
 
-						ss << candidateNode->getID() << "," << candidateNode->getArrivalTime() << "," << candidateNode->getNumberOfAssociatedDonors() << "," << KPDFunctions::boolToYesNo(arrangementCandidateAvailability[j]) << ",";
+						ss << candidateNode->getID() << "," << candidateNode->getArrivalTime() << "," << candidateNode->getNumberOfDonors() << "," << KPDFunctions::boolToYesNo(arrangementCandidateAvailability[j]) << ",";
 						//ss << candidateNode->getCandidateString() << ",";
 						
 						ss << match->matchString() << ",";

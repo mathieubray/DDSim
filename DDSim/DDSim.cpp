@@ -1,6 +1,6 @@
 /* ---------------------------------------------
 DDSim.cpp
-Main function, creates output directories, runs simulations
+Creates output directories, runs simulations, main file
 ---------------------------------------------- */
 
 #ifdef _WIN32
@@ -37,16 +37,9 @@ KPDParameters * kpdParameters;
 std::ofstream outputStream;
 
 // Output Files
-std::string fileCyclesAndChainsResults;
-std::string fileCyclesAndChainsExchanges;
-
-std::string fileFallbacksResults;
-std::string fileFallbacksExchanges;
-
-std::string fileLRSResults;
-std::string fileLRSExchanges;
-
-std::string filePopulationInformation;
+std::string fileResults;
+std::string fileExchanges;
+std::string filePopulation;
 
 void buildDirectoryStructure(){
 
@@ -79,71 +72,27 @@ void buildDirectoryStructure(){
 
 	//Add files to sub-directories...
 
-	// Cycles and Chains
-	if (kpdParameters->runCyclesAndChains()){
+	// Results file
+	fileResults = folderPath + "/Results.csv";
 
-		// 'Cycles and Chains' results file
-		fileCyclesAndChainsResults = folderPath + "/Results_CyclesAndChains.csv";
+	outputStream.open(fileResults.c_str());
+	outputStream << resultsVariableNames << std::endl;
+	outputStream.close();
 
-		outputStream.open(fileCyclesAndChainsResults.c_str());
-		outputStream << resultsVariableNames << std::endl;
+	// Exchange information file
+	if (!kpdParameters->suppressExchangeOutput()) {
+		fileExchanges = folderPath + "/Exchanges.csv";
+
+		outputStream.open(fileExchanges.c_str());
+		outputStream << exchangesVariableNames << std::endl;
 		outputStream.close();
-
-		// 'Cycles and Chains' exchange information file
-		if (!kpdParameters->suppressExchangeOutput()) {
-			fileCyclesAndChainsExchanges = folderPath + "/Exchanges_CyclesAndChains.csv";
-
-			outputStream.open(fileCyclesAndChainsExchanges.c_str());
-			outputStream << exchangesVariableNames << std::endl;
-			outputStream.close();
-		}
 	}
 
-	// Cycles and Chains with Fallbacks
-	if (kpdParameters->runCyclesAndChainsWithFallbacks()) {
-
-		// 'Fallbacks' results file
-		fileFallbacksResults = folderPath + "/Results_Fallbacks.csv";
-
-		outputStream.open(fileFallbacksResults.c_str());
-		outputStream << resultsVariableNames << std::endl;
-		outputStream.close();
-
-		// 'Fallbacks' exchange information file
-		if (!kpdParameters->suppressExchangeOutput()) {
-			fileFallbacksExchanges = folderPath + "/Exchanges_Fallbacks.csv";
-
-			outputStream.open(fileFallbacksExchanges.c_str());
-			outputStream << exchangesVariableNames << std::endl;
-			outputStream.close();
-		}
-	}
-
-	// Locally Relevant Subgraphs
-	if (kpdParameters->runLocallyRelevantSubgraphs()) {
-
-		// 'LRS' results file
-		fileLRSResults = folderPath + "/Results_LRS.csv";
-
-		outputStream.open(fileLRSResults.c_str());
-		outputStream << resultsVariableNames << std::endl;
-		outputStream.close();
-
-		// 'LRS' exchange information file
-		if (!kpdParameters->suppressExchangeOutput()) {
-			fileLRSExchanges = folderPath + "/Exchanges_LRS.csv";
-
-			outputStream.open(fileLRSExchanges.c_str());
-			outputStream << exchangesVariableNames << std::endl;
-			outputStream.close();
-		}
-	}
-	
 	// Population information file
-	if (!kpdParameters->suppressPopulationOutput()){
-		filePopulationInformation = folderPath + "/PopulationList.csv";
+	if (!kpdParameters->suppressPopulationOutput()) {
+		filePopulation = folderPath + "/Population.csv";
 
-		outputStream.open(filePopulationInformation.c_str());
+		outputStream.open(filePopulation.c_str());
 		outputStream << populationVariableNames << std::endl;
 		outputStream.close();
 	}
@@ -164,80 +113,41 @@ int main(int argc, const char* argv[]){
 	// Set up output directories
 	buildDirectoryStructure();
 	
-	//Run simulation
+	// Screen output
 	std::cout << "Output Folder: output/" << kpdParameters->getOutputFolder() << "/" << kpdParameters->getSubFolder() << std::endl;
 	std::cout << std::endl;
-	std::cout << "Beginning Simulation" << std::endl;
+	std::cout << "Beginning Simulation..." << std::endl;
 	
+	// Run simulation
 	KPDSimulation * kpdSimulation = new KPDSimulation(kpdParameters);
 
 	int numberOfIterations = kpdParameters->getNumberOfIterations();
 	int startingIteration = kpdParameters->getStartingIterationID();
 	int currentIteration = startingIteration;
-	bool runCyclesAndChains = kpdParameters->runCyclesAndChains();
-	bool runCyclesAndChainsWithFallbacks = kpdParameters->runCyclesAndChainsWithFallbacks();
-	bool runLocallyRelevantSubgraphs = kpdParameters->runLocallyRelevantSubgraphs();
 
 	while(currentIteration < numberOfIterations + startingIteration){ // Run for 'numberOfIterations' iterations, starting from 'startingIteration'
 		
 		//Initialize current iteration
 		kpdSimulation->prepareIteration(currentIteration);
 
-		//Cycles and Chains
-		if (runCyclesAndChains){
-			kpdSimulation->runIteration(CYCLES_AND_CHAINS);
-			
-			//Print 'Cycles and Chains' results
-			outputStream.open(fileCyclesAndChainsResults.c_str(), std::ofstream::app);
-			outputStream << kpdSimulation->getOutputResults();
+		kpdSimulation->resetIteration();
+		kpdSimulation->runIteration();
+
+		//Print results
+		outputStream.open(fileResults.c_str(), std::ofstream::app);
+		outputStream << kpdSimulation->getOutputResults();
+		outputStream.close();
+
+		//Print exchange information
+		if (!kpdParameters->suppressExchangeOutput()) {
+			outputStream.open(fileExchanges.c_str(), std::ofstream::app);
+			outputStream << kpdSimulation->getOutputExchanges();
 			outputStream.close();
-
-			//Print 'Cycles and Chains' exchange information
-			if (!kpdParameters->suppressExchangeOutput()) {
-				outputStream.open(fileCyclesAndChainsExchanges.c_str(), std::ofstream::app);
-				outputStream << kpdSimulation->getOutputExchanges();
-				outputStream.close();
-			}
-
-		}
-
-		//Cycles and Chains with Fallbacks
-		if (runCyclesAndChainsWithFallbacks){			
-			kpdSimulation->runIteration(CYCLES_AND_CHAINS_WITH_FALLBACKS);
-			
-			//Print 'Fallbacks' results
-			outputStream.open(fileFallbacksResults.c_str(), std::ofstream::app);
-			outputStream << kpdSimulation->getOutputResults();
-			outputStream.close();
-
-			//Print 'Fallbacks' exchange information
-			if (!kpdParameters->suppressExchangeOutput()) {
-				outputStream.open(fileFallbacksExchanges.c_str(), std::ofstream::app);
-				outputStream << kpdSimulation->getOutputExchanges();
-				outputStream.close();
-			}
-		}
-
-		//Locally Relevant Subgraphs
-		if (runLocallyRelevantSubgraphs){
-			kpdSimulation->runIteration(LOCALLY_RELEVANT_SUBSETS);
-			
-			//Print 'LRS' results
-			outputStream.open(fileLRSResults.c_str(), std::ofstream::app);
-			outputStream << kpdSimulation->getOutputResults();
-			outputStream.close();
-
-			//Print 'LRS' exchange information
-			if (!kpdParameters->suppressExchangeOutput()) {
-				outputStream.open(fileLRSExchanges.c_str(), std::ofstream::app);
-				outputStream << kpdSimulation->getOutputExchanges();
-				outputStream.close();
-			}
 		}
 
 		//Print population information
 		if (!kpdParameters->suppressPopulationOutput()) {
-			outputStream.open(filePopulationInformation.c_str(), std::ofstream::app);
+			outputStream.open(filePopulation.c_str(), std::ofstream::app);
 			outputStream << kpdSimulation->getOutputPopulation();
 			outputStream.close();
 		}
@@ -245,7 +155,7 @@ int main(int argc, const char* argv[]){
 		currentIteration++;
 	}	
 
-	std::cout << "Done!" << std::endl;
+	std::cout << "...Ending Simulation" << std::endl;
 
 	//Delete simulation and parameters
 	delete kpdSimulation;
