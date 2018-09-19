@@ -47,7 +47,7 @@ private:
 	std::vector<KPDCandidate *> pairedCandidatesPool;
 	std::map<int, std::vector<KPDDonor *> > pairedDonorsPool;
 
-	std::map<int, KPDDonor *> deceasedDonors;
+	std::vector<KPDDonor *> deceasedDonors;
 	std::map<int, KPDCandidate *> waitlistCandidates;
 
 	void readDataFromFile(std::vector<std::vector<std::vector<std::string> > >  & parsedData, std::string fileName); // Reads and parses data from files
@@ -540,7 +540,7 @@ void KPDData::formDeceasedDonorPopulation() {
 
 		int id = atoi((*srtrRow)[0][0].c_str());
 
-		if (deceasedDonors.count(id) == 0) {
+		//if (deceasedDonors.count(id) == 0) {
 			
 			int recoveryTimeSinceReference = 0;
 			std::string recoveryTime = (*srtrRow)[1][0];
@@ -613,28 +613,35 @@ void KPDData::formDeceasedDonorPopulation() {
 				dHLA.push_back("DP" + (*srtrRow)[27][0]);
 			}
 
+			bool bothKidneysAvailable = atoi((*srtrRow)[28][0].c_str()) == 2;
+
 			KPDDonor * d = new KPDDonor(id, bt, minorA, 
 				age, genderMale, race, height, weight, cigarette,
 				recoveryTimeSinceReference, centerID);
 			
 			d->setHLA(dHLA);
+			d->setBothKidneysAvailable(bothKidneysAvailable);
 
-			deceasedDonors[id] = d;
-		}
-		else {
-			deceasedDonors[id]->setBothKidneysAvailable(true);
-		}
+			deceasedDonors.push_back(d);
+
+			//deceasedDonors[id] = d;
+		//}
+		//else {
+			//deceasedDonors[id]->setBothKidneysAvailable(true);
+		//}
+
+		kpdDataLog << d->donorOutput() << std::endl;
 		
 		i++;
 	}
 
-	for (std::map<int, KPDDonor *>::iterator it = deceasedDonors.begin(); it != deceasedDonors.end(); it++) {
+	//for (std::map<int, KPDDonor *>::iterator it = deceasedDonors.begin(); it != deceasedDonors.end(); it++) {
 
-		KPDDonor * d = it->second;
+		//KPDDonor * d = it->second;
 
-		kpdDataLog << "Deceased Donor: " << it->first << std::endl;
-		kpdDataLog << d->donorOutput() << std::endl;
-	}
+		//kpdDataLog << "Deceased Donor: " << it->first << std::endl;
+		//kpdDataLog << d->donorOutput() << std::endl;
+	//}
 }
 
 void KPDData::formWaitlistPopulation() {

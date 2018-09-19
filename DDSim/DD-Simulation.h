@@ -377,8 +377,6 @@ void KPDSimulation::runIteration() {
 		runTransplantationStage();
 
 	}
-
-	currentTime = matchRunTime;
 	
 
 }
