@@ -20,18 +20,11 @@ For Use Throughout the Project
 // Simulation Specifications
 enum KPDOptimizationScheme { CYCLES_AND_CHAINS, CYCLES_AND_CHAINS_WITH_FALLBACKS, LOCALLY_RELEVANT_SUBSETS };
 enum KPDUtilityScheme { UTILITY_TRANSPLANTS, UTILITY_FIVE_YEAR_SURVIVAL, UTILITY_TEN_YEAR_SURVIVAL, UTILITY_TRANSPLANT_DIFFICULTY, UTILITY_RANDOM };
-enum KPDDonorAssignment { DONOR_ASSIGNMENT_PAIRED, DONOR_ASSIGNMENT_RANDOM };
-enum KPDTimeline { TIMELINE_FIXED, TIMELINE_CONTINUOUS };
-enum KPDMatchFailure { MATCH_FAILURE_PRA_BASED, MATCH_FAILURE_RANDOM };
 
 // Characteristics
 enum KPDBloodType { BT_O, BT_A, BT_B, BT_AB, BT_UNSPECIFIED };
-enum KPDBloodTypeEnhanced {BTE_O, BTE_A, BTE_A1, BTE_A2, BTE_B, BTE_AB, BTE_A1B, BTE_A2B, BTE_UNSPECIFIED};
 enum KPDAgeCategory { AGE_LESS_THAN_18, AGE_18_29, AGE_30_39, AGE_40_49, AGE_50_59, AGE_MORE_THAN_60, AGE_UNSPECIFIED};
 enum KPDRace { RACE_WHITE, RACE_BLACK, RACE_HISPANIC, RACE_HAWAIIAN, RACE_NATIVE, RACE_ASIAN, RACE_MULTIRACIAL, RACE_OTHER, RACE_UNSPECIFIED };
-enum KPDBMIGroup { BMI_UNDERWEIGHT, BMI_NORMAL, BMI_OVERWEIGHT, BMI_OBESE, BMI_UNSPECIFIED };
-enum KPDTimeOnWaitlist { WAITLIST_LESS_THAN_ONE_YEAR, WAITLIST_ONE_TO_TWO_YEARS, WAITLIST_TWO_TO_THREE_YEARS, 
-	WAITLIST_MORE_THAN_THREE_YEARS, WAITLIST_UNSPECIFIED };
 enum KPDDiagnosis { DIAGNOSIS_DIABETES, DIAGNOSIS_GLOMERONEPHRITIS, DIAGNOSIS_HYPERTENSION, DIAGNOSIS_OTHER, DIAGNOSIS_UNSPECIFIED };
 enum KPDRelation { RELATION_PARENT, RELATION_NDD, RELATION_LIVING_DECEASED, RELATION_NON_DOMINO_THERAPEUTIC,
 	RELATION_CHILD, RELATION_TWIN, RELATION_SIBLING, RELATION_HALF_SIBLING, RELATION_RELATIVE,
@@ -48,9 +41,6 @@ enum KPDNodeType { PAIR, NDD, BRIDGE };
 enum KPDCrossmatch { CROSSMATCH_SUCCESSFUL, CROSSMATCH_O_DONOR_TO_NON_O_CANDIDATE, 
 	CROSSMATCH_REQUIRES_DESENSITIZATION, CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O, 
 	CROSSMATCH_FAILED_HLA, CROSSMATCH_FAILED_BT, CROSSMATCH_FAILED_LAB };
-
-// Output
-enum KPDOutputFileType { OUTPUT_ARRANGEMENT_LIST, OUTPUT_TRANSPLANT_LIST, OUTPUT_POPULATION_LIST, OUTPUT_SIMULATION_LOG };
 
 
 /* Functions */
@@ -71,10 +61,12 @@ namespace KPDFunctions {
 	}
 
 	//Converts 'value' to binary, saving to vector and returning the number of bits
-	inline int setFlags(int value, std::vector<int> &flagVector) {
+	inline int setFlags(int value, int startIndex, std::vector<int> &flagVector) {
 
 		//Starts at index 1
-		int position = 1;
+		//int position = 1;
+
+		int position = startIndex;
 		int numberOfFlags = 0;
 		while (value != 0) {
 			int flag = value % 2;
@@ -88,6 +80,7 @@ namespace KPDFunctions {
 
 		return numberOfFlags;
 	}
+
 
 	// Truncate value to within a certain range
 	inline double truncateValue(double value, double min, double max) {
@@ -141,15 +134,6 @@ namespace KPDFunctions {
 		}
 	}
 
-	inline std::string boolToSuccessFailure(bool result) {
-		if (result) {
-			return "Success";
-		}
-		else {
-			return "Failure";
-		}
-	}
-
 	inline std::string boolToTF(bool result) {
 		if (result) {
 			return "T";
@@ -197,45 +181,7 @@ namespace KPDFunctions {
 			return "Unspecified";
 		}
 	}
-
-	inline std::string donorAssignmentToString(KPDDonorAssignment scheme) {
-		if (scheme == DONOR_ASSIGNMENT_PAIRED) {
-			return "Paired Donor";
-		}
-		else if (scheme == DONOR_ASSIGNMENT_RANDOM) {
-			return "Randomly Generated Donor";
-		}
-		else {
-			return "Unspecified";
-		}
-	}
-
-
-	inline std::string timelineToString(KPDTimeline timeline) {
-		if (timeline == TIMELINE_FIXED) {
-			return "Fixed Match Runs";
-		}
-		else if (timeline == TIMELINE_CONTINUOUS) {
-			return "Continuous Timeline";
-		}
-		else {
-			return "Unspecified";
-		}
-	}
-
 	
-	inline std::string matchFailureToString(KPDMatchFailure scheme) {
-		if (scheme == MATCH_FAILURE_PRA_BASED) {
-			return "Match Failure Probability Based On PRA";
-		}
-		else if (scheme == MATCH_FAILURE_RANDOM) {
-			return "Random Match Failure Probability";
-		}
-		else {
-			return "Unspecified";
-		}
-	}
-
 	inline std::string bloodTypeToString(KPDBloodType bloodType) {
 		if (bloodType == BT_O) {
 			return "O";
@@ -253,37 +199,7 @@ namespace KPDFunctions {
 			return "Unspecified";
 		}
 	}
-
-	inline std::string bloodTypeEnhancedToString(KPDBloodTypeEnhanced bloodType) {
-		if (bloodType == BTE_O) {
-			return "O";
-		}
-		else if (bloodType == BTE_A) {
-			return "A";
-		}
-		else if (bloodType == BTE_A1) {
-			return "A1";
-		}
-		else if (bloodType == BTE_A2) {
-			return "A2";
-		}
-		else if (bloodType == BTE_B) {
-			return "B";
-		}
-		else if (bloodType == BTE_AB) {
-			return "AB";
-		}
-		else if (bloodType == BTE_A1B) {
-			return "A1B";
-		}
-		else if (bloodType == BTE_A2B) {
-			return "A2B";
-		}
-		else {
-			return "Unspecified";
-		}
-	}
-
+	
 	inline std::string ageCategoryToString(KPDAgeCategory ageCategory) {
 		if (ageCategory == AGE_LESS_THAN_18) {
 			return "Less than 18 Years Old";
@@ -338,42 +254,6 @@ namespace KPDFunctions {
 		}
 	}
 
-	inline std::string bmiGroupToString(KPDBMIGroup group) {
-		if (group == BMI_UNDERWEIGHT) {
-			return "Underweight";
-		}
-		else if (group == BMI_NORMAL) {
-			return "Normal";
-		}
-		else if (group == BMI_OVERWEIGHT) {
-			return "Overweight";
-		}
-		else if (group == BMI_OBESE) {
-			return "Obese";
-		}
-		else {
-			return "Unspecified";
-		}
-	}
-
-	inline std::string timeOnWaitlistToString(KPDTimeOnWaitlist time) {
-		if (time == WAITLIST_LESS_THAN_ONE_YEAR) {
-			return "Less Than One Year";
-		}
-		else if (time == WAITLIST_ONE_TO_TWO_YEARS) {
-			return "One to Two Years";
-		}
-		else if (time == WAITLIST_TWO_TO_THREE_YEARS) {
-			return "Two to Three Years";
-		}
-		else if (time == WAITLIST_MORE_THAN_THREE_YEARS) {
-			return "More Than Three Years";
-		}
-		else {
-			return "Unspecified";
-		}
-	}
-
 	inline std::string diagnosisToString(KPDDiagnosis diagnosis) {
 		if (diagnosis == DIAGNOSIS_DIABETES) {
 			return "Diabetes";
@@ -391,7 +271,7 @@ namespace KPDFunctions {
 			return "Unspecified";
 		}
 	}
-
+	
 	inline std::string relationToString(KPDRelation relation) {
 		if (relation == RELATION_PARENT) {
 			return "Parent";
@@ -536,25 +416,7 @@ namespace KPDFunctions {
 			return "Unspecified";
 		}
 	}
-
-	inline std::string outputFileTypeToString(KPDOutputFileType type) {
-		if (type == OUTPUT_ARRANGEMENT_LIST) {
-			return "Arrangement List";
-		}
-		else if (type == OUTPUT_TRANSPLANT_LIST) {
-			return "Transplant List";
-		}
-		else if (type == OUTPUT_POPULATION_LIST) {
-			return "Population List";
-		}
-		else if (type == OUTPUT_SIMULATION_LOG) {
-			return "Simulation Log";
-		}
-		else {
-			return "Unspecified";
-		}
-	}
-
+	
 	inline KPDOptimizationScheme stringToOptimizationScheme(std::string arrangementType) {
 		KPDOptimizationScheme type = CYCLES_AND_CHAINS;
 		if (arrangementType.compare("CYCLES_AND_CHAINS_WITH_FALLBACKS") == 0) { type = CYCLES_AND_CHAINS_WITH_FALLBACKS; }
@@ -572,28 +434,7 @@ namespace KPDFunctions {
 
 		return scheme;
 	}
-
-	inline KPDDonorAssignment stringToDonorAssignment(std::string donorAssignmentScheme) {
-		KPDDonorAssignment scheme = DONOR_ASSIGNMENT_PAIRED;
-		if (donorAssignmentScheme.compare("DONOR_ASSIGNMENT_RANDOM") == 0) { scheme = DONOR_ASSIGNMENT_RANDOM; }
-
-		return scheme;
-	}
-
-	inline KPDTimeline stringToTimeline(std::string timeline) {
-		KPDTimeline scheme = TIMELINE_FIXED;
-		if (timeline.compare("TIMELINE_CONTINUOUS") == 0) { scheme = TIMELINE_CONTINUOUS; }
-
-		return scheme;
-	}	
-
-	inline KPDMatchFailure stringToMatchFailure(std::string failureScheme) {
-		KPDMatchFailure scheme = MATCH_FAILURE_PRA_BASED;
-		if (failureScheme.compare("MATCH_FAILURE_RANDOM") == 0) { scheme = MATCH_FAILURE_RANDOM; }
-
-		return scheme;
-	}
-
+	
 	inline KPDBloodType stringToBloodType(std::string bt) {
 		KPDBloodType bloodtype = BT_UNSPECIFIED;		
 		if (bt.compare("O") == 0) { bloodtype = BT_O; }
@@ -603,21 +444,7 @@ namespace KPDFunctions {
 
 		return bloodtype;
 	}
-
-	inline KPDBloodTypeEnhanced stringToBloodTypeEnhanced(std::string bt) {
-		KPDBloodTypeEnhanced bloodtype = BTE_UNSPECIFIED;
-		if (bt.compare("O") == 0) { bloodtype = BTE_O; }
-		else if (bt.compare("A") == 0) { bloodtype = BTE_A; }
-		else if (bt.compare("A1") == 0) { bloodtype = BTE_A1; }
-		else if (bt.compare("A2") == 0) { bloodtype = BTE_A2; }
-		else if (bt.compare("B") == 0) { bloodtype = BTE_B; }
-		else if (bt.compare("AB") == 0) { bloodtype = BTE_AB; }
-		else if (bt.compare("A1B") == 0) { bloodtype = BTE_A1B; }
-		else if (bt.compare("A2B") == 0) { bloodtype = BTE_A2B; }
-
-		return bloodtype;
-	}
-
+	
 	inline KPDAgeCategory stringToAgeCategory(std::string age) {
 		KPDAgeCategory ageCategory = AGE_UNSPECIFIED;
 		if (age.compare("Age < 18 years") == 0) { ageCategory = AGE_LESS_THAN_18; }
@@ -644,26 +471,6 @@ namespace KPDFunctions {
 		return race;
 	}
 
-	inline KPDBMIGroup stringToBMIGroup(std::string bmiGroup) {
-		KPDBMIGroup bmi = BMI_UNSPECIFIED;
-		if (bmiGroup.compare("BMI Underweight (<18.5)") == 0) { bmi = BMI_UNDERWEIGHT; }
-		else if (bmiGroup.compare("BMI Normal (18.5-25)") == 0) { bmi = BMI_NORMAL; }
-		else if (bmiGroup.compare("BMI Overweight (25-30)") == 0) { bmi = BMI_OVERWEIGHT; }
-		else if (bmiGroup.compare("BMI Obese (>30)") == 0) { bmi = BMI_OBESE; }
-
-		return bmi;
-	}
-
-	inline KPDTimeOnWaitlist stringToTimeOnWaitlist(std::string timeOnWaitlist) {
-		KPDTimeOnWaitlist time = WAITLIST_UNSPECIFIED;
-		if (timeOnWaitlist.compare("0-12 months") == 0) { time = WAITLIST_LESS_THAN_ONE_YEAR; }
-		else if (timeOnWaitlist.compare("1-2 years") == 0) { time = WAITLIST_ONE_TO_TWO_YEARS; }
-		else if (timeOnWaitlist.compare("2-3 years") == 0) { time = WAITLIST_TWO_TO_THREE_YEARS; }
-		else if (timeOnWaitlist.compare("More than 3 years") == 0) { time = WAITLIST_MORE_THAN_THREE_YEARS; }
-
-		return time;
-	}
-
 	inline KPDDiagnosis stringToDiagnosis(std::string diagnosisString) {
 		KPDDiagnosis diagnosis = DIAGNOSIS_UNSPECIFIED;
 		if (diagnosisString.compare("Diabetes") == 0) { diagnosis = DIAGNOSIS_DIABETES; }
@@ -673,7 +480,7 @@ namespace KPDFunctions {
 
 		return diagnosis;
 	}
-
+	
 	inline KPDRelation stringToRelation(std::string relation) {
 		KPDRelation relationToCandidate = RELATION_UNSPECIFIED;
 		if (relation.compare("Parent") == 0) { relationToCandidate = RELATION_PARENT; }
@@ -740,14 +547,6 @@ namespace KPDFunctions {
 		else if (result.compare("CROSSMATCH_FAILED_LAB") == 0) { crossmatchResult = CROSSMATCH_FAILED_LAB; }
 
 		return crossmatchResult;
-	}
-
-	inline KPDOutputFileType stringToOutputFileType(std::string fileType) {
-		KPDOutputFileType type = OUTPUT_ARRANGEMENT_LIST;
-		if (fileType.compare("OUTPUT_TRANSPLANT_LIST") == 0) { type = OUTPUT_TRANSPLANT_LIST; }
-		else if (fileType.compare("OUTPUT_SIMULATION_LOG") == 0) { type = OUTPUT_SIMULATION_LOG; }
-		
-		return type;
 	}
 	
 }

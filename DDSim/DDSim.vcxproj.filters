@@ -13,46 +13,55 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Data Structures">
+      <UniqueIdentifier>{43bf1e30-5361-41d2-a4d8-c918c8969c3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Simulation">
+      <UniqueIdentifier>{eef21dfa-78a6-4808-8532-a78a77488c95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Helper Classes">
+      <UniqueIdentifier>{10652a46-9a43-4416-9034-4e2b4c62b70d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DD-Simulation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DD-RNG.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DD-Record.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DD-Parameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DD-Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DD-MatchRun.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DD-Match.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DD-Enums-Functions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DD-Donor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DD-Data.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DD-Arrangement.h">
+      <Filter>Header Files\Data Structures</Filter>
     </ClInclude>
     <ClInclude Include="DD-Candidate.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Data Structures</Filter>
     </ClInclude>
-    <ClInclude Include="DD-Arrangement.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="DD-Donor.h">
+      <Filter>Header Files\Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-Match.h">
+      <Filter>Header Files\Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-RNG.h">
+      <Filter>Header Files\Helper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-Enums-Functions.h">
+      <Filter>Header Files\Helper Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-Node.h">
+      <Filter>Header Files\Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-Data.h">
+      <Filter>Header Files\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-Parameters.h">
+      <Filter>Header Files\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-Record.h">
+      <Filter>Header Files\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-Simulation.h">
+      <Filter>Header Files\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-MatchRun.h">
+      <Filter>Header Files\Simulation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

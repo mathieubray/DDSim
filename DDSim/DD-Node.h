@@ -60,7 +60,7 @@ public:
 	
 	//Node Type Information
 	KPDNodeType getType();
-	//void setType(KPDNodeType type);
+	void setType(KPDNodeType type);
 
 	//Node Arrival Information
 	int getArrivalTime();		
@@ -83,7 +83,6 @@ KPDNode::KPDNode(int id, int arrivalTime, KPDDonor * donor){
 
 	nodeID = id;	
 		
-	nodeDonors.push_back(new KPDDonor()); //Blank Donor
 	nodeDonors.push_back(donor->copy());
 
 	nodeArrivalTime = arrivalTime;
@@ -95,11 +94,10 @@ KPDNode::KPDNode(int id, int arrivalTime, std::vector<KPDDonor *> donors, KPDCan
 
 	nodeID = id;
 
-	nodeDonors.push_back(new KPDDonor()); //Blank Donor
-
-	for (std::vector<KPDDonor *>::iterator it = donors.begin() + 1; it != donors.end(); it++){
+	for (std::vector<KPDDonor *>::iterator it = donors.begin(); it != donors.end(); it++) {
 		nodeDonors.push_back((*it)->copy());
 	}
+
 	nodeCandidate = candidate->copy();
 
 	nodeArrivalTime = arrivalTime;
@@ -142,18 +140,17 @@ KPDDonor * KPDNode::getDonor(int donorIndex) {
 
 std::vector<KPDDonor *> KPDNode::getDonors() {
 
-	std::vector<KPDDonor *> donorList;
-	donorList.push_back(new KPDDonor());
+	std::vector<KPDDonor *> donors;
 
-	for (std::vector<KPDDonor *>::iterator it = nodeDonors.begin() + 1; it != nodeDonors.end(); it++){
-		donorList.push_back((*it)->copy());
+	for (std::vector<KPDDonor *>::iterator it = nodeDonors.begin(); it != nodeDonors.end(); it++) {
+		donors.push_back((*it)->copy());
 	}
 
-	return donorList;
+	return donors;
 }
 
 int KPDNode::getNumberOfDonors() {
-	return (int)nodeDonors.size() - 1;
+	return (int)nodeDonors.size();
 }
 
 KPDBloodType KPDNode::getDonorBT(int donorIndex) {
@@ -164,15 +161,17 @@ void KPDNode::setDonors(std::vector<KPDDonor *> donors) {
 
 	nodeDonors.clear();
 
-	nodeDonors.push_back(new KPDDonor()); // Blank Donor
-
-	for (std::vector<KPDDonor *>::iterator it = donors.begin() + 1; it != donors.end(); it++){
+	for (std::vector<KPDDonor *>::iterator it = donors.begin(); it != donors.end(); it++) {
 		nodeDonors.push_back(*it);
 	}
 }
 
 KPDNodeType KPDNode::getType() {
 	return nodeType;
+}
+
+void KPDNode::setType(KPDNodeType type) {
+	nodeType = type;
 }
 
 int KPDNode::getArrivalTime(){
@@ -202,14 +201,13 @@ KPDNode * KPDNode::copy(){
 	KPDNode * copyNode;
 
 	if (nodeType == NDD){
-		copyNode = new KPDNode(nodeID, nodeArrivalTime, nodeDonors[1]->copy());
+		copyNode = new KPDNode(nodeID, nodeArrivalTime, nodeDonors.front()->copy());
 	}
 	else {
 
 		std::vector<KPDDonor *> copiedDonors;
-		copiedDonors.push_back(new KPDDonor());
 
-		for (std::vector<KPDDonor*>::iterator it = nodeDonors.begin() + 1; it != nodeDonors.end(); it++){
+		for (std::vector<KPDDonor*>::iterator it = nodeDonors.begin(); it != nodeDonors.end(); it++) {
 			copiedDonors.push_back((*it)->copy());
 		}
 

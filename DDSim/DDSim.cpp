@@ -43,11 +43,11 @@ std::string filePopulation;
 
 void buildDirectoryStructure(){
 
-	//Variable names
+	// Variable names
 	std::string resultsVariableNames = "Simulation,MatchRun,MatchRunTime,TransplantationTime,DonorType,DonorNodeID,DonorID,DonorArrivalTime,DonorAvailable,CandidateNodeID,CandidateArrivalTime,CandidateAssociatedDonors,CandidateAvailable,Surv5Year,Surv10Year,Score,RandomUtility,TransplantAssumedProb,TransplantActualProb,VirtualCrossmatch,LabCrossmatch,Transplanted";
 	std::string exchangesVariableNames = "Simulation,MatchRun,MatchRunTime,TimeToTransplantation,Nodes,NodeIDs,HasNDD,AssignedValue,Selected";
 	std::string populationVariableNames = "Simulation,NodeID,DonorID,NodeType,ArrivalTime,rBT,rPRA,rAge,rMale,rRace,rDiabetes,rHeight,rWeight,rBMI,rPrevTrans,rTOD,rHepC,rInsurance,rAssumedProb,rActualProb,dBT,relationToCandidate,dAge,dMale,dRace,dHeight,dWeight,dBMI,dCigaretteUse,dAssumedProb,dActualProb";
-
+	
 	//Set up main output directory
 	std::string outputFolder = kpdParameters->getOutputFolder();	
 	std::string folderPath = "output/" + outputFolder;
@@ -70,16 +70,14 @@ void buildDirectoryStructure(){
 	mkdir(folderPath.c_str(), 0777);
 	#endif
 
-	//Add files to sub-directories...
-
-	// Results file
+	// Add results file to sub-directory
 	fileResults = folderPath + "/Results.csv";
 
 	outputStream.open(fileResults.c_str());
 	outputStream << resultsVariableNames << std::endl;
 	outputStream.close();
 
-	// Exchange information file
+	// Add exchange information file to sub-directory
 	if (!kpdParameters->suppressExchangeOutput()) {
 		fileExchanges = folderPath + "/Exchanges.csv";
 
@@ -88,7 +86,7 @@ void buildDirectoryStructure(){
 		outputStream.close();
 	}
 
-	// Population information file
+	// Add population information file to sub-directory
 	if (!kpdParameters->suppressPopulationOutput()) {
 		filePopulation = folderPath + "/Population.csv";
 
@@ -103,7 +101,7 @@ int main(int argc, const char* argv[]){
 	// Initialize default parameters object
 	kpdParameters = new KPDParameters();
 
-	// First argument points to parameter file. Process this file to collect parameters.
+	// First argument points to parameter file; process this file to collect parameters
 	if (argc > 1){
 		std::string parameterFile = argv[1];
 		parameterFile = "parameters/" + parameterFile;
@@ -116,6 +114,7 @@ int main(int argc, const char* argv[]){
 	// Screen output
 	std::cout << "Output Folder: output/" << kpdParameters->getOutputFolder() << "/" << kpdParameters->getSubFolder() << std::endl;
 	std::cout << std::endl;
+
 	std::cout << "Beginning Simulation..." << std::endl;
 	
 	// Run simulation
@@ -125,13 +124,10 @@ int main(int argc, const char* argv[]){
 	int startingIteration = kpdParameters->getStartingIterationID();
 	int currentIteration = startingIteration;
 
-	while(currentIteration < numberOfIterations + startingIteration){ // Run for 'numberOfIterations' iterations, starting from 'startingIteration'
+	while(currentIteration < startingIteration + numberOfIterations) { // Run for specified number iterations, starting from a given iteration
 		
 		//Initialize current iteration
-		kpdSimulation->prepareIteration(currentIteration);
-
-		kpdSimulation->resetIteration();
-		kpdSimulation->runIteration();
+		kpdSimulation->runIteration(currentIteration);
 
 		//Print results
 		outputStream.open(fileResults.c_str(), std::ofstream::app);

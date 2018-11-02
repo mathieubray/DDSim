@@ -16,6 +16,7 @@ Functions Relating to a Match Run of a KPD Program
 
 #include <string>
 #include <vector>
+#include <map>
 #include <queue>
 #include <iostream>
 #include <fstream>
@@ -25,27 +26,25 @@ class KPDMatchRun {
 
 private:
 
-	//Node Information
-	std::vector<KPDNode *> matchRunNodeVector;
-	std::vector<KPDNodeType> matchRunNodeTypeVector;
-
-	std::vector<KPDStatus> matchRunCandidateUnderlyingStatus;
-
-	std::vector<KPDTransplant> matchRunNodeTransplantationStatus;
-
-	std::vector<std::vector<std::vector<KPDMatch *> > > matchRunMatchMatrix;
-	std::vector<std::vector <bool> > matchRunAdjacencyMatrix;
-	std::vector<std::vector<bool > > matchRunAdjacencyMatrixReduced;
-
-	std::vector<std::vector <bool> > matchRunSubAdjacencyMatrix;
-	std::vector<std::vector <bool> > matchRunSubAdjacencyMatrixReduced; // No Implicit Transplants
-
 	// Match Run Information
+	int currentIteration;
+	int matchRunTime;
+
 	int matchRunNumberOfPairs;
 	int matchRunNumberOfNDDs;
 	int matchRunNumberOfNodes;
 
-	std::vector<int> currentMatchRunNodes;	
+	//Node Information
+	std::vector<KPDNode *> matchRunNodes;
+	std::vector<int> matchRunNodeIDs;
+	std::vector<KPDNodeType> matchRunNodeTypes;
+
+	std::vector<KPDStatus> matchRunAvailability;
+
+	std::map<int, std::map<int, std::vector<KPDMatch *> > > matchRunMatches;
+
+	std::vector<std::vector<bool> > matchRunAdjacencyMatrix;
+	std::vector<std::vector<bool> > matchRunAdjacencyMatrixReduced;
 
 	// Relevant Parameters
 	KPDUtilityScheme utilityScheme;
@@ -69,12 +68,11 @@ private:
 
 
 	//Helper Functions For Collecting Arrangements
-	KPDStatus getNodeStatus(int nodeID);
 	int selectDonor(int donorNodeID, int candidateNodeID);
 	int getChild(int start, int v, std::vector<int> &visitedVector, std::vector<std::vector<bool> > &adjacency);
 
 	void getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<std::vector<bool> > & adjacency);
-	int getChildLRSPairsOnly(std::vector<std::vector<bool> > &adjacency, std::vector<int> &tree, std::vector<int> &level, std::vector<int> &nodes, std::vector<int> &pairs, std::vector<bool> &visited, int next, int childLevel);
+	int getChildLRSPairsOnly(std::vector<std::vector<bool> > &adjacency, std::vector<int> &tree, std::vector<int> &level, std::vector<int> &pairs, std::vector<bool> &visited, int next, int childLevel);
 
 	void getLRSWithNDDs(std::vector<std::vector<int> > & currentMatchRunArrangements, int numberOfNDDs, std::vector<std::vector<bool> > &adjacency);
 	int getChildLRSWithNDDs(std::vector<std::vector<bool> > &adjacency, bool &childIsAdjacentToLowerLevels, std::vector<std::vector<int> > &trees, std::vector<std::vector<int> > &levels, std::vector<int> &inducedLevels,
@@ -85,23 +83,24 @@ private:
 	//Helper Functions For Assigning Expected Utilities
 	double calculateExpectedUtility(std::vector<int> &arrangement);
 	double estimateExpectedUtility(std::vector<int> &arrangement);
-	double estimateExpectedUtilityMatrix(std::vector<int> &arrangement, bool print);
 	double calculatePartialUtility(int nV, std::vector<std::vector<bool> > &adjacency, std::vector<std::vector<std::vector<double> > > &utility, std::vector<KPDNodeType> &nodeTypes, std::vector<std::vector<KPDBloodType> > &bloodTypes);
 
 	void checkValidSolution(int nSubCycles, int nVertices, std::vector<int> subCycleFlags, int next, std::vector<std::vector<int> > &subCyclesSubChains, std::vector<std::vector<int> > &possibleSolutions);
 
 	// Random Number Generators
-	RNG rngExpectedUtilityEstimation;
+	RNG rngExpectedUtility;
 
 	// Logs
 	std::stringstream matchRunLog;
 
 public:
 
-	KPDMatchRun(KPDParameters * params, int currentIteration, int currentMatchRun, double currentTime,
-		std::vector<KPDNode *> nodeVector, std::vector<KPDNodeType> nodeTypeVector,
-		std::vector<KPDStatus> candidateUnderlyingStatus, std::vector<KPDTransplant> nodeTransplantationStatus,
-		std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrix, std::vector<std::vector <bool> > adjacencyMatrix, std::vector<std::vector<bool> > adjacencyMatrixReduced);
+	KPDMatchRun(KPDParameters * params, int iteration, int mrTime,
+		std::vector<KPDNode *> nodes, 
+		std::vector<KPDNodeType> nodeTypes,
+		std::vector<KPDStatus> availability, 
+		std::vector<KPDTransplant> transplantStatuses,
+		std::map<int, std::map<int, std::vector<KPDMatch *> > > matches);
 	~KPDMatchRun();
 
 	//Collect Arrangements
@@ -113,32 +112,25 @@ public:
 	void assignExpectedUtilitiesForCurrentMatchRun(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<double> & assignedValueOfCurrentMatchRunArrangements);
 
 	//Select Arrangements by Optimization
-	void getOptimalSolutionForCurrentMatchRun(KPDOptimizationScheme scheme, std::vector<int> & optimalSolution, std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<double> & assignedValueOfCurrentMatchRunArrangements);
+	void getOptimalSolutionForCurrentMatchRun(std::vector<int> & optimalSolution, std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<double> & assignedValueOfCurrentMatchRunArrangements);
 
 	std::string printLog();
 
 };
 
 
-KPDMatchRun::KPDMatchRun(KPDParameters * params, int currentIteration, int currentMatchRun, double currentTime,
-	std::vector<KPDNode *> nodeVector, std::vector<KPDNodeType> nodeTypeVector,
-	std::vector<KPDStatus> candidateUnderlyingStatus, std::vector<KPDTransplant> nodeTransplantationStatus,
-	std::vector<std::vector<std::vector<KPDMatch *> > > matchMatrix, std::vector<std::vector <bool> > adjacencyMatrix, std::vector<std::vector<bool > > adjacencyMatrixReduced) {
+KPDMatchRun::KPDMatchRun(KPDParameters * params, int iteration, int mrTime,
+	std::vector<KPDNode *> nodes, 
+	std::vector<KPDNodeType> nodeTypes,
+	std::vector<KPDStatus> availability,
+	std::vector<KPDTransplant> transplantStatuses,
+	std::map<int, std::map<int, std::vector<KPDMatch *> > > matches) {
+
+	currentIteration = iteration;
+	matchRunTime = mrTime;
 	
-	matchRunLog << "Match Run " << currentMatchRun << " at Time " << currentTime << std::endl;
-
-	//Set Matrices
-	matchRunNodeVector = nodeVector;
-	matchRunNodeTypeVector = nodeTypeVector;
-
-	matchRunCandidateUnderlyingStatus = candidateUnderlyingStatus;
-
-	matchRunNodeTransplantationStatus = nodeTransplantationStatus;
-
-	matchRunMatchMatrix = matchMatrix;
-	matchRunAdjacencyMatrix = adjacencyMatrix;
-	matchRunAdjacencyMatrixReduced = adjacencyMatrixReduced;
-
+	matchRunLog << "Match Run at Time " << mrTime << std::endl;
+	
 	//Retrieve Relevant Parameters
 	maxChainLength = params->getMaxChainLength();
 	maxCycleSize = params->getMaxCycleSize();
@@ -159,50 +151,90 @@ KPDMatchRun::KPDMatchRun(KPDParameters * params, int currentIteration, int curre
 	probNDDAttrition = params->getProbNDDAttrition();
 
 	//Set Match Run Values
-	rngExpectedUtilityEstimation.setSeed(params->getRNGSeedExpectedUtilityEstimation() * currentIteration + currentMatchRun);
+	rngExpectedUtility.setSeed(params->getRNGSeedExpectedUtility() * currentIteration + matchRunTime);
 
 	matchRunNumberOfPairs = 0;
 	matchRunNumberOfNDDs = 0;
-
-	// Node is added to current match run only if it is NOT_TRANSPLANTED and STATUS_ACTIVE	
-	matchRunLog << "Active Pool: ";
-	currentMatchRunNodes.push_back(0);
-	std::vector<int> tempNodes;
+	matchRunNumberOfNodes = 0;
+	
+	std::vector<KPDNode *> tempNodes;
 
 	// Order nodes with NDDs in front
-	for (unsigned i = 1; i < nodeVector.size(); i++) {
+	// Node is added to current match run only if it is NOT_TRANSPLANTED and STATUS_ACTIVE
+	for (int i = 1; i <= (int)nodes.size(); i++) {
+
+		int nodeIndex = i - 1;
+
 		//If pair is active and not already transplanted
-		if (nodeTransplantationStatus[i] == NOT_TRANSPLANTED && getNodeStatus(i) == STATUS_ACTIVE) {
-			if (nodeTypeVector[i] == PAIR) {
-				tempNodes.push_back(i);
+		if (transplantStatuses[nodeIndex] == NOT_TRANSPLANTED && availability[nodeIndex] == STATUS_ACTIVE) {
+			if (nodeTypes[nodeIndex] == PAIR) {
+				tempNodes.push_back(nodes[nodeIndex]);
 				matchRunNumberOfPairs++;
 			}
 			else {
-				currentMatchRunNodes.push_back(i);
-				matchRunLog << i << " ";
+				matchRunNodes.push_back(nodes[nodeIndex]);
+				matchRunNodeTypes.push_back(nodeTypes[nodeIndex]);
 				matchRunNumberOfNDDs++;
 			}
 		}
 	}
-	for (int i = 0; i < tempNodes.size(); i++) {
-		currentMatchRunNodes.push_back(tempNodes[i]);
-		matchRunLog << tempNodes[i] << " ";
-	}
-
-	matchRunLog << std::endl;
-
-	// Save Size of Current Match Run
 	matchRunNumberOfNodes = matchRunNumberOfPairs + matchRunNumberOfNDDs;
 
-	// Build Match Run Specific Adjacency Matrices
-	matchRunSubAdjacencyMatrix.assign(1 + matchRunNumberOfNodes, std::vector<bool>(1 + matchRunNumberOfNodes, false));
-	matchRunSubAdjacencyMatrixReduced.assign(1 + matchRunNumberOfNodes, std::vector<bool>(1 + matchRunNumberOfNodes, false));
+	for (int i = 1; i <= (int) tempNodes.size(); i++) {
+
+		int nodeIndex = i - 1;
+
+		matchRunNodes.push_back(tempNodes[nodeIndex]);
+		matchRunNodeTypes.push_back(PAIR);
+	}
+	
+	// Print Active Pool
+	matchRunLog << "Active Pool for Current Match Run: ";
+	for (int i = 1; i < matchRunNumberOfNodes; i++) {
+
+		int nodeIndex = i - 1;
+		matchRunLog << matchRunNodes[nodeIndex]->getID() << " (" << matchRunNodeTypes[nodeIndex] << ") ";
+	}
+	matchRunLog << std::endl;
+	
+
+	// Collect Relevant Matches for Match Run and Create Match-Run Specific Adjacency Matrices
+	matchRunAdjacencyMatrix.assign(1 + matchRunNumberOfNodes, std::vector<bool>(1 + matchRunNumberOfNodes, false));
+	matchRunAdjacencyMatrixReduced.assign(1 + matchRunNumberOfNodes, std::vector<bool>(1 + matchRunNumberOfNodes, false));
 	
 	for (int i = 1; i <= matchRunNumberOfNodes; i++) {
+
+		int donorNodeIndex = i - 1;
+
+		int donorNodeID = matchRunNodes[donorNodeIndex]->getID();
+		int numDonors = matchRunNodes[donorNodeIndex]->getNumberOfDonors();
+
 		for (int j = 1; j <= matchRunNumberOfNodes; j++) {
-			matchRunSubAdjacencyMatrix[i][j] = adjacencyMatrix[currentMatchRunNodes[i]][currentMatchRunNodes[j]];
-			if (nodeTypeVector[currentMatchRunNodes[j]] == PAIR) {
-				matchRunSubAdjacencyMatrixReduced[i][j] = adjacencyMatrix[currentMatchRunNodes[i]][currentMatchRunNodes[j]];
+
+			int candidateNodeIndex = j - 1;
+
+			int candidateNodeID = matchRunNodes[candidateNodeIndex]->getID();
+
+			if (matches.find(donorNodeID) != matches.end()) {
+				if (matches[donorNodeID].find(candidateNodeID) != matches[donorNodeID].end()) {
+
+					for (int k = 1; k <= numDonors; k++) {
+
+						int donorIndex = k - 1;
+
+						KPDMatch * match = matches[donorNodeID][candidateNodeID][donorIndex]->copy();
+
+						matchRunMatches[donorNodeIndex][candidateNodeIndex].push_back(match);
+
+						if (match->getAdjacency()) {
+
+							matchRunAdjacencyMatrix[i][j] = true;
+							if (nodeTypes[candidateNodeIndex] == PAIR) {
+								matchRunAdjacencyMatrixReduced[i][j] = true;
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -222,9 +254,9 @@ void KPDMatchRun::collectCyclesAndChainsForCurrentMatchRun(std::vector<std::vect
 
 	while (start <= matchRunNumberOfNodes) {
 		visitedVector[start] = 1;
-		stack_vec.push_back(start);
-		int v = getChild(start, start, visitedVector, matchRunSubAdjacencyMatrix);
 
+		stack_vec.push_back(start);
+		int v = getChild(start, start, visitedVector, matchRunAdjacencyMatrix);
 		while (!stack_vec.empty()) {
 			if (v == -1) {
 				int top = stack_vec.back();
@@ -234,79 +266,77 @@ void KPDMatchRun::collectCyclesAndChainsForCurrentMatchRun(std::vector<std::vect
 					break;
 				}
 				visitedVector[top] = 0;
-				v = getChild(top, stack_vec.back(), visitedVector, matchRunSubAdjacencyMatrix);
+				v = getChild(top, stack_vec.back(), visitedVector, matchRunAdjacencyMatrix);
 			}
 			else {
 				visitedVector[v] = 1;
 				stack_vec.push_back(v);
 
 				//Potential Cycle or Chain Found!
-				if (matchRunSubAdjacencyMatrix[v][start]) {
+				if (matchRunAdjacencyMatrix[v][start]) {
 
 					int multipleNDDCheck = 0;
 					int index = 0;
 
 					//Copy Potential Cycle Or Chain
 					std::vector<int> potentialCycleOrChain;
-					for (unsigned i = 0; i < stack_vec.size(); i++) {
-						potentialCycleOrChain.push_back(currentMatchRunNodes[stack_vec[i]]);
+
+					for (int i = 0; i < (int)stack_vec.size(); i++) {
+						potentialCycleOrChain.push_back(stack_vec[i] - 1);
 					}
 
 					//Count Non-Directed Donors; Save Index of Non-Directed Donor
-					for (unsigned i = 0; i < potentialCycleOrChain.size(); i++) {
-						if (matchRunNodeTypeVector[potentialCycleOrChain[i]] != PAIR) {
+					for (int i = 0; i < (int)potentialCycleOrChain.size(); i++) {
+						if (matchRunNodeTypes[potentialCycleOrChain[i]] != PAIR) {
 							multipleNDDCheck++;
 							index = i;
 						}
 					}
 
-					//If there is 1 NDD, we're dealing with a chain
-					if (multipleNDDCheck == 1) {
-						//Check if size of chain is appropriate
-						if ((int)potentialCycleOrChain.size() <= maxChainLength + 1) {
-							//Queue up NDD to front of chain
-							while (index > 0) {
-								int temp = *(potentialCycleOrChain.begin());
-								potentialCycleOrChain.erase(potentialCycleOrChain.begin());
-								potentialCycleOrChain.push_back(temp);
-								index--;
+					//If there is 1 NDD, we're dealing with a chain. Check if size of chain is appropriate
+					if (multipleNDDCheck == 1 && (int)potentialCycleOrChain.size() <= maxChainLength + 1) {
+						
+						//Queue up NDD to front of chain
+						while (index > 0) {
+							int temp = *(potentialCycleOrChain.begin());
+							potentialCycleOrChain.erase(potentialCycleOrChain.begin());
+							potentialCycleOrChain.push_back(temp);
+							index--;
+						}
+						
+						if (!allowABBridgeDonors) {
+							
+							bool hasNonABBridgeDonor = false;
+
+							//If any of the active associated donors have a blood type other than AB, then we're good
+							for (int k = 1; k <= matchRunNodes[*(potentialCycleOrChain.end() - 1)]->getNumberOfDonors(); k++) {
+
+								int donorIndex = k - 1;
+								if (matchRunNodes[*(potentialCycleOrChain.end() - 1)]->getDonorBT(donorIndex) != BT_AB) {
+									hasNonABBridgeDonor = true;
+									break;
+								}
 							}
 
-							//If AB bridge donors are allowed, we're all set!
-							if (allowABBridgeDonors) {
+							if (hasNonABBridgeDonor) {
 								currentMatchRunArrangements.push_back(potentialCycleOrChain);
 							}
-							else {
-								bool exclude = true;
-
-								//If any of the active associated donors have a blood type other than AB, then we're good
-								for (int k = 1; k <= matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getNumberOfDonors(); k++) {
-									//if (matchRunDonorUnderlyingStatus[*(potentialCycleOrChain.end() - 1)][k] == STATUS_ACTIVE && matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getDonorBT(k) != BT_AB) {
-									if (matchRunNodeVector[*(potentialCycleOrChain.end() - 1)]->getDonorBT(k) != BT_AB) {
-
-										exclude = false;
-									}
-								}
-
-								if (!exclude) {
-									currentMatchRunArrangements.push_back(potentialCycleOrChain);
-								}
-							}
 						}
-					}
-					// If there are no NDDs, we're dealing with a cycle
-					else if (multipleNDDCheck == 0) {
-						//Check if size of cycle is appropriate; if it is, we're good to go!
-						if ((int)potentialCycleOrChain.size() <= maxCycleSize) {
+						else {
 							currentMatchRunArrangements.push_back(potentialCycleOrChain);
 						}
+						
+					}
+					// If there are no NDDs, we're dealing with a cycle. Check if size is appropriate
+					else if (multipleNDDCheck == 0 && (int)potentialCycleOrChain.size() <= maxCycleSize) {
+						currentMatchRunArrangements.push_back(potentialCycleOrChain);						
 					}
 				}
 
 				if ((int)stack_vec.size() >= maximum)
 					v = -1;
 				else
-					v = getChild(start, v, visitedVector, matchRunSubAdjacencyMatrix);
+					v = getChild(start, v, visitedVector, matchRunAdjacencyMatrix);
 
 			}
 		}
@@ -321,15 +351,16 @@ void KPDMatchRun::collectLRSForCurrentMatchRun(std::vector<std::vector<int> > & 
 
 	//Only need to run NDD sub-routine if there are NDDs in the match run (...herp de derp)
 	if (matchRunNumberOfNDDs > 0) {
-		getLRSWithNDDs(currentMatchRunArrangements, matchRunNumberOfNDDs, matchRunSubAdjacencyMatrixReduced);
+		getLRSWithNDDs(currentMatchRunArrangements, matchRunNumberOfNDDs, matchRunAdjacencyMatrixReduced);
 	}
 
-	getLRSPairsOnly(currentMatchRunArrangements, matchRunSubAdjacencyMatrixReduced);
+	getLRSPairsOnly(currentMatchRunArrangements, matchRunAdjacencyMatrixReduced);
 }
 
 // Assign Expected Utilities
 
-void KPDMatchRun::assignUtilitiesForCurrentMatchRun(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<double> & assignedValueOfCurrentMatchRunArrangements) {
+void KPDMatchRun::assignUtilitiesForCurrentMatchRun(std::vector<std::vector<int> > & currentMatchRunArrangements, 
+	std::vector<double> & assignedValueOfCurrentMatchRunArrangements) {
 
 	// Iterating through cycles and chains...
 	for (std::vector<std::vector<int> >::iterator itArrangements = currentMatchRunArrangements.begin(); itArrangements != currentMatchRunArrangements.end(); itArrangements++) {
@@ -338,28 +369,35 @@ void KPDMatchRun::assignUtilitiesForCurrentMatchRun(std::vector<std::vector<int>
 		//... and sum over all potential transplants...
 		for (std::vector<int>::iterator itNodes = (*itArrangements).begin(); itNodes != (*itArrangements).end() - 1; itNodes++) {
 
+			int donorNodeIndex = *itNodes;
+			int candidateNodeIndex = *(itNodes + 1);
+
 			//... using the best potential matching donor to assign the value
-			int bestDonorIndex = selectDonor(*itNodes, *(itNodes + 1));
+			int bestDonorIndex = selectDonor(donorNodeIndex, candidateNodeIndex);
 
 			//5 year survival
 			if (utilityScheme == UTILITY_TRANSPLANTS) { // Transplants
 				util += 1;
 			}
 			else {
-				util += matchRunMatchMatrix[*itNodes][*(itNodes + 1)][bestDonorIndex]->getUtility(utilityScheme);
+				util += matchRunMatches[donorNodeIndex][candidateNodeIndex][bestDonorIndex]->getUtility(utilityScheme);
 			}
 		}
 
 		// For cycles, add the final transplant back to the original candidate
-		if (matchRunNodeTypeVector[*(itArrangements->begin())] == PAIR) {
-			int bestDonorIndex = selectDonor(*(itArrangements->end() - 1), *(itArrangements->begin()));
+		if (matchRunNodeTypes[*(itArrangements->begin())] == PAIR) {
+
+			int donorNodeIndex = *(itArrangements->end() - 1);
+			int candidateNodeIndex = *(itArrangements->begin());
+
+			int bestDonorIndex = selectDonor(donorNodeIndex, candidateNodeIndex);
 
 
 			if (utilityScheme == UTILITY_TRANSPLANTS) { // Transplants
 				util += 1;
 			}
 			else {
-				util += matchRunMatchMatrix[*(itArrangements->end() - 1)][*(itArrangements->begin())][bestDonorIndex]->getUtility(utilityScheme);
+				util += matchRunMatches[donorNodeIndex][candidateNodeIndex][bestDonorIndex]->getUtility(utilityScheme);
 			}
 
 		}
@@ -370,31 +408,18 @@ void KPDMatchRun::assignUtilitiesForCurrentMatchRun(std::vector<std::vector<int>
 
 void KPDMatchRun::assignExpectedUtilitiesForCurrentMatchRun(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<double> & assignedValueOfCurrentMatchRunArrangements) {
 
-	int i = 0;
-
 	// Iterating through arrangements...
 	for (std::vector<std::vector<int> >::iterator itArrangements = currentMatchRunArrangements.begin(); itArrangements != currentMatchRunArrangements.end(); itArrangements++) {
-		i++;
+		
 		double eu = 0;
 
 		// ... and either estimate or calculate expected utility
 		if (estimateEU) {
 			eu = estimateExpectedUtility(*itArrangements);
-			//std::cout << i << std::endl;
-
-			//bool print = false;
-
-			//if (i == 5) {
-			//print = true;
-			//}
-
-			//eu = estimateExpectedUtilityMatrix(*itArrangements,print);
 		}
 		else {
 			eu = calculateExpectedUtility(*itArrangements);
 		}
-
-		//std::cout << i << std::endl;
 
 		assignedValueOfCurrentMatchRunArrangements.push_back(eu);
 	}
@@ -402,7 +427,9 @@ void KPDMatchRun::assignExpectedUtilitiesForCurrentMatchRun(std::vector<std::vec
 
 // Select Arrangements by Optimization
 
-void KPDMatchRun::getOptimalSolutionForCurrentMatchRun(KPDOptimizationScheme scheme, std::vector<int> & optimalSolution, std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<double> & assignedValueOfCurrentMatchRunArrangements) {
+void KPDMatchRun::getOptimalSolutionForCurrentMatchRun(std::vector<int> & optimalSolution,
+	std::vector<std::vector<int> > & currentMatchRunArrangements, 
+	std::vector<double> & assignedValueOfCurrentMatchRunArrangements) {
 
 	// If there are no arrangements, no need to do anything
 	int nArrangements = (int)currentMatchRunArrangements.size();
@@ -429,12 +456,12 @@ void KPDMatchRun::getOptimalSolutionForCurrentMatchRun(KPDOptimizationScheme sch
 		model.update();
 
 		// Restriction: Each vertex can only appear at most once in solution
-		for (unsigned i = 1; i < currentMatchRunNodes.size(); i++) {
-			int index = currentMatchRunNodes[i];
+		for (int i = 1; i <= matchRunNumberOfNodes; i++) {
+
 			GRBLinExpr expr = 0;
 			for (int j = 0; j <= nArrangements - 1; j++) {
 				for (std::vector<int>::iterator it = currentMatchRunArrangements[j].begin(); it != currentMatchRunArrangements[j].end(); ++it) {
-					if (*it == index) {
+					if (*it == i) {
 						expr += myVars[j + 1];
 					}
 				}
@@ -501,84 +528,39 @@ std::string KPDMatchRun::printLog(){
 	return matchRunLog.str();
 }
 
-
-
-//// Helper Functions
-
-// Simulation Functions
-
-KPDStatus KPDMatchRun::getNodeStatus(int nodeID) {
-
-	//If the candidate is withdrawn, then the entire node is withdrawn
-	if (matchRunCandidateUnderlyingStatus[nodeID] == STATUS_WITHDRAWN) {
-		return STATUS_WITHDRAWN;
-	}
-	else {
-
-		//If the candidate is inactive, then the node is inactive
-		if (matchRunCandidateUnderlyingStatus[nodeID] == STATUS_INACTIVE) {
-			return STATUS_INACTIVE;
-		}
-		else {
-
-			//If the candidate is active, node status is based on donors
-			//If any donor is active, node is active
-			//If all donors are withdrawn, node is withdrawn
-			//Otherwise, node is inactive
-
-			/*int withdrawnDonors = 0;
-
-			for (int donorID = 1; donorID <= matchRunNodeVector[nodeID]->getNumberOfDonors(); donorID++) {
-				//if (matchRunDonorUnderlyingStatus[nodeID][donorID] == STATUS_ACTIVE) { // Active donor exists
-					//return STATUS_ACTIVE;
-				//}
-				//else if (matchRunDonorUnderlyingStatus[nodeID][donorID] == STATUS_WITHDRAWN) {
-				else if (matchRunDonorUnderlyingStatus[nodeID][donorID] == STATUS_WITHDRAWN)
-					withdrawnDonors++;
-				}
-			}
-
-			if (withdrawnDonors == matchRunNodeVector[nodeID]->getNumberOfDonors()) {
-				return STATUS_WITHDRAWN;
-			}
-			else {*/
-				return STATUS_INACTIVE;
-			//}
-		}
-	}
-}
-
-int KPDMatchRun::selectDonor(int donorNodeID, int candidateNodeID) {
+int KPDMatchRun::selectDonor(int donorNodeIndex, int candidateNodeIndex) {
+	
 	double maxUtil = 0.0;
-	int maxDonorID = -1; // -1 means no donor is selected
+	int maxDonorIndex = -1; // -1 means no donor is selected
 
 	//Iterate through donors
-	for (int donorID = 1; donorID <= matchRunNodeVector[donorNodeID]->getNumberOfDonors(); donorID++) {
+	for (int k = 1; k <= matchRunNodes[donorNodeIndex]->getNumberOfDonors(); k++) {
+
+		int donorIndex = k - 1;
 
 		//Only consider donors that match between the donor node and the candidate node, and that are active!
-		//if (matchRunMatchMatrix[donorNodeID][candidateNodeID][donorID]->getAdjacency() && matchRunDonorUnderlyingStatus[donorNodeID][donorID] == STATUS_ACTIVE) {
-		if (matchRunMatchMatrix[donorNodeID][candidateNodeID][donorID]->getAdjacency()) {
+		if (matchRunMatches[donorNodeIndex][candidateNodeIndex][donorIndex]->getAdjacency()) {
 
 			//If the donor provides more utility than the current max donor, replace with new donor, and update max utility value
 
 			if (utilityScheme == UTILITY_TRANSPLANTS) { // Transplants
 				if (maxUtil == 0.0) {
-					maxDonorID = donorID;
+					maxDonorIndex = donorIndex;
 					maxUtil = 1.0;
 				}
 			}
 			else {
-				if (matchRunMatchMatrix[donorNodeID][candidateNodeID][donorID]->getUtility(utilityScheme) > maxUtil) {
-					maxDonorID = donorID;
-					maxUtil = matchRunMatchMatrix[donorNodeID][candidateNodeID][donorID]->getUtility(utilityScheme);
+				if (matchRunMatches[donorNodeIndex][candidateNodeIndex][donorIndex]->getUtility(utilityScheme) > maxUtil) {
+					maxDonorIndex = donorIndex;
+					maxUtil = matchRunMatches[donorNodeIndex][candidateNodeIndex][donorIndex]->getUtility(utilityScheme);
 				}
 			}
 		}
 
-		donorID++;
+		donorIndex++;
 	}
 
-	return maxDonorID;
+	return maxDonorIndex;
 }
 
 
@@ -593,14 +575,17 @@ int KPDMatchRun::getChild(int lower, int current, std::vector<int> &visitedVecto
 
 // For Collecting Arrangements
 
-void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<std::vector<bool> > &adjacency) {
+void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchRunArrangements, std::vector<std::vector<bool> > & adjacency) {
 
 	std::vector<int> pairs;
-	pairs.push_back(0);
+	pairs.push_back(-1);
 
 	for (int i = 1; i <= matchRunNumberOfNodes; i++) {
-		if (matchRunNodeTypeVector[currentMatchRunNodes[i]] == PAIR) {
-			pairs.push_back(i);
+
+		int nodeIndex = i - 1;
+
+		if (matchRunNodeTypes[nodeIndex] == PAIR) {
+			pairs.push_back(nodeIndex);
 		}
 	}
 
@@ -610,7 +595,9 @@ void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchR
 	reverseMatrix.assign(1 + numberOfPairs, std::vector<bool>(1 + numberOfPairs, false));
 
 	for (int i = 1; i <= numberOfPairs; i++) {
+
 		for (int j = 1; j <= numberOfPairs; j++) {
+
 			if (i != j) {
 				reverseMatrix[j][i] = adjacency[pairs[i]][pairs[j]];
 			}
@@ -641,7 +628,7 @@ void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchR
 		while (!bfsTree.empty()) {
 
 			// Get child
-			child = getChildLRSPairsOnly(adjacency, bfsTree, bfsLevel, currentMatchRunNodes, pairs, visited, next, childLevel);
+			child = getChildLRSPairsOnly(adjacency, bfsTree, bfsLevel, pairs, visited, next, childLevel);
 
 			// If (i) the size of the bfsTree is at the limit or (ii) no children, bfsLevel is currently at the next bfsLevel of the previous node
 			if ((int)bfsTree.size() == maxLRSSize || (child == -1 && childLevel == bfsLevel.back() + 1)) {
@@ -701,7 +688,7 @@ void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchR
 
 					std::vector<int> newLRS;
 					for (std::vector<int>::iterator itTree = bfsTree.begin(); itTree != bfsTree.end(); itTree++) {
-						newLRS.push_back(currentMatchRunNodes[pairs[*itTree]]);
+						newLRS.push_back(pairs[*itTree]);
 					}
 
 					if (validateLRSBounds(newLRS, matchRunNumberOfNodes)) {
@@ -715,7 +702,7 @@ void KPDMatchRun::getLRSPairsOnly(std::vector<std::vector<int> > & currentMatchR
 	}
 }
 
-int KPDMatchRun::getChildLRSPairsOnly(std::vector<std::vector<bool> > &adjacency, std::vector<int> &tree, std::vector<int> &level, std::vector<int> &nodes, std::vector<int> &pairs, std::vector<bool> &visited, int next, int childLevel) {
+int KPDMatchRun::getChildLRSPairsOnly(std::vector<std::vector<bool> > &adjacency, std::vector<int> &tree, std::vector<int> &level, std::vector<int> &pairs, std::vector<bool> &visited, int next, int childLevel) {
 
 	int size = (int)pairs.size() - 1;
 
@@ -723,16 +710,16 @@ int KPDMatchRun::getChildLRSPairsOnly(std::vector<std::vector<bool> > &adjacency
 		//Can only visit children not already visited
 		if (visited[child] == false) {
 			//Go through previous nodes
-			for (int i = 0; i<(int)level.size(); i++) {
+			for (int i = 0; i < (int)level.size(); i++) {
 				//At low levels, make sure potential node is not a direct successor
 				if (level[i] < childLevel - 1) {
-					if (adjacency[pairs[tree[i]]][pairs[child]]) {
+					if (adjacency[pairs[tree[i]] + 1][pairs[child] + 1]) {
 						break;
 					}
 				}
 				//At previous level, if potential node is a successor, it is the next child
 				if (level[i] == childLevel - 1) {
-					if (adjacency[pairs[tree[i]]][pairs[child]]) {
+					if (adjacency[pairs[tree[i]] + 1][pairs[child] + 1]) {
 						return child;
 					}
 				}
@@ -911,7 +898,7 @@ void KPDMatchRun::getLRSWithNDDs(std::vector<std::vector<int> > & currentMatchRu
 
 					for (int i = 0; i < (int)listOfBFSTrees.size(); i++) {
 						for (int j = 0; j < (int)listOfBFSTrees[i].size(); j++) {
-							newLRS.push_back(currentMatchRunNodes[listOfBFSTrees[i][j] + 1]);
+							newLRS.push_back(listOfBFSTrees[i][j]); // Changed
 						}
 					}
 
@@ -1109,7 +1096,6 @@ int KPDMatchRun::getChildLRSWithNDDs(std::vector<std::vector<bool> > &adjacency,
 
 bool KPDMatchRun::validateLRSBounds(std::vector<int> &arrangement, int order) {
 
-
 	// Obtain matrix of shortest path between any two nodes
 
 	int arrangementSize = (int)arrangement.size();
@@ -1138,7 +1124,7 @@ bool KPDMatchRun::validateLRSBounds(std::vector<int> &arrangement, int order) {
 
 			sp = order;
 			for (int q = 0; q <= i - 1; q++) {
-				if (matchRunAdjacencyMatrix[arrangement[i]][arrangement[q]]) {
+				if (matchRunAdjacencyMatrixReduced[arrangement[i]][arrangement[q]]) { // Reduced?
 					sp = std::min(sp, shortestPathLengths[q][j] + 1);
 				}
 			}
@@ -1171,7 +1157,7 @@ bool KPDMatchRun::validateLRSBounds(std::vector<int> &arrangement, int order) {
 	while (!stack.empty()) {
 		for (int i = 0; i < arrangementSize; i++) {
 			if (!visited[i]) {
-				if (matchRunNodeTypeVector[arrangement[stack.front()]] != PAIR) {
+				if (matchRunNodeTypes[arrangement[stack.front()]] != PAIR) {
 					if (shortestPathLengths[stack.front()][i] <= maxChainLength + 1) {
 						visited[i] = true;
 						stack.push_back(i);
@@ -1179,8 +1165,8 @@ bool KPDMatchRun::validateLRSBounds(std::vector<int> &arrangement, int order) {
 					}
 				}
 				else {
-					if ((matchRunNodeTypeVector[arrangement[i]] == PAIR && shortestPathLengths[i][stack.front()] + shortestPathLengths[stack.front()][i] <= maxCycleSize) ||
-						(matchRunNodeTypeVector[arrangement[i]] != PAIR && shortestPathLengths[i][stack.front()] <= maxChainLength + 1)) {
+					if ((matchRunNodeTypes[arrangement[i]] == PAIR && shortestPathLengths[i][stack.front()] + shortestPathLengths[stack.front()][i] <= maxCycleSize) ||
+						(matchRunNodeTypes[arrangement[i]] != PAIR && shortestPathLengths[i][stack.front()] <= maxChainLength + 1)) {
 
 						visited[i] = true;
 						stack.push_back(i);
@@ -1193,135 +1179,51 @@ bool KPDMatchRun::validateLRSBounds(std::vector<int> &arrangement, int order) {
 	}
 
 	return connections == arrangementSize;
-
-
-
 }
 
 // For Assigning Expected Utilities
 
 double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 	
-	double nddAssumedProbability;
-	double pairAssumedProbability;
-	double donorAssumedProbability = 1;
-
-	nddAssumedProbability =  1 - (probNDDAttrition);
-	pairAssumedProbability = 1 - (probPairActiveToInactive + probPairAttrition);
-
+	double nddAssumedProbability = 1 - (probNDDAttrition);
+	double pairAssumedProbability = 1 - (probPairActiveToInactive + probPairAttrition);
+	
 	int N = (int)arrangement.size();
 	double utility = 0;
 
-	//Collect and count all available donors within the arrangement
-	std::vector<int> donorNodeIndices;
-	std::vector<int> donorIndices;
-	donorNodeIndices.push_back(0);
-	donorIndices.push_back(0);
-
-	int numberOfDonors = 0;
-
-	int i = 1;
-	for (std::vector<int>::iterator arrangementIt = arrangement.begin(); arrangementIt != arrangement.end(); arrangementIt++) {
-
-		for (int k = 1; k <= matchRunNodeVector[*arrangementIt]->getNumberOfDonors(); k++) {
-			//if (matchRunDonorUnderlyingStatus[*arrangementIt][k] == STATUS_ACTIVE) {
-				donorNodeIndices.push_back(i);
-				donorIndices.push_back(k);
-				numberOfDonors++;
-			//}
-		}
-		i++;
-	}
-
 	//Iterates through each possible subset of nodes
-	for (int d = 3; d < pow((double)2, numberOfDonors); d++) {
+	for (int d = 3; d < pow((double)2, N); d++) {
 
-		std::vector<int> nodeFlags(numberOfDonors + 1, 0);
+		std::vector<int> availabilityFlags(N, 0);
 
-		int donorSubsetSize = KPDFunctions::setFlags(d, nodeFlags);
+		int subsetSize = KPDFunctions::setFlags(d, 0, availabilityFlags);
 
 		//Must be at least 2 nodes
-		if (donorSubsetSize > 1) {
-
-			std::vector<std::vector<bool> > subsetDonorAvailability(1 + N, std::vector<bool>(1, false));
-			std::vector<bool> subsetCandidateAvailability(1 + N, false);
-
-			for (int i = 1; i <= N; i++) {
-				int nodeNumberOfDonors = matchRunNodeVector[arrangement[i - 1]]->getNumberOfDonors();
-				subsetDonorAvailability[i].assign(1 + nodeNumberOfDonors, false);
-			}
-			//Iterate through nodes and mark availability
-			for (int flag = 1; flag <= numberOfDonors; flag++) {
-
-				int nodeIndex = donorNodeIndices[flag];
-				int nodeID = arrangement[nodeIndex - 1];
-
-				int donorID = donorIndices[flag];
-
-				if (nodeFlags[flag] != 0) {
-					subsetDonorAvailability[nodeIndex][donorID] = true;
-					subsetCandidateAvailability[nodeIndex] = true;
-				}
-			}
-
+		if (subsetSize > 1) {
+			
 			double probSubset = 1;
 
 			//Calculate probability of subset
 			for (int i = 1; i <= N; i++) {
-				int nodeID = arrangement[i - 1];
+				int arrangementIndex = i - 1;
+				int nodeIndex = arrangement[arrangementIndex];
 
 				double probNode = 1;
-
-				//Update with probability of candidate subset
-				if (matchRunNodeTypeVector[nodeID] != PAIR) {
-					for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfDonors(); k++) {
-						//if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
-							if (subsetDonorAvailability[i][k]) {
-								if (matchRunNodeTypeVector[nodeID] == NDD) {
-									probNode = probNode * nddAssumedProbability;
-								}
-								else {
-									probNode = probNode * donorAssumedProbability;
-								}
-							}
-							else {
-								if (matchRunNodeTypeVector[nodeID] == NDD) {
-									probNode = probNode * (1 - nddAssumedProbability);
-								}
-								else {
-									probNode = probNode * (1 - donorAssumedProbability);
-								}
-							}
-						//}
+				
+				if (matchRunNodeTypes[nodeIndex] != PAIR) {
+					if (availabilityFlags[arrangementIndex]) {
+						probNode = probNode * nddAssumedProbability;
+					}
+					else {
+						probNode = probNode * (1 - nddAssumedProbability);
 					}
 				}
-
-				if (matchRunNodeTypeVector[nodeID] == PAIR) {
-
-					if (subsetCandidateAvailability[i]) {
-
-						for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfDonors(); k++) {
-							//if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
-								if (subsetDonorAvailability[i][k]) {
-									probNode = probNode * donorAssumedProbability;
-								}
-								else {
-									probNode = probNode * (1 - donorAssumedProbability);
-								}
-							//}
-						}
-
+				else {
+					if (availabilityFlags[arrangementIndex]) {
 						probNode = probNode * pairAssumedProbability;
 					}
 					else {
-
-						for (int k = 1; k <= matchRunNodeVector[nodeID]->getNumberOfDonors(); k++) {
-							//if (matchRunDonorUnderlyingStatus[nodeID][k] == STATUS_ACTIVE) {
-								probNode = probNode * (1 - donorAssumedProbability);
-							//}
-						}
-
-						probNode = 1 - (1 - probNode) * pairAssumedProbability;
+						probNode = probNode * (1 - pairAssumedProbability);
 					}
 				}
 
@@ -1330,31 +1232,38 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 
 			if (probSubset > 0) {
 
-				std::vector<int> edgeSubsetCandidateIndices;
+				std::vector<int> edgeSubsetCandidateNodeIndices;
 				std::vector<int> edgeSubsetDonorNodeIndices;
-				std::vector<int> edgeSubsetDonorIDs;
-
-				edgeSubsetCandidateIndices.push_back(0);
-				edgeSubsetDonorNodeIndices.push_back(0);
-				edgeSubsetDonorIDs.push_back(0);
+				std::vector<int> edgeSubsetDonorIndices;
 
 				int numberOfEdgesInDonorSubset = 0;
 
 				//Collect possible edges
 				for (int i = 1; i <= N; i++) {
-					int donorNodeID = arrangement[i - 1];
+
+					int arrangementDonorIndex = i - 1;
+					int donorNodeIndex = arrangement[arrangementDonorIndex];
+
 					for (int j = 1; j <= N; j++) {
-						if (i != j) {
 
-							int candidateNodeID = arrangement[j - 1];
+						int arrangementCandidateIndex = j - 1;
+						int candidateNodeIndex = arrangement[arrangementCandidateIndex];
 
-							if (matchRunAdjacencyMatrix[donorNodeID][candidateNodeID] && matchRunNodeTypeVector[candidateNodeID] == PAIR) {
+						if (i != j) {							
 
-								for (int k = 1; k <= matchRunNodeVector[donorNodeID]->getNumberOfDonors(); k++) {
-									if (subsetDonorAvailability[i][k] && subsetCandidateAvailability[j] && matchRunMatchMatrix[donorNodeID][candidateNodeID][k]->getAdjacency()) {
-										edgeSubsetDonorNodeIndices.push_back(i);
-										edgeSubsetCandidateIndices.push_back(j);
-										edgeSubsetDonorIDs.push_back(k);
+							if (matchRunAdjacencyMatrix[donorNodeIndex][candidateNodeIndex] && matchRunNodeTypes[candidateNodeIndex] == PAIR) {
+
+								for (int k = 1; k <= matchRunNodes[donorNodeIndex]->getNumberOfDonors(); k++) {
+
+									int donorIndex = k - 1;
+
+									if (availabilityFlags[arrangementDonorIndex] && 
+										availabilityFlags[arrangementCandidateIndex] && 
+										matchRunMatches[donorNodeIndex][candidateNodeIndex][donorIndex]->getAdjacency()) {
+
+										edgeSubsetDonorNodeIndices.push_back(arrangementDonorIndex);
+										edgeSubsetCandidateNodeIndices.push_back(arrangementCandidateIndex);
+										edgeSubsetDonorIndices.push_back(donorIndex);
 
 										numberOfEdgesInDonorSubset++;
 									}
@@ -1367,79 +1276,90 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 				// Iterate through every possible combination of edges
 				for (int e = 1; e < pow((double)2, numberOfEdgesInDonorSubset); e++) {
 
-					std::vector<int> edgeFlags(1 + numberOfEdgesInDonorSubset, 0);
+					std::vector<int> edgeFlags(numberOfEdgesInDonorSubset, 0);
 
-					int edgeSubsetSize = KPDFunctions::setFlags(e, edgeFlags);
+					int edgeSubsetSize = KPDFunctions::setFlags(e, 0, edgeFlags);
 
 					double probEdgeSubset = probSubset;
 
 					std::vector<std::vector<bool> > reducedAdjacencyMatrix(1 + N, std::vector<bool>(1 + N, false));
-					std::vector<std::vector<std::vector<bool> > > reducedDonorAdjacencyMatrix(1 + N, std::vector<std::vector<bool> >(1 + N, std::vector<bool>(1, false)));
-					std::vector<std::vector<std::vector<double> > > reducedUtilityMatrix(1 + N, std::vector<std::vector<double> >(1 + N, std::vector<double>(1, 0.0)));
 
-					std::vector<KPDNodeType> reducedNodeTypeVector(1 + N, PAIR);
-					std::vector<std::vector<KPDBloodType> > reducedDonorBloodTypes(1 + N, std::vector<KPDBloodType>(1, BT_AB));
+					std::vector<std::vector<std::vector<bool> > > reducedDonorAdjacencyMatrix(N, std::vector<std::vector<bool> >(N, std::vector<bool>(1, false)));
+					std::vector<std::vector<std::vector<double> > > reducedUtilityMatrix(N, std::vector<std::vector<double> >(N, std::vector<double>(1, 0.0)));
+
+					std::vector<KPDNodeType> reducedNodeTypes(N, PAIR);
+					std::vector<std::vector<KPDBloodType> > reducedDonorBloodTypes(N, std::vector<KPDBloodType>(1, BT_AB));
 
 					//Build reduced matrices
 					for (int i = 1; i <= N; i++) {
 
-						int donorNodeID = arrangement[i - 1];
+						int arrangementDonorIndex = i - 1;
+						int donorNodeIndex = arrangement[arrangementDonorIndex];
 
-						int arrangementNodeDonors = matchRunNodeVector[donorNodeID]->getNumberOfDonors();
+						int donorNodeNumberOfDonors = matchRunNodes[donorNodeIndex]->getNumberOfDonors();
 
 						for (int j = 1; j <= N; j++) {
-							reducedDonorAdjacencyMatrix[i][j].assign(1 + arrangementNodeDonors, false);
-							reducedUtilityMatrix[i][j].assign(1 + arrangementNodeDonors, 0.0);
+
+							int arrangementCandidateIndex = j - 1;
+							int candidateNodeIndex = arrangement[arrangementCandidateIndex];
+
+							reducedDonorAdjacencyMatrix[arrangementDonorIndex][arrangementCandidateIndex].assign(donorNodeNumberOfDonors, false);
+							reducedUtilityMatrix[arrangementDonorIndex][arrangementCandidateIndex].assign(donorNodeNumberOfDonors, 0.0);
 
 							//Implicit backward edges
-							int candidateNodeID = arrangement[j - 1];
-							if (matchRunNodeTypeVector[donorNodeID] == PAIR && matchRunNodeTypeVector[candidateNodeID] != PAIR) {
+							if (matchRunNodeTypes[donorNodeIndex] == PAIR && matchRunNodeTypes[candidateNodeIndex] != PAIR) {
 								reducedAdjacencyMatrix[i][j] = true;
 							}
 						}
 
-						reducedNodeTypeVector[i] = matchRunNodeTypeVector[donorNodeID];
+						reducedNodeTypes[arrangementDonorIndex] = matchRunNodeTypes[donorNodeIndex];
 
-						reducedDonorBloodTypes[i].assign(1 + arrangementNodeDonors, BT_AB);
-						for (int k = 1; k <= arrangementNodeDonors; k++) {
-							reducedDonorBloodTypes[i][k] = matchRunNodeVector[donorNodeID]->getDonorBT(k);
+						reducedDonorBloodTypes[arrangementDonorIndex].assign(donorNodeNumberOfDonors, BT_AB);
+						for (int k = 1; k <= donorNodeNumberOfDonors; k++) {
+
+							int donorIndex = k - 1;
+
+							reducedDonorBloodTypes[arrangementDonorIndex][donorIndex] = matchRunNodes[donorNodeIndex]->getDonorBT(donorIndex);
 						}
 					}
 
 					for (int l = 1; l <= numberOfEdgesInDonorSubset; l++) {
 
-						int edgeSubsetDonorNodeIndex = edgeSubsetDonorNodeIndices[l];
-						int edgeSubsetCandidateNodeIndex = edgeSubsetCandidateIndices[l];
-						int edgeSubsetDonorID = edgeSubsetDonorIDs[l];
+						int edgeIndex = l - 1;
 
-						int edgeSubsetDonorNodeID = arrangement[edgeSubsetDonorNodeIndex - 1];
-						int edgeSubsetCandidateNodeID = arrangement[edgeSubsetCandidateNodeIndex - 1];
+						int edgeSubsetDonorNodeIndex = edgeSubsetDonorNodeIndices[edgeIndex];
+						int edgeSubsetCandidateNodeIndex = edgeSubsetCandidateNodeIndices[edgeIndex];
+						int edgeSubsetDonorIndex = edgeSubsetDonorIndices[edgeIndex];
 
-						if (edgeFlags[l] != 0) {
+						int edgeSubsetDonorNode = arrangement[edgeSubsetDonorNodeIndex];
+						int edgeSubsetCandidateNode = arrangement[edgeSubsetCandidateNodeIndex];
 
-							probEdgeSubset = probEdgeSubset * matchRunMatchMatrix[edgeSubsetDonorNodeID][edgeSubsetCandidateNodeID][edgeSubsetDonorID]->getAssumedSuccessProbability();
+						if (edgeFlags[edgeIndex] != 0) {
 
-							reducedDonorAdjacencyMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorID] = true;
-							reducedAdjacencyMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex] = true;
+							probEdgeSubset = probEdgeSubset * matchRunMatches[edgeSubsetDonorNode][edgeSubsetCandidateNode][edgeSubsetDonorIndex]->getAssumedSuccessProbability();
+
+							reducedDonorAdjacencyMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorIndex] = true;
+							
+							reducedAdjacencyMatrix[edgeSubsetDonorNodeIndex + 1][edgeSubsetCandidateNodeIndex + 1] = true;
 
 							if (utilityScheme == UTILITY_TRANSPLANTS) { // Transplants
-								if (matchRunNodeTypeVector[edgeSubsetCandidateNodeID] == PAIR) {
-									reducedUtilityMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorID] = 1;
+								if (matchRunNodeTypes[edgeSubsetCandidateNode] == PAIR) {
+									reducedUtilityMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorIndex] = 1;
 								}
 							}
 							else {
-								reducedUtilityMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorID] = matchRunMatchMatrix[edgeSubsetDonorNodeID][edgeSubsetCandidateNodeID][edgeSubsetDonorID]->getUtility(utilityScheme);
+								reducedUtilityMatrix[edgeSubsetDonorNodeIndex][edgeSubsetCandidateNodeIndex][edgeSubsetDonorIndex] = matchRunMatches[edgeSubsetDonorNode][edgeSubsetCandidateNode][edgeSubsetDonorIndex]->getUtility(utilityScheme);
 							}
 
 						}
 						else {
-							probEdgeSubset = probEdgeSubset * (1 - matchRunMatchMatrix[edgeSubsetDonorNodeID][edgeSubsetCandidateNodeID][edgeSubsetDonorID]->getAssumedSuccessProbability());
+							probEdgeSubset = probEdgeSubset * (1 - matchRunMatches[edgeSubsetDonorNode][edgeSubsetCandidateNode][edgeSubsetDonorIndex]->getAssumedSuccessProbability());
 						}
 					}
 
 					if (probEdgeSubset > 0) {
 
-						double addUtil = calculatePartialUtility(N, reducedAdjacencyMatrix, reducedUtilityMatrix, reducedNodeTypeVector, reducedDonorBloodTypes);
+						double addUtil = calculatePartialUtility(N, reducedAdjacencyMatrix, reducedUtilityMatrix, reducedNodeTypes, reducedDonorBloodTypes);
 
 						if (addUtil > 0) {
 							utility += probEdgeSubset*addUtil;
@@ -1453,14 +1373,10 @@ double KPDMatchRun::calculateExpectedUtility(std::vector<int> & arrangement) {
 	return utility;
 }
 
-double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
+double KPDMatchRun::estimateExpectedUtility(std::vector<int> & arrangement) {
 
-	double nddAssumedProbability;
-	double pairAssumedProbability;
-	double donorAssumedProbability = 1;
-
-	nddAssumedProbability = 1 - (probNDDAttrition);
-	pairAssumedProbability = 1 - (probPairActiveToInactive + probPairAttrition);
+	double nddAssumedProbability = 1 - (probNDDAttrition);
+	double pairAssumedProbability = 1 - (probPairActiveToInactive + probPairAttrition);
 
 	int N = (int)arrangement.size();
 
@@ -1485,10 +1401,10 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 		for (std::vector<int>::iterator itNodes = arrangement.begin(); itNodes != arrangement.end(); ++itNodes, i++) {
 
 			//Store node type
-			subNodeTypeVector[i] = matchRunNodeTypeVector[*itNodes];
+			subNodeTypeVector[i] = matchRunNodeTypes[*itNodes];
 
 			//Randomly generate donor availability (and store donor blood types)
-			int numDonors = matchRunNodeVector[*itNodes]->getNumberOfDonors();
+			int numDonors = matchRunNodes[*itNodes]->getNumberOfDonors();
 
 			randomDonorAvailabilityVector[i].assign(1 + numDonors, false);
 			subDonorBloodTypeVector[i].assign(1 + numDonors, BT_AB);
@@ -1497,23 +1413,25 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 
 				//if (matchRunDonorUnderlyingStatus[*itNodes][k] == STATUS_ACTIVE) {
 
-					double u = rngExpectedUtilityEstimation.runif();
+					double u = rngExpectedUtility.runif();
 
-					if ((matchRunNodeTypeVector[*itNodes] == NDD && u < nddAssumedProbability) || (matchRunNodeTypeVector[*itNodes] != NDD && u < donorAssumedProbability)) {
+					if ((matchRunNodeTypes[*itNodes] != PAIR && u < nddAssumedProbability) || 
+						(matchRunNodeTypes[*itNodes] == PAIR && u < pairAssumedProbability)) {
+
 						randomDonorAvailabilityVector[i][k] = true;
 
-						if (matchRunNodeTypeVector[*itNodes] != PAIR) { // Add marker for NDD availability (acts as a shortcut for the next section)
+						if (matchRunNodeTypes[*itNodes] != PAIR) { // Add marker for NDD availability (acts as a shortcut for the next section)
 							randomCandidateAvailabilityVector[i] = true;
 						}
 
 					}
-					subDonorBloodTypeVector[i][k] = matchRunNodeVector[*itNodes]->getDonorBT(k);
+					subDonorBloodTypeVector[i][k] = matchRunNodes[*itNodes]->getDonorBT(k);
 				//}
 			}
 
 			//Randomly generate candidate availability for PAIRs
-			if (matchRunNodeTypeVector[*itNodes] == PAIR) {
-				if (rngExpectedUtilityEstimation.runif() < pairAssumedProbability) {
+			if (matchRunNodeTypes[*itNodes] == PAIR) {
+				if (rngExpectedUtility.runif() < pairAssumedProbability) {
 					randomCandidateAvailabilityVector[i] = true;
 				}
 			}
@@ -1525,7 +1443,7 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 
 		for (std::vector<int>::iterator itDonors = arrangement.begin(); itDonors != arrangement.end(); ++itDonors, i++) {
 
-			int numDonors = matchRunNodeVector[*itDonors]->getNumberOfDonors();
+			int numDonors = matchRunNodes[*itDonors]->getNumberOfDonors();
 
 			for (std::vector<int>::iterator itCandidates = arrangement.begin(); itCandidates != arrangement.end(); ++itCandidates, j++) {
 
@@ -1553,19 +1471,19 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 							//Iterate through donors
 							for (int k = 1; k <= numDonors; k++) {
 								// For existing original matches, and for donors that are available, randomly generate matches
-								if (matchRunMatchMatrix[*itDonors][*itCandidates][k]->getAdjacency() && randomDonorAvailabilityVector[i][k]) {
+								if (matchRunMatches[*itDonors][*itCandidates][k]->getAdjacency() && randomDonorAvailabilityVector[i][k]) {
 
-									if (rngExpectedUtilityEstimation.runif() < matchRunMatchMatrix[*itDonors][*itCandidates][k]->getAssumedSuccessProbability()) {
+									if (rngExpectedUtility.runif() < matchRunMatches[*itDonors][*itCandidates][k]->getAssumedSuccessProbability()) {
 
 										randomDonorAdjacencyMatrix[i][j][k] = 1;
 
 										if (utilityScheme == UTILITY_TRANSPLANTS) {
-											if (matchRunNodeTypeVector[*itCandidates] == PAIR) {
+											if (matchRunNodeTypes[*itCandidates] == PAIR) {
 												randomUtilityMatrix[i][j][k] = 1;
 											}
 										}
 										else {
-											randomUtilityMatrix[i][j][k] = matchRunMatchMatrix[*itDonors][*itCandidates][k]->getUtility(utilityScheme);
+											randomUtilityMatrix[i][j][k] = matchRunMatches[*itDonors][*itCandidates][k]->getUtility(utilityScheme);
 										}
 
 										// Set adjacency matrix to true
@@ -1592,207 +1510,11 @@ double KPDMatchRun::estimateExpectedUtility(std::vector<int> &arrangement) {
 
 }
 
-double KPDMatchRun::estimateExpectedUtilityMatrix(std::vector<int>& arrangement, bool print) {	
 
-	double nddAssumedProbability;
-	double pairAssumedProbability;
-	double donorAssumedProbability = 1;
-
-	nddAssumedProbability = 1 - (probNDDAttrition);
-	pairAssumedProbability = 1 - (probPairActiveToInactive + probPairAttrition);
-
-	//Set up Adjacency and Utility Matrices
-
-	int nV = (int)arrangement.size();
-	std::vector<std::vector<bool> > adjacencyMatrix(1 + nV, std::vector<bool>(1 + nV, false));
-	std::vector<std::vector<std::vector<int> > > donorMatrix(1 + nV, std::vector<std::vector<int> >(1 + nV, std::vector<int>(0, 0)));
-	std::vector<std::vector<std::vector<int> > > edgeMatrix(1 + nV, std::vector<std::vector<int> >(1 + nV, std::vector<int>(0, 0)));
-	std::vector<std::vector<std::vector<double> > > utilityMatrix(1 + nV, std::vector<std::vector<double> >(1 + nV, std::vector<double>(0, 0.0)));
-	std::vector<std::vector<int> > donorsList;
-	std::vector<std::vector<int> > edgeList;
-	std::vector<double> utilityList;
-	int nE = 0;
-
-	for (int i = 1; i <= nV; i++) {
-
-		int arrangementDonors = matchRunNodeVector[arrangement[i - 1]]->getNumberOfDonors();
-
-		for (int j = 1; j <= nV; j++) {
-			if (i != j) {
-				bool incident = false;
-
-				if (matchRunNodeTypeVector[arrangement[i - 1]] == PAIR && matchRunNodeTypeVector[arrangement[j - 1]] != PAIR) {
-					incident = true;
-				}
-				else if (matchRunNodeTypeVector[arrangement[j - 1]] == PAIR) {
-					int index = 0;
-					for (int k = 1; k <= arrangementDonors; k++) {
-						if (matchRunMatchMatrix[arrangement[i - 1]][arrangement[j - 1]][k]->getAdjacency()) {
-							incident = true;
-							double utility = 0.0;
-
-							if (utilityScheme == UTILITY_TRANSPLANTS) { // Transplants
-								if (matchRunNodeTypeVector[arrangement[j - 1]] == PAIR) {
-									utility += 1;
-								}
-							}
-							else {
-								utility += matchRunMatchMatrix[arrangement[i - 1]][arrangement[j - 1]][k]->getUtility(utilityScheme);
-							}
-
-							edgeMatrix[i][j].push_back(nE);
-							utilityMatrix[i][j].push_back(utility);
-
-							std::vector<int> edge;
-							edge.push_back(i);
-							edge.push_back(j);
-							edge.push_back(index);
-
-							edgeList.push_back(edge);
-							utilityList.push_back(utility);
-
-							nE++;
-							index++;
-						}
-					}
-				}
-
-				adjacencyMatrix[i][j] = incident;
-			}
-		}
-	}
-
-	//Find Sub Cycles and Sub Chains
-
-	std::vector<std::vector<int> > subCyclesAndSubChains;
-
-	int start = 1;
-	std::vector<int> visitedVector(nV + 1, 0);
-	std::vector<int> stack_vec;
-
-	while (start <= nV) {
-		visitedVector[start] = 1;
-
-		stack_vec.push_back(start);
-		int v = getChild(start, start, visitedVector, adjacencyMatrix);
-		while (!stack_vec.empty()) {
-			if (v == -1) {
-				int top = stack_vec.back();
-				stack_vec.pop_back();
-				if (top == start) {
-					visitedVector[top] = 0;
-					break;
-				}
-				visitedVector[top] = 0;
-				v = getChild(top, stack_vec.back(), visitedVector, adjacencyMatrix);
-			}
-			else {
-				visitedVector[v] = 1;
-				stack_vec.push_back(v);
-				if (adjacencyMatrix[v][start]) {
-
-					int multipleNDDCheck = 0;
-					int index = 0;
-
-					std::vector<int> potentialCycleOrChain;
-
-					for (unsigned i = 0; i < stack_vec.size(); i++) {
-						potentialCycleOrChain.push_back(stack_vec[i]);
-					}
-
-					for (unsigned i = 0; i < potentialCycleOrChain.size(); i++) {
-						if (matchRunNodeTypeVector[arrangement[potentialCycleOrChain[i] - 1]] != PAIR) {
-							multipleNDDCheck++;
-							index = i;
-						}
-					}
-
-					//Chain
-					if (multipleNDDCheck == 1 && potentialCycleOrChain.size() <= maxChainLength) {
-						//Queue up NDD to front of chain
-						while (index > 0) {
-							int temp = *(potentialCycleOrChain.begin());
-							potentialCycleOrChain.erase(potentialCycleOrChain.begin());
-							potentialCycleOrChain.push_back(temp);
-							index--;
-						}
-
-						if (!allowABBridgeDonors) {
-
-							bool hasNonABBridgeDonor = false;
-
-							for (int k = 1; k <= matchRunNodeVector[arrangement[*(potentialCycleOrChain.end() - 1) - 1]]->getNumberOfDonors(); k++) {
-								if (matchRunNodeVector[arrangement[*(potentialCycleOrChain.end() - 1) - 1]]->getDonorBT(k) != BT_AB) {
-									hasNonABBridgeDonor = true;
-								}
-							}
-
-							if (hasNonABBridgeDonor) {
-								subCyclesAndSubChains.push_back(potentialCycleOrChain);
-							}
-						}
-						else {
-							subCyclesAndSubChains.push_back(potentialCycleOrChain);
-						}
-					}
-
-					//Cycle
-					else if (multipleNDDCheck == 0 && potentialCycleOrChain.size() <= maxCycleSize) {
-						subCyclesAndSubChains.push_back(potentialCycleOrChain);
-					}
-				}
-
-				if ((int)stack_vec.size() >= maximum)
-					v = -1;
-				else
-					v = getChild(start, v, visitedVector, adjacencyMatrix);
-			}
-		}
-		start++;
-	}
-
-	// Extract Node and Edge Lists
-	std::vector<std::vector<int> > subCycleVertexLists;
-	std::vector<std::vector<int> > subCycleEdgeLists;
-	std::vector<double> utilityOfSubCycles;
-
-	for (std::vector<std::vector<int> >::iterator cycleIt = subCyclesAndSubChains.begin(); cycleIt != subCyclesAndSubChains.end(); cycleIt++) {
-
-
-	}
-
-
-	// Find Potential Solutions
-
-	int nSubCyclesAndSubChains = (int)subCyclesAndSubChains.size();
-
-	std::vector<std::vector<int> > possibleSolutions;
-
-	for (int i = 0; i < nSubCyclesAndSubChains; i++) {
-
-		std::vector<int> cycleFlags(nSubCyclesAndSubChains, 0);
-
-		checkValidSolution(nSubCyclesAndSubChains, nV, cycleFlags, i, subCyclesAndSubChains, possibleSolutions);
-	}
-
-	if (print) {
-		for (int s = 0; s < (int)possibleSolutions.size(); s++) {
-			for (std::vector<int>::iterator it = possibleSolutions[s].begin(); it != possibleSolutions[s].end(); it++) {
-				std::cout << *it << " ";
-			}
-			std::cout << std::endl;
-		}
-	}
-
-
-
-
-
-
-	return 0.0;
-}
-
-void KPDMatchRun::checkValidSolution(int nSubCycles, int nVertices, std::vector<int> subCycleFlags, int next, std::vector<std::vector<int> > & subCyclesSubChains, std::vector<std::vector<int> > & possibleSolutions) {
+void KPDMatchRun::checkValidSolution(int nSubCycles, int nVertices,
+	std::vector<int> subCycleFlags, 
+	int next, std::vector<std::vector<int> > & subCyclesSubChains, 
+	std::vector<std::vector<int> > & possibleSolutions) {
 
 	std::vector<int> tempSolution;
 
@@ -1832,8 +1554,10 @@ void KPDMatchRun::checkValidSolution(int nSubCycles, int nVertices, std::vector<
 }
 
 
-double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool> > & adjacency, std::vector<std::vector<std::vector<double> > > & utility,
-	std::vector<KPDNodeType> & nodeTypes, std::vector<std::vector<KPDBloodType> > & donorBloodTypes) {
+double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool> > & adjacency, 
+	std::vector<std::vector<std::vector<double> > > & utility,
+	std::vector<KPDNodeType> & nodeTypes, 
+	std::vector<std::vector<KPDBloodType> > & donorBloodTypes) {
 
 	std::vector<std::vector<int> > possibleCyclesOrChains;
 	std::vector<double> utilityOfPossibleCyclesOrChains;
@@ -1872,9 +1596,12 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 
 					std::vector<int> potentialCycleOrChain;
 
-					for (unsigned i = 0; i < stack_vec.size(); i++) {
-						potentialCycleOrChain.push_back(stack_vec[i]);
-						if (nodeTypes[stack_vec[i]] != PAIR) {
+					for (int i = 0; i < (int)stack_vec.size(); i++) {
+						potentialCycleOrChain.push_back(stack_vec[i] - 1);
+					}
+
+					for (int i = 0; i < (int) potentialCycleOrChain.size(); i++) {
+						if (nodeTypes[potentialCycleOrChain[i]] != PAIR) {
 							multipleNDDCheck++;
 							index = i;
 						}
@@ -1892,10 +1619,15 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 						}
 
 						if (!allowABBridgeDonors) {
+
 							bool nonABBridgeDonor = false;
+
 							for (int k = 1; k < donorBloodTypes[*(potentialCycleOrChain.end() - 1)].size(); k++) {
-								if (donorBloodTypes[*(potentialCycleOrChain.end() - 1)][k] != BT_AB) {
+
+								int donorIndex = k - 1;
+								if (donorBloodTypes[*(potentialCycleOrChain.end() - 1)][donorIndex] != BT_AB) {
 									nonABBridgeDonor = true;
+									break;
 								}
 							}
 
@@ -1903,9 +1635,15 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 								for (std::vector<int>::iterator it = potentialCycleOrChain.begin(); it != potentialCycleOrChain.end() - 1; it++) {
 									double selectedDonorUtility = 0;
 
-									for (int k = 1; k < utility[*it][*(it + 1)].size(); k++) {
-										if (utility[*it][*(it + 1)][k] > selectedDonorUtility) {
-											selectedDonorUtility = utility[*it][*(it + 1)][k];
+									int donorNodeIndex = *it;
+									int candidateNodeIndex = *(it + 1);
+
+									for (int k = 1; k < utility[donorNodeIndex][candidateNodeIndex].size(); k++) {
+
+										int donorIndex = k - 1;
+
+										if (utility[donorNodeIndex][candidateNodeIndex][donorIndex] > selectedDonorUtility) {
+											selectedDonorUtility = utility[donorNodeIndex][candidateNodeIndex][donorIndex];
 										}
 									}
 									tempUtil += selectedDonorUtility;
@@ -1919,9 +1657,15 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 							for (std::vector<int>::iterator it = potentialCycleOrChain.begin(); it != potentialCycleOrChain.end() - 1; it++) {
 								double selectedDonorUtility = 0;
 
-								for (int k = 1; k < (int)utility[*it][*(it + 1)].size(); k++) {
-									if (utility[*it][*(it + 1)][k] > selectedDonorUtility) {
-										selectedDonorUtility = utility[*it][*(it + 1)][k];
+								int donorNodeIndex = *it;
+								int candidateNodeIndex = *(it + 1);
+
+								for (int k = 1; k < utility[donorNodeIndex][candidateNodeIndex].size(); k++) {
+
+									int donorIndex = k - 1;
+
+									if (utility[donorNodeIndex][candidateNodeIndex][donorIndex] > selectedDonorUtility) {
+										selectedDonorUtility = utility[donorNodeIndex][candidateNodeIndex][donorIndex];
 									}
 								}
 								tempUtil += selectedDonorUtility;
@@ -1937,9 +1681,15 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 						for (std::vector<int>::iterator it = potentialCycleOrChain.begin(); it != potentialCycleOrChain.end() - 1; it++) {
 							double selectedDonorUtility = 0;
 
-							for (int k = 1; k < utility[*it][*(it + 1)].size(); k++) {
-								if (utility[*it][*(it + 1)][k] > selectedDonorUtility) {
-									selectedDonorUtility = utility[*it][*(it + 1)][k];
+							int donorNodeIndex = *it;
+							int candidateNodeIndex = *(it + 1);
+
+							for (int k = 1; k < utility[donorNodeIndex][candidateNodeIndex].size(); k++) {
+
+								int donorIndex = k - 1;
+
+								if (utility[donorNodeIndex][candidateNodeIndex][donorIndex] > selectedDonorUtility) {
+									selectedDonorUtility = utility[donorNodeIndex][candidateNodeIndex][donorIndex];
 								}
 							}
 							tempUtil += selectedDonorUtility;
@@ -1947,9 +1697,15 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 
 						double selectedDonorUtility = 0;
 
-						for (int k = 1; k < utility[*(potentialCycleOrChain.end() - 1)][*(potentialCycleOrChain.begin())].size(); k++) {
-							if (utility[*(potentialCycleOrChain.end() - 1)][*(potentialCycleOrChain.begin())][k] > selectedDonorUtility) {
-								selectedDonorUtility = utility[*(potentialCycleOrChain.end() - 1)][*(potentialCycleOrChain.begin())][k];
+						int donorNodeIndex = *(potentialCycleOrChain.end() - 1);
+						int candidateNodeIndex = *(potentialCycleOrChain.begin());
+
+						for (int k = 1; k < utility[donorNodeIndex][candidateNodeIndex].size(); k++) {
+
+							int donorIndex = k - 1;
+
+							if (utility[donorNodeIndex][candidateNodeIndex][donorIndex] > selectedDonorUtility) {
+								selectedDonorUtility = utility[donorNodeIndex][candidateNodeIndex][donorIndex];
 							}
 						}
 						tempUtil += selectedDonorUtility;
@@ -1983,7 +1739,7 @@ double KPDMatchRun::calculatePartialUtility(int nV, std::vector<std::vector<bool
 
 			std::vector<int> cycleFlags(1 + nPossibleCycles, 0);
 
-			int numberOfCyclesInPossibleSolutions = KPDFunctions::setFlags(c, cycleFlags);
+			int numberOfCyclesInPossibleSolutions = KPDFunctions::setFlags(c, 1, cycleFlags);
 
 			std::vector<int> checkUniqueness(nV + 1, 0);
 			bool validSolution = true;

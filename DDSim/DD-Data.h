@@ -10,9 +10,10 @@ Collects and Stores Data from Files
 #include "DD-Candidate.h"
 #include "DD-Donor.h"
 #include "DD-Parameters.h"
+#include "DD-RNG.h"
 
-#include <string>
 #include <vector>
+#include <string>
 #include <map>
 #include <iostream>
 #include <sstream>
@@ -26,15 +27,16 @@ private:
 
 	KPDParameters * kpdParameters;
 
-	//Raw Data
+	//Raw data
 	std::vector<std::vector<std::vector<std::string> > > hlaFrequencyData;
 	std::vector<std::vector<std::vector<std::string> > > hlaDictionaryData;
 	std::vector<std::vector<std::vector<std::string> > > characteristicsData;
+
 	std::vector<std::vector<std::vector<std::string> > > kpdData;
 	std::vector<std::vector<std::vector<std::string> > > deceasedDonorData;
 	std::vector<std::vector<std::vector<std::string> > > waitlistCandidatesData;
 
-	//Clean Data	
+	//Clean data	
 	std::vector<std::vector<std::string> > donorHLA;
 	std::vector<double> donorHLAFrequency;
 
@@ -47,17 +49,21 @@ private:
 	std::vector<KPDCandidate *> pairedCandidatesPool;
 	std::map<int, std::vector<KPDDonor *> > pairedDonorsPool;
 
-	std::vector<KPDDonor *> deceasedDonors;
+	std::deque<KPDDonor *> deceasedDonors;
 	std::map<int, KPDCandidate *> waitlistCandidates;
+	std::vector<int> waitlistCandidateIDs;
+
+
+	//Convert raw to clean data
 
 	void readDataFromFile(std::vector<std::vector<std::vector<std::string> > >  & parsedData, std::string fileName); // Reads and parses data from files
 
-	// Convert Raw to Clean Data
 	void formDonorHLAFrequency();
 	void formHLADictionary();	
 	void formSurvivalParameters();	
 	void formCharacteristicsFrequency();
-	void formKPDPopulation(); // Needs to come after loading HLA dictionary
+
+	void formKPDPopulation();
 	void formDeceasedDonorPopulation();
 	void formWaitlistPopulation();
 
@@ -68,22 +74,24 @@ public:
 	KPDData(KPDParameters * params);
 	~KPDData();
 
-	// Random draws from data
-	KPDCandidate * drawCandidate(double u);
-	KPDDonor * drawNDD(double u);
-	int drawPair(double u);
+	// Retrieve data on deceased donors and waitlisted candidates
+	std::deque<KPDDonor *> getDeceasedDonors();
+	std::deque<int> getDeceasedDonorArrivalTimes();
 
-	std::vector<std::string> drawHLA(double u);
-	bool drawHLABW(double u, bool bw4);
-	KPDBloodType drawBloodType(double u);
-	
-	// Retrieve specific data entry
-	KPDCandidate * retrieveCandidate(int index);
-	std::vector<KPDDonor *> retrieveDonors(int matchingID);
+	std::vector<KPDCandidate *> getWaitlistedCandidates();
+	std::vector<int> getWaitlistedCandidateIDs();
+	std::vector<std::deque<KPDStatus> > getWaitlistCandidatesStateTransitionMatrix();
+	std::vector<std::deque<int> > getWaitlistCandidatesStateTransitionTimeMatrix();
+
+
+	// Stochastic draws from data
+	std::pair<KPDCandidate *, int> drawCandidate(double u);
+	KPDDonor * drawNDD(double u);
+	KPDDonor * generateDonor(std::vector<double> u);
 
 	// Crossmatch and survival calculations
 	KPDCrossmatch performCrossmatch(KPDCandidate * candidate, KPDDonor * donor);
-	bool isCompatiblePair(KPDCandidate * candidate, std::vector<KPDDonor *> donors, bool reserveODonorForOCandidates, bool allowDesensitization);
+	bool allowableMatch(KPDCrossmatch crossmatch);
 	double calculateSurvival(KPDCandidate * candidate, KPDDonor * donor, int fiveyear);
 	
 	void printLog();
@@ -103,9 +111,11 @@ KPDData::KPDData(KPDParameters * params) {
 	readDataFromFile(hlaFrequencyData, "data/" + params->getFileHLAFrequency());
 	readDataFromFile(hlaDictionaryData, "data/" + params->getFileHLADictionary());
 	readDataFromFile(characteristicsData, "data/" + params->getFileSurvivalParameters());
+
 	readDataFromFile(kpdData, "data/" + params->getFileKPDData());
 	readDataFromFile(deceasedDonorData, "data/" + params->getFileDeceasedDonors());
 	readDataFromFile(waitlistCandidatesData, "data/" + params->getFileWaitingListCandidates());
+
 	kpdDataLog << std::endl;
 	
 	// Assemble objects from raw data
@@ -113,18 +123,16 @@ KPDData::KPDData(KPDParameters * params) {
 	formHLADictionary();
 	formSurvivalParameters();
 	formCharacteristicsFrequency();
+
 	formKPDPopulation();
 	formDeceasedDonorPopulation();
 	formWaitlistPopulation();
-
 }
 
 KPDData::~KPDData() {
 	printLog();
 }
 
-
-// Reads information from csv files into three-dimensional arrays
 void KPDData::readDataFromFile(std::vector<std::vector<std::vector<std::string> > > & parsedData, std::string fileName) {
 
 	std::stringstream log;
@@ -197,21 +205,19 @@ void KPDData::formDonorHLAFrequency() {
 	kpdDataLog << std::endl;
 
 	//Columns 1-8: Major HLA antigens; Column 9: Frequency
-	int i = 1;
+
 	for (std::vector<std::vector<std::vector<std::string> > >::iterator hlaRow = hlaFrequencyData.begin(); hlaRow != hlaFrequencyData.end(); hlaRow++) {
 		std::vector<std::string> donorProfile;
-		
-		kpdDataLog << i << ": ";
 
 		for (std::vector<std::vector<std::string> >::iterator hla = hlaRow->begin(); hla != hlaRow->begin() + 8; hla++) {
 
 			std::string antigen = (*hla)[0];
 
 			if (antigen.compare("NA") != 0) {
+				
+				donorProfile.push_back(antigen);
 
 				kpdDataLog << antigen << " ";
-
-				donorProfile.push_back(antigen);
 			}
 		}
 
@@ -224,8 +230,6 @@ void KPDData::formDonorHLAFrequency() {
 		donorHLAFrequency.push_back(probability);
 
 		kpdDataLog << "(" << probability << ")" << std::endl;
-
-		i++;
 	}
 
 	kpdDataLog << std::endl;
@@ -241,12 +245,10 @@ void KPDData::formHLADictionary() {
 
 	kpdDataLog << std::endl;
 
-	int i = 1;
-
 	for (std::vector<std::vector<std::vector<std::string> > >::iterator dictionaryRow = hlaDictionaryData.begin(); dictionaryRow != hlaDictionaryData.end(); dictionaryRow++) {
 		std::string antigen = (*dictionaryRow)[0][0];
 
-		kpdDataLog << i << ". " << antigen << ": ";
+		kpdDataLog << antigen << ": ";
 
 		for (std::vector<std::string>::iterator hla = (*dictionaryRow)[1].begin(); hla != (*dictionaryRow)[1].end(); hla++) {
 			hlaDictionary[antigen].push_back(*hla);
@@ -255,8 +257,6 @@ void KPDData::formHLADictionary() {
 		}
 
 		kpdDataLog << std::endl;
-
-		i++;
 	}
 
 	kpdDataLog << std::endl;
@@ -271,14 +271,12 @@ void KPDData::formSurvivalParameters() {
 	kpdDataLog << "------------------------------" << std::endl;
 
 	kpdDataLog << std::endl;
-
-	int i = 1;
-
+	
 	for (std::vector<std::vector<std::vector<std::string> > >::iterator paramRow = characteristicsData.begin(); paramRow != characteristicsData.end(); paramRow++) {
 
 		std::string characteristic = (*paramRow)[0][0];
 
-		kpdDataLog << i << ". " << characteristic << ": ";
+		kpdDataLog << characteristic << ": ";
 
 		// Store 5-year and 10-year survival parameters
 		survivalParameters["5 Year " + characteristic].push_back(atof((*paramRow)[2][0].c_str()));
@@ -286,8 +284,6 @@ void KPDData::formSurvivalParameters() {
 
 		survivalParameters["10 Year " + characteristic].push_back(atof((*paramRow)[3][0].c_str()));
 		kpdDataLog << (*paramRow)[3][0] << " (10-Year)"  << std::endl;
-
-		i++;
 	}
 
 	kpdDataLog << std::endl;
@@ -303,20 +299,21 @@ void KPDData::formCharacteristicsFrequency() {
 
 	kpdDataLog << std::endl;
 		
-	int i = 1;
-
 	for (std::vector<std::vector<std::vector<std::string> > >::iterator paramRow = characteristicsData.begin(); paramRow != characteristicsData.end(); paramRow++) {
 
 		std::string characteristic = (*paramRow)[0][0];
 
 		// Collect probabilities for randomly assigned characterisitcs
-		if (characteristic.compare("Donor Race") == 0 || characteristic.compare("Donor Cigarette Use") == 0 || characteristic.compare("Previous Transplant") == 0 ||
-			characteristic.compare("Time On Dialysis") == 0 || characteristic.compare("Recipient Hepatitis C Seriology") == 0 || characteristic.compare("Recipient Insurance") == 0) {
+		if (characteristic.compare("Donor Race") == 0 || 
+			characteristic.compare("Donor Cigarette Use") == 0 || 
+			characteristic.compare("Previous Transplant") == 0 ||
+			characteristic.compare("Time On Dialysis") == 0 || 
+			characteristic.compare("Recipient Hepatitis C Seriology") == 0 || 
+			characteristic.compare("Recipient Insurance") == 0) {
 
 			characteristicsFrequency[characteristic].push_back(atof((*paramRow)[6][0].c_str()));
 
-			kpdDataLog << i << ". " << characteristic << ": " << (*paramRow)[6][0] << std::endl;
-			i++;
+			kpdDataLog << characteristic << ": " << (*paramRow)[6][0] << std::endl;
 		}
 	}
 
@@ -326,8 +323,7 @@ void KPDData::formCharacteristicsFrequency() {
 	characteristicsFrequency["Blood Type"].push_back(0.04); // BT_AB
 
 	for (std::vector<double>::iterator it = characteristicsFrequency["Blood Type"].begin(); it != characteristicsFrequency["Blood Type"].end(); it++) {
-		kpdDataLog << i << ". Blood Type: " << *it << std::endl;
-		i++;
+		kpdDataLog << "Blood Type: " << *it << std::endl;
 	}
 
 	characteristicsFrequency["Relation To Donor"].push_back(0.4); // SIGNIFICANT_OTHER
@@ -338,16 +334,14 @@ void KPDData::formCharacteristicsFrequency() {
 	characteristicsFrequency["Relation To Donor"].push_back(0.1); // CHILD
 
 	for (std::vector<double>::iterator it = characteristicsFrequency["Relation To Donor"].begin(); it != characteristicsFrequency["Relation To Donor"].end(); it++) {
-		kpdDataLog << i << ". Relation To Donor: " << *it << std::endl;
-		i++;
+		kpdDataLog << "Relation To Donor: " << *it << std::endl;
 	}
 
 	characteristicsFrequency["Donor HLA BW"].push_back(0.66); // BW4
 	characteristicsFrequency["Donor HLA BW"].push_back(0.85); // BW6
 	
 	for (std::vector<double>::iterator it = characteristicsFrequency["Donor HLA BW"].begin(); it != characteristicsFrequency["Donor HLA BW"].end(); it++) {
-		kpdDataLog << i << ". Donor HLA BW: " << *it << std::endl;
-		i++;
+		kpdDataLog << "Donor HLA BW: " << *it << std::endl;
 	}
 
 	kpdDataLog << std::endl;
@@ -356,7 +350,6 @@ void KPDData::formCharacteristicsFrequency() {
 
 }
 
-//Forms population of pairs from separate donor and candidate files
 void KPDData::formKPDPopulation() {
 
 	kpdDataLog << "-------------------------" << std::endl;
@@ -405,7 +398,7 @@ void KPDData::formKPDPopulation() {
 				dBT, dRelation, dAge, dMale, dRace, dHeight, dWeight, dCigaretteUse);
 			d->setHLA(dHLA);
 
-			kpdDataLog << "NDD " << donorID << " added to NDD Pool" << std::endl;
+			kpdDataLog << "NDD " << donorID << " (Matching ID: " << matchingID << ") added to NDD Pool" << std::endl;
 			kpdDataLog << d->donorOutput() << std::endl;
 
 			nddPool.push_back(d);
@@ -455,9 +448,9 @@ void KPDData::formKPDPopulation() {
 
 			// Donors
 			std::vector<KPDDonor *> associatedDonors;
-			associatedDonors.push_back(new KPDDonor());
 
 			bool abDonor = false;
+			bool compatiblePair = false;
 
 			do {
 				int donorID = atoi((*it)[3][0].c_str());
@@ -492,27 +485,34 @@ void KPDData::formKPDPopulation() {
 
 				associatedDonors.push_back(d);
 
+				KPDCrossmatch crossmatch = performCrossmatch(c, d);
+				if (allowableMatch(crossmatch)) {
+					compatiblePair = true;
+				}
+
 				it++;
 
 			} while (matchingID == atoi((*it)[0][0].c_str()) && it != kpdData.end());
 
-			if (!isCompatiblePair(c, associatedDonors, false, true)) {
+			
+			if (!compatiblePair) {
 
 				kpdDataLog << "Donors Matched with Candidate " << matchingID << std::endl;
-				for (std::vector<KPDDonor *>::iterator donorIt = associatedDonors.begin() + 1; donorIt != associatedDonors.end(); donorIt++) {
+				for (std::vector<KPDDonor *>::iterator donorIt = associatedDonors.begin(); donorIt != associatedDonors.end(); donorIt++) {
 					kpdDataLog << (*donorIt)->donorOutput() << std::endl;
 				}
 
 				numberOfPairedCandidates++;
-				numberOfPairedDonors += (int)associatedDonors.size() - 1;
+				numberOfPairedDonors += (int)associatedDonors.size();
 
 				pairedCandidatesPool.push_back(c);
 				pairedDonorsPool[matchingID] = associatedDonors;
 			}
 
 			else {
+				
 				kpdDataLog << "Donors Excluded with Candidate " << matchingID << std::endl;
-				for (std::vector<KPDDonor *>::iterator donorIt = associatedDonors.begin() + 1; donorIt != associatedDonors.end(); donorIt++) {
+				for (std::vector<KPDDonor *>::iterator donorIt = associatedDonors.begin(); donorIt != associatedDonors.end(); donorIt++) {
 					kpdDataLog << (*donorIt)->donorOutput() << std::endl;
 				}
 			}
@@ -534,114 +534,95 @@ void KPDData::formDeceasedDonorPopulation() {
 
 	kpdDataLog << std::endl;
 
-	int i = 1;
-
 	for (std::vector<std::vector<std::vector<std::string> > >::iterator srtrRow = deceasedDonorData.begin(); srtrRow != deceasedDonorData.end(); srtrRow++) {
 
 		int id = atoi((*srtrRow)[0][0].c_str());
-
-		//if (deceasedDonors.count(id) == 0) {
 			
-			int recoveryTimeSinceReference = 0;
-			std::string recoveryTime = (*srtrRow)[1][0];
-			if (recoveryTime.compare("NA") != 0) {
-				recoveryTimeSinceReference = atoi(recoveryTime.c_str());
-			}
+		int recoveryTimeSinceReference = 0;
+		std::string recoveryTime = (*srtrRow)[1][0];
+		if (recoveryTime.compare("NA") != 0) {
+			recoveryTimeSinceReference = atoi(recoveryTime.c_str());
+		}
 
-			int centerID = atoi((*srtrRow)[2][0].c_str());
+		int centerID = atoi((*srtrRow)[2][0].c_str());
 
-			KPDBloodType bt = KPDFunctions::stringToBloodType((*srtrRow)[3][0]);
-			bool minorA = (*srtrRow)[4][0].compare("TRUE") == 0;
+		KPDBloodType bt = KPDFunctions::stringToBloodType((*srtrRow)[3][0]);
+		bool minorA = (*srtrRow)[4][0].compare("TRUE") == 0;
 
-			int age = atoi((*srtrRow)[5][0].c_str());
-			bool genderMale = (*srtrRow)[6][0].compare("M") == 0;
-			KPDRace race = KPDFunctions::stringToRace((*srtrRow)[7][0]);
-			double height = atof((*srtrRow)[8][0].c_str()) / 100.0;
-			double weight = atof((*srtrRow)[9][0].c_str());
-			bool cigarette = (*srtrRow)[10][0].compare("TRUE") == 0;
+		int age = atoi((*srtrRow)[5][0].c_str());
+		bool genderMale = (*srtrRow)[6][0].compare("M") == 0;
+		KPDRace race = KPDFunctions::stringToRace((*srtrRow)[7][0]);
+		double height = atof((*srtrRow)[8][0].c_str()) / 100.0;
+		double weight = atof((*srtrRow)[9][0].c_str());
+		bool cigarette = (*srtrRow)[10][0].compare("TRUE") == 0;
 
-			std::vector<std::string> dHLA;
-			if ((*srtrRow)[11][0].compare("NA") != 0) {
-				dHLA.push_back("A" + (*srtrRow)[11][0]);
-			}
-			if ((*srtrRow)[12][0].compare("NA") != 0) {
-				dHLA.push_back("A" + (*srtrRow)[12][0]);
-			}
-			if ((*srtrRow)[13][0].compare("NA") != 0) {
-				dHLA.push_back("B" + (*srtrRow)[13][0]);
-			}
-			if ((*srtrRow)[14][0].compare("NA") != 0) {
-				dHLA.push_back("B" + (*srtrRow)[14][0]);
-			}
-			if ((*srtrRow)[15][0].compare("True") == 0) {
-				dHLA.push_back("BW4");
-			}
-			if ((*srtrRow)[16][0].compare("True") == 0) {
-				dHLA.push_back("BW6");
-			}
-			if ((*srtrRow)[17][0].compare("NA") != 0) {
-				dHLA.push_back("CW" + (*srtrRow)[17][0]);
-			}
-			if ((*srtrRow)[18][0].compare("NA") != 0) {
-				dHLA.push_back("CW" + (*srtrRow)[18][0]);
-			}
-			if ((*srtrRow)[19][0].compare("NA") != 0) {
-				dHLA.push_back("DR" + (*srtrRow)[19][0]);
-			}
-			if ((*srtrRow)[20][0].compare("NA") != 0) {
-				dHLA.push_back("DR" + (*srtrRow)[20][0]);
-			}
-			if ((*srtrRow)[21][0].compare("True") == 0) {
-				dHLA.push_back("DR51");
-			}
-			if ((*srtrRow)[22][0].compare("True") == 0) {
-				dHLA.push_back("DR52");
-			}
-			if ((*srtrRow)[23][0].compare("True") == 0) {
-				dHLA.push_back("DR53");
-			}
-			if ((*srtrRow)[24][0].compare("NA") != 0) {
-				dHLA.push_back("DQ" + (*srtrRow)[24][0]);
-			}
-			if ((*srtrRow)[25][0].compare("NA") != 0) {
-				dHLA.push_back("DQ" + (*srtrRow)[25][0]);
-			}
-			if ((*srtrRow)[26][0].compare("NA") != 0) {
-				dHLA.push_back("DP" + (*srtrRow)[26][0]);
-			}
-			if ((*srtrRow)[27][0].compare("NA") != 0) {
-				dHLA.push_back("DP" + (*srtrRow)[27][0]);
-			}
+		std::vector<std::string> dHLA;
+		if ((*srtrRow)[11][0].compare("NA") != 0) {
+			dHLA.push_back("A" + (*srtrRow)[11][0]);
+		}
+		if ((*srtrRow)[12][0].compare("NA") != 0) {
+			dHLA.push_back("A" + (*srtrRow)[12][0]);
+		}
+		if ((*srtrRow)[13][0].compare("NA") != 0) {
+			dHLA.push_back("B" + (*srtrRow)[13][0]);
+		}
+		if ((*srtrRow)[14][0].compare("NA") != 0) {
+			dHLA.push_back("B" + (*srtrRow)[14][0]);
+		}
+		if ((*srtrRow)[15][0].compare("True") == 0) {
+			dHLA.push_back("BW4");
+		}
+		if ((*srtrRow)[16][0].compare("True") == 0) {
+			dHLA.push_back("BW6");
+		}
+		if ((*srtrRow)[17][0].compare("NA") != 0) {
+			dHLA.push_back("CW" + (*srtrRow)[17][0]);
+		}
+		if ((*srtrRow)[18][0].compare("NA") != 0) {
+			dHLA.push_back("CW" + (*srtrRow)[18][0]);
+		}
+		if ((*srtrRow)[19][0].compare("NA") != 0) {
+			dHLA.push_back("DR" + (*srtrRow)[19][0]);
+		}
+		if ((*srtrRow)[20][0].compare("NA") != 0) {
+			dHLA.push_back("DR" + (*srtrRow)[20][0]);
+		}
+		if ((*srtrRow)[21][0].compare("True") == 0) {
+			dHLA.push_back("DR51");
+		}
+		if ((*srtrRow)[22][0].compare("True") == 0) {
+			dHLA.push_back("DR52");
+		}
+		if ((*srtrRow)[23][0].compare("True") == 0) {
+			dHLA.push_back("DR53");
+		}
+		if ((*srtrRow)[24][0].compare("NA") != 0) {
+			dHLA.push_back("DQ" + (*srtrRow)[24][0]);
+		}
+		if ((*srtrRow)[25][0].compare("NA") != 0) {
+			dHLA.push_back("DQ" + (*srtrRow)[25][0]);
+		}
+		if ((*srtrRow)[26][0].compare("NA") != 0) {
+			dHLA.push_back("DP" + (*srtrRow)[26][0]);
+		}
+		if ((*srtrRow)[27][0].compare("NA") != 0) {
+			dHLA.push_back("DP" + (*srtrRow)[27][0]);
+		}
 
-			bool bothKidneysAvailable = atoi((*srtrRow)[28][0].c_str()) == 2;
+		bool bothKidneysAvailable = atoi((*srtrRow)[28][0].c_str()) == 2;
 
-			KPDDonor * d = new KPDDonor(id, bt, minorA, 
-				age, genderMale, race, height, weight, cigarette,
-				recoveryTimeSinceReference, centerID);
-			
-			d->setHLA(dHLA);
-			d->setBothKidneysAvailable(bothKidneysAvailable);
+		KPDDonor * d = new KPDDonor(id, bt, minorA,
+			age, genderMale, race, height, weight, cigarette,
+			recoveryTimeSinceReference, centerID);
 
-			deceasedDonors.push_back(d);
+		d->setHLA(dHLA);
+		d->setBothKidneysAvailable(bothKidneysAvailable);
 
-			//deceasedDonors[id] = d;
-		//}
-		//else {
-			//deceasedDonors[id]->setBothKidneysAvailable(true);
-		//}
+		deceasedDonors.push_back(d);
 
-		kpdDataLog << d->donorOutput() << std::endl;
-		
-		i++;
+		kpdDataLog << "Deceased Donor " << id << std::endl;
+		kpdDataLog << d->donorOutput() << std::endl;		
 	}
-
-	//for (std::map<int, KPDDonor *>::iterator it = deceasedDonors.begin(); it != deceasedDonors.end(); it++) {
-
-		//KPDDonor * d = it->second;
-
-		//kpdDataLog << "Deceased Donor: " << it->first << std::endl;
-		//kpdDataLog << d->donorOutput() << std::endl;
-	//}
 }
 
 void KPDData::formWaitlistPopulation() {
@@ -651,8 +632,6 @@ void KPDData::formWaitlistPopulation() {
 	kpdDataLog << "--------------------------------" << std::endl;
 
 	kpdDataLog << std::endl;
-
-	int i = 1;
 
 	for (std::vector<std::vector<std::vector<std::string> > >::iterator srtrRow = waitlistCandidatesData.begin(); srtrRow != waitlistCandidatesData.end(); srtrRow++) {
 
@@ -667,7 +646,9 @@ void KPDData::formWaitlistPopulation() {
 		bool active = (*srtrRow)[4][0].compare("Inactive") != 0;
 
 		if (waitlistCandidates.count(id) == 0) {
-			
+
+			waitlistCandidateIDs.push_back(id);
+
 			int listingTime = 0;
 			std::string listingTimeBegin = (*srtrRow)[1][0];
 			if (listingTimeBegin.compare("NA") != 0) {
@@ -721,10 +702,14 @@ void KPDData::formWaitlistPopulation() {
 				cHLA.push_back("DR" + (*srtrRow)[27][0]);
 			}
 
+			int listingYear = atoi((*srtrRow)[28][0].c_str());
+			bool withdrawn = (*srtrRow)[29][0].compare("FALSE") == 0;
+			
+
 			KPDCandidate * c = new KPDCandidate(id, pra, bt, minorA,
 				ageCategory, genderMale, race, diabetes, height, weight, previousTransplant, timeOnDialysis, hepC, insurance,
 				epts, eptsPriority,
-				listingTime, removalTime, centerID, opoID);
+				listingTime, listingYear, removalTime, withdrawn, centerID, opoID);
 
 			c->setHLA(cHLA);
 			c->addStatusChangeTime(statusTime);
@@ -732,30 +717,88 @@ void KPDData::formWaitlistPopulation() {
 
 			waitlistCandidates[id] = c;
 		}
+
 		else {
 
 			waitlistCandidates[id]->addStatusChangeTime(statusTime);
 			waitlistCandidates[id]->addStatusChange(active);
 		}
-		i++;
 	}
 
-	for (std::map<int, KPDCandidate *>::iterator it = waitlistCandidates.begin(); it != waitlistCandidates.end(); it++) {
+	for (std::vector<int>::iterator it = waitlistCandidateIDs.begin(); it != waitlistCandidateIDs.end(); it++) {
 
-		KPDCandidate * c = it->second;
+		KPDCandidate * c = waitlistCandidates[*it];
 
-		kpdDataLog << "Waitlist Candidate: " << it->first << std::endl;
+		kpdDataLog << "Waitlist Candidate: " << *it << std::endl;
 		kpdDataLog << c->candidateOutput() << std::endl;
 	}
 
 }
 
-KPDCandidate * KPDData::drawCandidate(double u) {
+std::deque<KPDDonor*> KPDData::getDeceasedDonors() {
+
+	return std::deque<KPDDonor* >(deceasedDonors);
+}
+
+std::deque<int> KPDData::getDeceasedDonorArrivalTimes() {
+
+	std::deque<int> arrivalTimes;
+
+	for (std::deque<KPDDonor *>::iterator it = deceasedDonors.begin(); it != deceasedDonors.end(); it++) {
+		arrivalTimes.push_back((*it)->getRecoveryTime());
+	}
+
+	return arrivalTimes;
+}
+
+std::vector<KPDCandidate*> KPDData::getWaitlistedCandidates() {
+
+	std::vector<KPDCandidate* > candidates;
+
+	for (std::map<int, KPDCandidate*>::iterator it = waitlistCandidates.begin(); it != waitlistCandidates.end(); it++) {
+		candidates.push_back((*it).second);
+	}
+
+	return candidates;
+}
+
+std::vector<int> KPDData::getWaitlistedCandidateIDs() {
+
+	return std::vector<int>(waitlistCandidateIDs);
+}
+
+std::vector<std::deque<KPDStatus> > KPDData::getWaitlistCandidatesStateTransitionMatrix() {
+	
+	std::vector<std::deque<KPDStatus> > waitlistCandidateTransitions;
+
+	for (std::vector<int>::iterator it = waitlistCandidateIDs.begin(); it != waitlistCandidateIDs.end(); it++) {
+		waitlistCandidateTransitions.push_back(waitlistCandidates[*it]->getStatuses());
+	}
+
+	return waitlistCandidateTransitions;
+}
+
+std::vector<std::deque<int> > KPDData::getWaitlistCandidatesStateTransitionTimeMatrix() {
+
+	std::vector<std::deque<int> > waitlistCandidateTransitionTimes;
+
+	for (std::vector<int>::iterator it = waitlistCandidateIDs.begin(); it != waitlistCandidateIDs.end(); it++) {
+
+		waitlistCandidateTransitionTimes.push_back(waitlistCandidates[*it]->getStatusChangeTimes());
+	}
+
+	return waitlistCandidateTransitionTimes;
+}
+
+
+std::pair<KPDCandidate *, int> KPDData::drawCandidate(double u) {
 
 	int candidateIndex = (int)(u * pairedCandidatesPool.size());
 	KPDCandidate * candidate = pairedCandidatesPool[candidateIndex]->copy();
 
-	return candidate;
+	int numberOfDonors = (int) pairedDonorsPool[candidate->getMatchingID()].size();
+
+	return std::pair<KPDCandidate *, int>(candidate, numberOfDonors);
 }
 
 KPDDonor * KPDData::drawNDD(double u) {
@@ -766,78 +809,50 @@ KPDDonor * KPDData::drawNDD(double u) {
 	return donor;
 }
 
-int KPDData::drawPair(double u){
+KPDDonor * KPDData::generateDonor(std::vector<double> u) {
 
-	int pairIndex = (int)(u * pairedCandidatesPool.size());
-	
-	return pairIndex;
-}
+	// Blood Type
+	int btIndex = KPDFunctions::retrieveDiscreteSampleIndex(u[0], characteristicsFrequency["Blood Type"]);
 
-
-std::vector<std::string> KPDData::drawHLA(double u) {
-
-	int hlaIndex = KPDFunctions::retrieveDiscreteSampleIndex(u, donorHLAFrequency);
-
-	std::vector<std::string> hla;
-
-	for (std::vector<std::string>::iterator it = donorHLA[hlaIndex].begin(); it != donorHLA[hlaIndex].end(); it++) {
-		hla.push_back(*it);
-	}
-
-	return hla;
-}
-
-bool KPDData::drawHLABW(double u, bool bw4) {
-
-	if (bw4) {
-		return u <= characteristicsFrequency["Donor HLA BW"][0];
-	}
-	else {
-		return u <= characteristicsFrequency["Donor HLA BW"][1];
-	}
-}
-
-KPDBloodType KPDData::drawBloodType(double u) {
-
-	double total = 0.0;
-
-	for (std::vector<double>::iterator it = characteristicsFrequency["Blood Type"].begin(); it != characteristicsFrequency["Blood Type"].end(); it++) {
-		total += *it;
-	}
-
-	double adjustedU = u * total;
-
-	int btIndex = KPDFunctions::retrieveDiscreteSampleIndex(adjustedU, characteristicsFrequency["Blood Type"]);
-
-	KPDBloodType bt = BT_O;
+	KPDBloodType dBT = BT_O;
 	if (btIndex == 1) {
-		bt = BT_A;
+		dBT = BT_A;
 	}
 	else if (btIndex == 2) {
-		bt = BT_B;
+		dBT = BT_B;
 	}
 	else if (btIndex == 3) {
-		bt = BT_AB;
+		dBT = BT_AB;
 	}
 
-	return bt;
-}
+	// HLA
+	std::vector<std::string> dHLA;
 
-KPDCandidate * KPDData::retrieveCandidate(int index){	
-	return pairedCandidatesPool[index]->copy();
-}
+	int hlaIndex1 = KPDFunctions::retrieveDiscreteSampleIndex(u[1], donorHLAFrequency);
 
-std::vector<KPDDonor*> KPDData::retrieveDonors(int matchingID){
-
-	std::vector<KPDDonor *> donors;
-	
-	donors.push_back(new KPDDonor());
-
-	for (std::vector<KPDDonor *>::iterator it = pairedDonorsPool[matchingID].begin() + 1; it != pairedDonorsPool[matchingID].end(); it++) {
-		donors.push_back((*it)->copy());
+	for (std::vector<std::string>::iterator it = donorHLA[hlaIndex1].begin(); it != donorHLA[hlaIndex1].end(); it++) {
+		dHLA.push_back(*it);
 	}
 
-	return donors;
+	int hlaIndex2 = KPDFunctions::retrieveDiscreteSampleIndex(u[2], donorHLAFrequency);
+
+	for (std::vector<std::string>::iterator it = donorHLA[hlaIndex2].begin(); it != donorHLA[hlaIndex2].end(); it++) {
+		dHLA.push_back(*it);
+	}
+
+	if (u[3] <= characteristicsFrequency["Donor HLA BW"][0]) {
+		dHLA.push_back("BW4");
+	}
+	if (u[4] <= characteristicsFrequency["Donor HLA BW"][1]) {
+		dHLA.push_back("BW6");
+	}
+
+	KPDDonor * donor = new KPDDonor();
+	donor->setBT(dBT);
+	donor->setHLA(dHLA);
+
+	return donor;
+
 }
 
 //Checks for Match Between Candidate and Donor
@@ -900,34 +915,27 @@ KPDCrossmatch KPDData::performCrossmatch(KPDCandidate * candidate, KPDDonor * do
 	return CROSSMATCH_SUCCESSFUL;
 }
 
-bool KPDData::isCompatiblePair(KPDCandidate * candidate, std::vector<KPDDonor *> donors, bool reserveODonorsForOCandidates, bool allowDesensitization) {
+bool KPDData::allowableMatch(KPDCrossmatch crossmatch) {
 
-	if (donors.size() > 1) {
-		for (std::vector<KPDDonor * >::iterator itDonor = donors.begin() + 1; itDonor != donors.end(); itDonor++) {
+	if (crossmatch == CROSSMATCH_SUCCESSFUL) {
+		return true;
+	}
 
-			KPDCrossmatch crossmatch = performCrossmatch(candidate, *itDonor);
+	if (crossmatch == CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O) {
+		if (kpdParameters->getAllowDesensitization() && !kpdParameters->getReserveODonorsForOCandidates()) {
+			return true;
+		}
+	}
 
-			if (crossmatch == CROSSMATCH_SUCCESSFUL) {
-				return true;
-			}
+	if (crossmatch == CROSSMATCH_REQUIRES_DESENSITIZATION) {
+		if (kpdParameters->getAllowDesensitization()) {
+			return true;
+		}
+	}
 
-			if (!reserveODonorsForOCandidates && allowDesensitization) {
-				if (crossmatch == CROSSMATCH_O_DONOR_TO_NON_O_CANDIDATE || crossmatch == CROSSMATCH_REQUIRES_DESENSITIZATION || crossmatch == CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O) {
-					return true;
-				}
-			}
-
-			if (!reserveODonorsForOCandidates) {
-				if (crossmatch == CROSSMATCH_O_DONOR_TO_NON_O_CANDIDATE) {
-					return true;
-				}
-			}
-
-			if (allowDesensitization) {
-				if (crossmatch == CROSSMATCH_REQUIRES_DESENSITIZATION) {
-					return true;
-				}
-			}
+	if (crossmatch == CROSSMATCH_O_DONOR_TO_NON_O_CANDIDATE) {
+		if (!kpdParameters->getReserveODonorsForOCandidates()) {
+			return true;
 		}
 	}
 

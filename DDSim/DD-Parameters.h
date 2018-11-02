@@ -69,18 +69,12 @@ private:
 	std::string fileWaitingListCandidates;
 	
 	//Random Number Generator Seeds
-	int rngSeedCharacteristics;
-	int rngSeedNDD;
 	int rngSeedSelection;
-	int rngSeedAdditionalDonor;
 	int rngSeedArrival;
-	int rngSeedUtility;
-	int rngSeedCrossmatch;
-	int rngSeedPairFailure;
-	int rngSeedMatchFailure;
-	int rngSeedDonorGenerator;
-	int rngSeedTransition;
-	int rngSeedExpectedUtilityEstimation;
+	int rngSeedMatch;
+	int rngSeedDonor;
+	int rngSeedStatus;
+	int rngSeedExpectedUtility;
 
 	//Output Suppression
 	bool suppressExchangeInformation;
@@ -149,18 +143,12 @@ public:
 	std::string getFileWaitingListCandidates();
 
 	//Random Number Generator Seeds
-	int getRNGSeedCharacteristics();
-	int getRNGSeedNDD();
 	int getRNGSeedSelection();
-	int getRNGSeedAdditionalDonor();
 	int getRNGSeedArrival();
-	int getRNGSeedUtility();
-	int getRNGSeedCrossmatch();
-	int getRNGSeedPairFailure();
-	int getRNGSeedMatchFailure();
-	int getRNGSeedDonorGenerator();
-	int getRNGSeedTransition();
-	int getRNGSeedExpectedUtilityEstimation();
+	int getRNGSeedMatch();
+	int getRNGSeedDonor();
+	int getRNGSeedStatus();
+	int getRNGSeedExpectedUtility();
 
 	//Output Suppression
 	bool suppressExchangeOutput();
@@ -226,18 +214,12 @@ KPDParameters::KPDParameters(){
 	fileWaitingListCandidates = "CandidateWaitlist.csv";
 	
 	//Random Number Generators Seeds
-	rngSeedCharacteristics = 3030303;
-	rngSeedNDD = 23958126;
 	rngSeedSelection = 9007900;
-	rngSeedAdditionalDonor = 2531530;
 	rngSeedArrival = 5416162;
-	rngSeedUtility = 328749;
-	rngSeedCrossmatch = 3102156;
-	rngSeedPairFailure = 326346;
-	rngSeedMatchFailure = 2349412;
-	rngSeedDonorGenerator = 3942252;
-	rngSeedTransition = 7156372;
-	rngSeedExpectedUtilityEstimation = 1923323;
+	rngSeedMatch = 3102156;
+	rngSeedDonor = 3942252;
+	rngSeedStatus = 7156372;
+	rngSeedExpectedUtility = 1923323;
 	
 	//Output Suppression
 	suppressExchangeInformation = true;
@@ -341,18 +323,12 @@ bool KPDParameters::processParameters(std::string & fileName){
 			if (tokenOne.compare("#filewaitinglistcandidates") == 0) { fileWaitingListCandidates = tokenTwo; }
 
 			//Random Number Generator Seeds
-			if (tokenOne.compare("#rngseedcharacteristics") == 0) { rngSeedCharacteristics = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#rngseedndd") == 0) { rngSeedNDD = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#rngseedselection") == 0) { rngSeedSelection = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#rngseedadditionaldonor") == 0) { rngSeedAdditionalDonor = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#rngseedarrival") == 0) { rngSeedArrival = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#rngseedutility") == 0) { rngSeedUtility = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#rngseedcrossmatch") == 0) { rngSeedCrossmatch = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#rngseedpairfailure") == 0) { rngSeedPairFailure = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#rngseedmatchfailure") == 0) { rngSeedMatchFailure = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#rngseeddonorgenerator") == 0) { rngSeedDonorGenerator = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#rngseedtransition") == 0) { rngSeedTransition = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#rngseedexpectedutilityestimation") == 0) { rngSeedExpectedUtilityEstimation = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#rngseedmatch") == 0) { rngSeedMatch = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#rngseeddonor") == 0) { rngSeedDonor = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#rngseedstatus") == 0) { rngSeedStatus = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#rngseedexpectedutility") == 0) { rngSeedExpectedUtility = atoi(tokenTwo.c_str()); }
 
 			//Output Suppression
 			if (tokenOne.compare("#suppressexchangeinformation") == 0) {
@@ -479,18 +455,12 @@ void KPDParameters::printLog(){
 	parametersLog << "Random Number Generator Seeds" << std::endl;
 	parametersLog << "-----------------------------" << std::endl << std::endl;
 
-	parametersLog << "Characteristics RNG Seed: " << rngSeedCharacteristics << std::endl;
-	parametersLog << "NDD Generation RNG Seed: " << rngSeedNDD << std::endl;
-	parametersLog << "Pair Selection RNG Seed: " << rngSeedSelection << std::endl;
-	parametersLog << "Additional Donor RNG Seed: " << rngSeedAdditionalDonor << std::endl;
-	parametersLog << "Arrival Time RNG Seed: " << rngSeedArrival << std::endl;
-	parametersLog << "Match Utility RNG Seed: " << rngSeedUtility << std::endl;
-	parametersLog << "Lab Crossmatch RNG Seed: " << rngSeedCrossmatch << std::endl;
-	parametersLog << "Pair Failure RNG Seed: " << rngSeedPairFailure << std::endl;
-	parametersLog << "Match Failure RNG Seed: " << rngSeedMatchFailure << std::endl;
-	parametersLog << "Donor Generation RNG Seed: " << rngSeedDonorGenerator << std::endl;
-	parametersLog << "Transitions RNG Seed: " << rngSeedTransition << std::endl;
-	parametersLog << "Expected Utility Estimation RNG Seed: " << rngSeedExpectedUtilityEstimation << std::endl;
+	parametersLog << "Pair/NDD Selection RNG Seed: " << rngSeedSelection << std::endl;
+	parametersLog << "Pair/NDD Arrival Time RNG Seed: " << rngSeedArrival << std::endl;
+	parametersLog << "Match Properties RNG Seed: " << rngSeedMatch << std::endl;
+	parametersLog << "Donor Generation RNG Seed: " << rngSeedDonor << std::endl;
+	parametersLog << "Status Changes RNG Seed: " << rngSeedStatus << std::endl;
+	parametersLog << "Expected Utility Estimation RNG Seed: " << rngSeedExpectedUtility << std::endl;
 
 	parametersLog << std::endl;
 	
@@ -653,52 +623,28 @@ std::string KPDParameters::getFileWaitingListCandidates() {
 	return fileWaitingListCandidates;
 }
 
-int KPDParameters::getRNGSeedCharacteristics() {
-	return rngSeedCharacteristics;
-}
-
-int KPDParameters::getRNGSeedNDD() {
-	return rngSeedNDD;
-}
-
 int KPDParameters::getRNGSeedSelection() {
 	return rngSeedSelection;
-}
-
-int KPDParameters::getRNGSeedAdditionalDonor() {
-	return rngSeedAdditionalDonor;
 }
 
 int KPDParameters::getRNGSeedArrival() {
 	return rngSeedArrival;
 }
 
-int KPDParameters::getRNGSeedUtility() {
-	return rngSeedUtility;
+int KPDParameters::getRNGSeedMatch() {
+	return rngSeedMatch;
 }
 
-int KPDParameters::getRNGSeedCrossmatch() {
-	return rngSeedCrossmatch;
+int KPDParameters::getRNGSeedDonor() {
+	return rngSeedDonor;
 }
 
-int KPDParameters::getRNGSeedPairFailure() {
-	return rngSeedPairFailure;
+int KPDParameters::getRNGSeedStatus() {
+	return rngSeedStatus;
 }
 
-int KPDParameters::getRNGSeedMatchFailure() {
-	return rngSeedMatchFailure;
-}
-
-int KPDParameters::getRNGSeedDonorGenerator() {
-	return rngSeedDonorGenerator;
-}
-
-int KPDParameters::getRNGSeedTransition() {
-	return rngSeedTransition;
-}
-
-int KPDParameters::getRNGSeedExpectedUtilityEstimation() {
-	return rngSeedExpectedUtilityEstimation;
+int KPDParameters::getRNGSeedExpectedUtility() {
+	return rngSeedExpectedUtility;
 }
 
 bool KPDParameters::suppressExchangeOutput() {

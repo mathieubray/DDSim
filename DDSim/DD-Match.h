@@ -66,7 +66,7 @@ public:
 	void setTransplantDifficultyScore(double score);
 	void setRandomUtility(double util);
 
-	void setUtility(KPDUtilityScheme scheme, double util);
+	void setUtility(KPDUtilityScheme scheme, double util); // Sets utility value based on specified utility scheme
 
 	void setAssumedSuccessProbability(double prob);
 	void setActualSuccessProbability(double prob);
@@ -75,6 +75,7 @@ public:
 	void setLabCrossmatchResult(bool result);
 	
 	void setMatchProperties(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool labResult);
+	void resetMatch();
 
 	//Strings
 	std::string matchString(); // Returns a comma-separated string
@@ -241,6 +242,23 @@ void KPDMatch::setMatchProperties(bool match, double fiveYearSurv, double tenYea
 
 	virtualCrossmatchResult = virtualResult;
 	labCrossmatchResult = labResult;
+
+}
+
+void KPDMatch::resetMatch(){
+	
+	adjacency = false;
+
+	fiveYearSurvival = 0.0;
+	tenYearSurvival = 0.0;
+	transplantDifficultyScore = 0.0;
+	randomUtility = 0.0;
+
+	assumedSuccessProbability = 0.0;
+	actualSuccessProbability = 0.0;
+
+	virtualCrossmatchResult = CROSSMATCH_FAILED_LAB;
+	labCrossmatchResult = false;
 
 }
 
