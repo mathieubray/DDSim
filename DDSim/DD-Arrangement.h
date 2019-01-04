@@ -65,11 +65,10 @@ public:
 	std::vector<int> getNodeIDs();
 	int getNumberOfNodes();
 
-	bool getAvailability(int nodeID);
-
 	double getTransplantationTime();
-	
+
 	bool getAdjacency(int donorNodeID, int candidateNodeID, int donorIndex);
+	bool getAvailability(int nodeID);
 
 	void setFailure(int nodeID);
 
@@ -151,10 +150,30 @@ KPDArrangement::~KPDArrangement(){
 	
 	arrangementMatches.clear();
 
+	arrangementTransplantSelected.clear();
+
 	arrangementFallbackOptions.clear();
 	arrangementUtilityOfFallbackOptions.clear();
+}
 
-	arrangementTransplantSelected.clear();
+int KPDArrangement::getChild(int lower, int current, std::vector<int> & visitedVector, std::vector<std::vector<bool> > & adjacency) {
+	int nV = (int)visitedVector.size() - 1;
+	for (int j = lower + 1; j <= nV; j++) {
+		if (adjacency[current][j] == true && visitedVector[j] == 0)
+			return j;
+	}
+	return -1;
+}
+
+int KPDArrangement::indexOf(int nodeID) {
+
+	for (int i = 0; i < (int)arrangementNodes.size(); i++) {
+		if (arrangementNodes[i]->getID() == nodeID) {
+			return i;
+		}
+	}
+
+	return -1;
 }
 
 bool KPDArrangement::hasNDD() {
@@ -176,10 +195,6 @@ int KPDArrangement::getNumberOfNodes(){
 	return (int)arrangementNodes.size();
 }
 
-bool KPDArrangement::getAvailability(int candidateID) {
-	return arrangementAvailability[indexOf(candidateID)];
-}
-
 double KPDArrangement::getTransplantationTime() {
 	return transplantationTime;
 }
@@ -198,8 +213,12 @@ bool KPDArrangement::getAdjacency(int donorNodeID, int candidateNodeID, int dono
 	return false;
 }
 
+bool KPDArrangement::getAvailability(int candidateID) {
+	return arrangementAvailability[indexOf(candidateID)];
+}
+
 void KPDArrangement::setFailure(int nodeID){	
-	int nodeIndex = arrangementAvailability[indexOf(nodeID)];
+	arrangementAvailability[indexOf(nodeID)] = false;
 }
 
 int KPDArrangement::selectDonor(int donorNodeID, int candidateNodeID, KPDUtilityScheme utilityScheme, bool external){
@@ -265,30 +284,30 @@ void KPDArrangement::getOptimalSolutionForFallBackOptions(std::vector<std::vecto
 
 		int numDonors = arrangementNodes[donorNodeIndex]->getNumberOfDonors();
 
-		for (int j = 1; j <= N; j++){
+		for (int j = 1; j <= N; j++) {
 
 			int candidateNodeIndex = j - 1;
 
 			if (i != j) {
 
-				bool incident = false;
+				if (arrangementAvailability[candidateNodeIndex]) {
 
-				if (arrangementNodeTypes[donorNodeIndex] == PAIR && arrangementNodeTypes[candidateNodeIndex] != PAIR) {
-					incident = true;
-				}
-				else if (arrangementNodeTypes[candidateNodeIndex] == PAIR) {					
+					if (arrangementNodeTypes[donorNodeIndex] == PAIR && arrangementNodeTypes[candidateNodeIndex] != PAIR) {
+						adjacencyMatrix[i][j] = true;
+					}
+					else if (arrangementNodeTypes[candidateNodeIndex] == PAIR) {
 
-					if (arrangementMatches.find(donorNodeIndex) != arrangementMatches.end()) {
-						if (arrangementMatches[donorNodeIndex].find(candidateNodeIndex) != arrangementMatches[donorNodeIndex].end()) {
-							if (arrangementAvailability[candidateNodeIndex]) {
+						if (arrangementMatches.find(donorNodeIndex) != arrangementMatches.end()) {
+							if (arrangementMatches[donorNodeIndex].find(candidateNodeIndex) != arrangementMatches[donorNodeIndex].end()) {
+
 								for (int k = 1; k <= numDonors; k++) {
 
 									int donorIndex = k - 1;
 
 									if (arrangementMatches[donorNodeIndex][candidateNodeIndex][donorIndex]->getAdjacency() &&
-										arrangementMatches[donorNodeIndex][candidateNodeIndex][donorIndex]->getLabCrossmatchResult()) {
+										arrangementMatches[donorNodeIndex][candidateNodeIndex][donorIndex]->getSuccessfulMatch()) {
 
-										incident = true;
+										adjacencyMatrix[i][j] = true;
 										break;
 									}
 								}
@@ -296,8 +315,6 @@ void KPDArrangement::getOptimalSolutionForFallBackOptions(std::vector<std::vecto
 						}
 					}
 				}
-
-				adjacencyMatrix[i][j] = incident;
 			}
 		}
 	}
@@ -438,6 +455,7 @@ void KPDArrangement::getOptimalSolutionForFallBackOptions(std::vector<std::vecto
 	GRBEnv *env = 0; //Created outside try; needs to be recollected;
 	GRBVar *vars = 0; //Created outside try; needs to be recollected;
 	GRBVar *myVars = new GRBVar[arrangementFallbackOptions.size() + 1]; //Created outside try; needs to be recollected;
+
 	try{
 		env = new GRBEnv();
 		env->set(GRB_IntParam_Threads, 4); // Limit the threads
@@ -508,36 +526,17 @@ void KPDArrangement::getOptimalSolutionForFallBackOptions(std::vector<std::vecto
 	for (std::vector<int>::iterator fallbackOptionIt = selectedFallbacks.begin(); fallbackOptionIt != selectedFallbacks.end(); fallbackOptionIt++){
 		std::vector<int> cycleOrChain;
 		for (std::vector<int>::iterator nodeIt = arrangementFallbackOptions[*fallbackOptionIt].begin(); nodeIt != arrangementFallbackOptions[*fallbackOptionIt].end(); nodeIt++){
-			cycleOrChain.push_back(arrangementNodes[(*nodeIt) - 1]->getID());
+			cycleOrChain.push_back(arrangementNodes[*nodeIt]->getID());
 		}
 		options.push_back(cycleOrChain);
 	}
 }
 
-int KPDArrangement::indexOf(int nodeID) {
-
-	for (int i = 0; i < (int)arrangementNodes.size(); i++) {
-		if (arrangementNodes[i]->getID() == nodeID) {
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-int KPDArrangement::getChild(int lower, int current, std::vector<int> &visitedVector, std::vector<std::vector<bool> > &adjacency){
-	int nV = (int)visitedVector.size() - 1;
-	for (int j = lower + 1; j <= nV; j++){
-		if (adjacency[current][j] == true && visitedVector[j] == 0)
-			return j;
-	}
-	return -1;
-}
-
 std::string KPDArrangement::toLabel() {
+
 	std::stringstream ss;
 
-	for (std::vector<KPDNode *>::iterator it = arrangementNodes.begin(); it != arrangementNodes.end(); it++) {
+	for (std::vector<KPDNode *>::iterator it = arrangementNodes.begin(); it != arrangementNodes.end() - 1; it++) {
 		ss << (*it)->getID() << "-";
 	}
 	ss << arrangementNodes.back()->getID();
@@ -546,6 +545,7 @@ std::string KPDArrangement::toLabel() {
 }
 
 std::string KPDArrangement::toTransplantString(){
+
 	std::stringstream ss;
 
 	int N = (int)arrangementNodes.size();

@@ -51,9 +51,6 @@
     <ClInclude Include="DD-Data.h">
       <Filter>Header Files\Simulation</Filter>
     </ClInclude>
-    <ClInclude Include="DD-Parameters.h">
-      <Filter>Header Files\Simulation</Filter>
-    </ClInclude>
     <ClInclude Include="DD-Record.h">
       <Filter>Header Files\Simulation</Filter>
     </ClInclude>
@@ -62,6 +59,9 @@
     </ClInclude>
     <ClInclude Include="DD-MatchRun.h">
       <Filter>Header Files\Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="DD-Parameters.h">
+      <Filter>Header Files\Helper Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

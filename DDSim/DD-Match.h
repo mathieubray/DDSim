@@ -18,7 +18,7 @@ class KPDMatch {
 
 private:
 
-	bool adjacency;
+	bool adjacency; // This is the assumed compatibility of the match given no other information
 
 	double fiveYearSurvival;
 	double tenYearSurvival;
@@ -29,7 +29,8 @@ private:
 	double actualSuccessProbability;
 
 	KPDCrossmatch virtualCrossmatchResult;
-	bool labCrossmatchResult;
+	
+	bool successfulMatch; // This is the true underlying compatibility of the match
 
 public:
 
@@ -38,7 +39,7 @@ public:
 	//Construts a dummy match
 	KPDMatch();
 	//Constructs a match with all defined match characteristics 
-	KPDMatch(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool labResult);
+	KPDMatch(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool success);
 	~KPDMatch();
 
 	//Getters
@@ -55,7 +56,7 @@ public:
 	double getActualSuccessProbability();
 
 	KPDCrossmatch getVirtualCrossmatchResult();
-	bool getLabCrossmatchResult();
+	bool getSuccessfulMatch();
 
 
 	//Setters
@@ -72,10 +73,9 @@ public:
 	void setActualSuccessProbability(double prob);
 
 	void setVirtualCrossmatchResult(KPDCrossmatch result);
-	void setLabCrossmatchResult(bool result);
+	void setSuccessfulMatch(bool success);
 	
-	void setMatchProperties(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool labResult);
-	void resetMatch();
+	void setMatchProperties(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool success);
 
 	//Strings
 	std::string matchString(); // Returns a comma-separated string
@@ -99,11 +99,12 @@ KPDMatch::KPDMatch(){
 	assumedSuccessProbability = 0.0;
 	actualSuccessProbability = 0.0;
 
-	virtualCrossmatchResult = CROSSMATCH_FAILED_LAB;
-	labCrossmatchResult = false;
+	virtualCrossmatchResult = CROSSMATCH_FAILED;
+
+	successfulMatch = false;
 }
 
-KPDMatch::KPDMatch(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool labResult){
+KPDMatch::KPDMatch(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool success){
 	
 	adjacency = match;
 
@@ -116,7 +117,8 @@ KPDMatch::KPDMatch(bool match, double fiveYearSurv, double tenYearSurv, double s
 	actualSuccessProbability = actualProb;
 
 	virtualCrossmatchResult = virtualResult;
-	labCrossmatchResult = labResult;
+
+	successfulMatch = success;
 }
 
 KPDMatch::~KPDMatch(){
@@ -173,8 +175,8 @@ KPDCrossmatch KPDMatch::getVirtualCrossmatchResult(){
 	return virtualCrossmatchResult;
 }
 
-bool KPDMatch::getLabCrossmatchResult(){
-	return labCrossmatchResult;
+bool KPDMatch::getSuccessfulMatch(){
+	return successfulMatch;
 }
 
 void KPDMatch::setAdjacency(bool match){
@@ -224,11 +226,11 @@ void KPDMatch::setVirtualCrossmatchResult(KPDCrossmatch result){
 	virtualCrossmatchResult = result;
 }
 
-void KPDMatch::setLabCrossmatchResult(bool result){
-	labCrossmatchResult = result;
+void KPDMatch::setSuccessfulMatch(bool success){
+	successfulMatch = success;
 }
 
-void KPDMatch::setMatchProperties(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool labResult){
+void KPDMatch::setMatchProperties(bool match, double fiveYearSurv, double tenYearSurv, double score, double util, double assumedProb, double actualProb, KPDCrossmatch virtualResult, bool success){
 	
 	adjacency = match;
 
@@ -241,24 +243,7 @@ void KPDMatch::setMatchProperties(bool match, double fiveYearSurv, double tenYea
 	actualSuccessProbability = actualProb;
 
 	virtualCrossmatchResult = virtualResult;
-	labCrossmatchResult = labResult;
-
-}
-
-void KPDMatch::resetMatch(){
-	
-	adjacency = false;
-
-	fiveYearSurvival = 0.0;
-	tenYearSurvival = 0.0;
-	transplantDifficultyScore = 0.0;
-	randomUtility = 0.0;
-
-	assumedSuccessProbability = 0.0;
-	actualSuccessProbability = 0.0;
-
-	virtualCrossmatchResult = CROSSMATCH_FAILED_LAB;
-	labCrossmatchResult = false;
+	successfulMatch = success;
 
 }
 
@@ -273,7 +258,7 @@ std::string KPDMatch::matchString(){
 	matchInfo << assumedSuccessProbability << ",";
 	matchInfo << actualSuccessProbability << ",";
 	matchInfo << KPDFunctions::crossmatchToString(virtualCrossmatchResult) << ",";
-	matchInfo << KPDFunctions::boolToTF(labCrossmatchResult);
+	matchInfo << KPDFunctions::boolToTF(successfulMatch);
 
 	return matchInfo.str();
 }
@@ -286,7 +271,8 @@ std::string KPDMatch::matchOutput(){
 
 	matchInfo << KPDFunctions::indent(tab) << "5-Year Survival: " << fiveYearSurvival << ", 10-Year Survival: " << tenYearSurvival << ", Score: " << transplantDifficultyScore << ", Random Utility: " << randomUtility << std::endl;
 	matchInfo << KPDFunctions::indent(tab) << "Assumed Success Probability: " << assumedSuccessProbability << ", Actual Success Probability: " << actualSuccessProbability << std::endl;
-	matchInfo << KPDFunctions::indent(tab) << "Virtual Crossmatch Result: " << KPDFunctions::crossmatchToString(virtualCrossmatchResult) << ", Lab Crossmatch Result: " << KPDFunctions::boolToTF(labCrossmatchResult) << std::endl;
+	matchInfo << KPDFunctions::indent(tab) << "Virtual Crossmatch Result: " << KPDFunctions::crossmatchToString(virtualCrossmatchResult) << std::endl;
+	matchInfo << KPDFunctions::indent(tab) << "Successful Match (Hidden): " << KPDFunctions::boolToTF(successfulMatch) << std::endl;
 
 	return matchInfo.str();
 
@@ -298,7 +284,7 @@ std::string KPDMatch::matchShortOutput() {
 
 	matchInfo << "[" << fiveYearSurvival << "," << tenYearSurvival << "," << transplantDifficultyScore << "," << randomUtility << ",";
 	matchInfo << assumedSuccessProbability << "," << actualSuccessProbability << ",";
-	matchInfo << KPDFunctions::crossmatchToString(virtualCrossmatchResult) << "," << KPDFunctions::boolToTF(labCrossmatchResult) << "]";
+	matchInfo << KPDFunctions::crossmatchToString(virtualCrossmatchResult) << "," << KPDFunctions::boolToTF(successfulMatch) << "]";
 
 	return matchInfo.str();
 
@@ -306,7 +292,7 @@ std::string KPDMatch::matchShortOutput() {
 
 KPDMatch * KPDMatch::copy(){
 
-	KPDMatch * copyMatch = new KPDMatch(adjacency, fiveYearSurvival, tenYearSurvival, transplantDifficultyScore, randomUtility, assumedSuccessProbability, actualSuccessProbability, virtualCrossmatchResult, labCrossmatchResult);
+	KPDMatch * copyMatch = new KPDMatch(adjacency, fiveYearSurvival, tenYearSurvival, transplantDifficultyScore, randomUtility, assumedSuccessProbability, actualSuccessProbability, virtualCrossmatchResult, successfulMatch);
 
 	return copyMatch;
 }

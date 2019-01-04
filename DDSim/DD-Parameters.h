@@ -30,24 +30,25 @@ private:
 	int startingIterationID;
 	
 	int initKPDSize;
-	int pairArrivals;
-	int nddArrivals;		
+	double pairArrivals;
+	double nddArrivals;		
 
-	int timeSpan;
-	int freqMatchRun;
-	int postSelectionInactivePeriod;
+	int timeSimulation;
+	int timeBetweenMatchRuns;
+	int timeBetweenSelectionAndTransplantation;
 
 	int maxCycleSize;
 	int maxChainLength;
-	int maxLRSSize;
 
 	double matchUtilityLowerBound;
 	double matchUtilityUpperBound;
 
 	double probPairActiveToInactive;
 	double probPairInactiveToActive;
+
+	double probInitKPDAttrition;
 	double probPairAttrition;
-	double probNDDAttrition;
+	double probBridgeDonorAttrition;
 
 	int praEligibilityMin;
 	int praEligibilityMax;
@@ -70,6 +71,7 @@ private:
 	
 	//Random Number Generator Seeds
 	int rngSeedSelection;
+	int rngSeedAttrition;
 	int rngSeedArrival;
 	int rngSeedMatch;
 	int rngSeedDonor;
@@ -104,24 +106,25 @@ public:
 	int getStartingIterationID();
 		
 	int getInitKPDSize();
-	int getPairArrivals();
-	int getNDDArrivals();	
+	double getPairArrivals();
+	double getNDDArrivals();	
 
-	int getTimeSpan();
-	int getFreqMatchRun();
-	int getPostSelectionInactivePeriod();
+	int getTimeSimulation();
+	int getTimeBetweenMatchRuns();
+	int getTimeBetweenSelectionAndTransplantation();
 
 	int getMaxCycleSize();
 	int getMaxChainLength();
-	int getMaxLRSSize();
 
 	double getMatchUtilityLowerBound();
 	double getMatchUtilityUpperBound();
 
 	double getProbPairActiveToInactive();
 	double getProbPairInactiveToActive();
+
+	double getProbInitKPDAttrition();
 	double getProbPairAttrition();
-	double getProbNDDAttrition();
+	double getProbBridgeDonorAttrition();
 
 	double getPRAEligibilityMin();
 	double getPRAEligibilityMax();
@@ -144,6 +147,7 @@ public:
 
 	//Random Number Generator Seeds
 	int getRNGSeedSelection();
+	int getRNGSeedAttrition();
 	int getRNGSeedArrival();
 	int getRNGSeedMatch();
 	int getRNGSeedDonor();
@@ -175,24 +179,25 @@ KPDParameters::KPDParameters(){
 	startingIterationID = 1;
 
 	initKPDSize = 200;
-	pairArrivals = 500;
-	nddArrivals = 10;
+	pairArrivals = 500.0;
+	nddArrivals = 10.0;
 
-	timeSpan = 1095; // 3 Years = 365 * 3 Days
-	freqMatchRun = 30;
-	postSelectionInactivePeriod = 30;
+	timeSimulation = 1095; // 3 Years = 365 * 3 Days
+	timeBetweenMatchRuns = 1;
+	timeBetweenSelectionAndTransplantation = 30;
 	
 	maxCycleSize = 3;
 	maxChainLength = 3;
-	maxLRSSize = 4;
 
 	matchUtilityLowerBound = 1.0;
 	matchUtilityUpperBound = 1.0;
 
 	probPairActiveToInactive = 0.01;
 	probPairInactiveToActive = 0.02;
+
+	probInitKPDAttrition = 0.02;
 	probPairAttrition = 0.005;
-	probNDDAttrition = 0.01;
+	probBridgeDonorAttrition = 0.05;
 
 	praEligibilityMin = 58;
 	praEligibilityMax = 98;
@@ -215,6 +220,7 @@ KPDParameters::KPDParameters(){
 	
 	//Random Number Generators Seeds
 	rngSeedSelection = 9007900;
+	rngSeedAttrition = 52531;
 	rngSeedArrival = 5416162;
 	rngSeedMatch = 3102156;
 	rngSeedDonor = 3942252;
@@ -272,24 +278,25 @@ bool KPDParameters::processParameters(std::string & fileName){
 			if (tokenOne.compare("#startingiterationid") == 0){ startingIterationID = atoi(tokenTwo.c_str()); }
 
 			if (tokenOne.compare("#initkpdsize") == 0) { initKPDSize = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#pairarrivals") == 0){ pairArrivals = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#nddarrivals") == 0){ nddArrivals = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#pairarrivals") == 0){ pairArrivals = atof(tokenTwo.c_str()); }
+			if (tokenOne.compare("#nddarrivals") == 0){ nddArrivals = atof(tokenTwo.c_str()); }
 
-			if (tokenOne.compare("#timespan") == 0){ timeSpan = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#freqmatchrun") == 0){ freqMatchRun = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#postselectioninactiveperiod") == 0){ postSelectionInactivePeriod = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#timesimulation") == 0){ timeSimulation = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#timebetweenmatchruns") == 0){ timeBetweenMatchRuns = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#timebetweenselectionandtransplantation") == 0){ timeBetweenSelectionAndTransplantation = atoi(tokenTwo.c_str()); }
 
 			if (tokenOne.compare("#maxcyclesize") == 0) { maxCycleSize = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#maxchainlength") == 0) { maxChainLength = atoi(tokenTwo.c_str()); }
-			if (tokenOne.compare("#maxlrssize") == 0) { maxLRSSize = atoi(tokenTwo.c_str()); }
 
 			if (tokenOne.compare("#matchutilitylowerbound") == 0) { matchUtilityLowerBound = atof(tokenTwo.c_str()); }
 			if (tokenOne.compare("#matchutilityupperbound") == 0) { matchUtilityUpperBound = atof(tokenTwo.c_str()); }
 
 			if (tokenOne.compare("#probpairactivetoinactive") == 0) { probPairActiveToInactive = atof(tokenTwo.c_str()); }
 			if (tokenOne.compare("#probpairinactivetoactive") == 0) { probPairInactiveToActive = atof(tokenTwo.c_str()); }
+
+			if (tokenOne.compare("#probinitkpdattrition") == 0) { probInitKPDAttrition = atof(tokenTwo.c_str()); }
 			if (tokenOne.compare("#probpairattrition") == 0) { probPairAttrition = atof(tokenTwo.c_str()); }
-			if (tokenOne.compare("#probnddattrition") == 0) { probNDDAttrition = atof(tokenTwo.c_str()); }
+			if (tokenOne.compare("#probbridgedonorattrition") == 0) { probBridgeDonorAttrition = atof(tokenTwo.c_str()); }
 
 			if (tokenOne.compare("#praeligibilitymin") == 0) { praEligibilityMin = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#praeligibilitymax") == 0) { praEligibilityMax = atoi(tokenTwo.c_str()); }
@@ -324,6 +331,7 @@ bool KPDParameters::processParameters(std::string & fileName){
 
 			//Random Number Generator Seeds
 			if (tokenOne.compare("#rngseedselection") == 0) { rngSeedSelection = atoi(tokenTwo.c_str()); }
+			if (tokenOne.compare("#rngseedattrition") == 0) { rngSeedAttrition = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#rngseedarrival") == 0) { rngSeedArrival = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#rngseedmatch") == 0) { rngSeedMatch = atoi(tokenTwo.c_str()); }
 			if (tokenOne.compare("#rngseeddonor") == 0) { rngSeedDonor = atoi(tokenTwo.c_str()); }
@@ -342,8 +350,7 @@ bool KPDParameters::processParameters(std::string & fileName){
 			if (tokenOne.compare("#suppresspopulationinformation") == 0) {
 				if (tokenTwo.compare("TRUE") == 0) { suppressPopulationInformation = true; }
 				else if (tokenTwo.compare("FALSE") == 0) { suppressPopulationInformation = false; }
-			}		
-
+			}	
 		}
 	}
 	
@@ -370,12 +377,14 @@ void KPDParameters::printLog(){
 	parametersLog << "Utility Based On: " << KPDFunctions::utilitySchemeToString(utilityScheme);
 	if (utilityScheme == UTILITY_RANDOM) {
 		if (matchUtilityLowerBound == matchUtilityUpperBound) {
-			parametersLog << " = " << matchUtilityLowerBound << " for all transplants" << std::endl;
+			parametersLog << " = " << matchUtilityLowerBound << " for all transplants";
 		}
 		else {
-			parametersLog << " ~ U(" << matchUtilityLowerBound << "," << matchUtilityUpperBound << ")" << std::endl;
+			parametersLog << " ~ U(" << matchUtilityLowerBound << "," << matchUtilityUpperBound << ")";
 		}
 	}
+	parametersLog << std::endl;
+
 	parametersLog << std::endl;
 		
 	//Numerical Parameters
@@ -390,26 +399,29 @@ void KPDParameters::printLog(){
 	parametersLog << "Expected NDD Arrivals Per Year: " << nddArrivals << std::endl;
 	parametersLog << std::endl;
 
-	parametersLog << "Time Frame for Simulation: " << timeSpan << " Days" << std::endl;
-	parametersLog << "Match Run Frequency: Every " << freqMatchRun << " Days" << std::endl;
-	parametersLog << "Pairs Inactive for " << postSelectionInactivePeriod << " Days After Selection Before Transplantation" << std::endl;
+	parametersLog << "Simulation Time: " << timeSimulation << " Days" << std::endl;
+	parametersLog << "Match Run Frequency: Every " << timeBetweenMatchRuns << " Days" << std::endl;
+	parametersLog << "Post-Selection: " << timeBetweenSelectionAndTransplantation << " Days After Selection Before Transplantation" << std::endl;
 	parametersLog << std::endl;
 
 	parametersLog << "Maximum Cycle Size: " << maxCycleSize << std::endl;
 	parametersLog << "Maximum Chain Length: " << maxChainLength << std::endl;
-	parametersLog << "Maximum LRS Size: " << maxLRSSize << std::endl;
 	parametersLog << std::endl;
 
 	parametersLog << "Daily Probability of Pair Active -> Inactive: " << probPairActiveToInactive << std::endl;
 	parametersLog << "Daily Probability of Pair Inactive -> Active: " << probPairInactiveToActive << std::endl;
+	parametersLog << std::endl;
+
+	parametersLog << "Probability of Attrition when Generating Initial KPD: " << probInitKPDAttrition << std::endl;
 	parametersLog << "Daily Probability of Pair Withdrawing: " << probPairAttrition << std::endl;
-	parametersLog << "Daily Probability of NDD/Bridge Donor Withdrawing: " << probNDDAttrition << std::endl;
+	parametersLog << "Daily Probability of Bridge Donor Withdrawing: " << probBridgeDonorAttrition << std::endl;
+	parametersLog << std::endl;
 
 	parametersLog << "Minimum PRA for Candidate Eligibility for DD Transplant in KPD: " << praEligibilityMin << std::endl;
 	parametersLog << "Maximum PRA for Candidate Eligibility for DD Transplant in KPD: " << praEligibilityMax << std::endl;
-
-	parametersLog << std::endl;
 	
+	parametersLog << std::endl;
+
 	//Additional Options
 	parametersLog << "------------------" << std::endl;
 	parametersLog << "Additional Options" << std::endl;
@@ -456,6 +468,7 @@ void KPDParameters::printLog(){
 	parametersLog << "-----------------------------" << std::endl << std::endl;
 
 	parametersLog << "Pair/NDD Selection RNG Seed: " << rngSeedSelection << std::endl;
+	parametersLog << "Initial Pool Generation Attrition RNG Seed: " << rngSeedAttrition << std::endl;
 	parametersLog << "Pair/NDD Arrival Time RNG Seed: " << rngSeedArrival << std::endl;
 	parametersLog << "Match Properties RNG Seed: " << rngSeedMatch << std::endl;
 	parametersLog << "Donor Generation RNG Seed: " << rngSeedDonor << std::endl;
@@ -515,24 +528,24 @@ int KPDParameters::getInitKPDSize(){
 	return initKPDSize;
 }
 
-int KPDParameters::getPairArrivals(){
+double KPDParameters::getPairArrivals(){
 	return pairArrivals;
 }
 
-int KPDParameters::getNDDArrivals(){
+double KPDParameters::getNDDArrivals(){
 	return nddArrivals;
 }
 
-int KPDParameters::getTimeSpan(){
-	return timeSpan;
+int KPDParameters::getTimeSimulation(){
+	return timeSimulation;
 }
 
-int KPDParameters::getFreqMatchRun(){
-	return freqMatchRun;
+int KPDParameters::getTimeBetweenMatchRuns(){
+	return timeBetweenMatchRuns;
 }
 
-int KPDParameters::getPostSelectionInactivePeriod(){
-	return postSelectionInactivePeriod;
+int KPDParameters::getTimeBetweenSelectionAndTransplantation(){
+	return timeBetweenSelectionAndTransplantation;
 }
 
 int KPDParameters::getMaxCycleSize() {
@@ -541,10 +554,6 @@ int KPDParameters::getMaxCycleSize() {
 
 int KPDParameters::getMaxChainLength() {
 	return maxChainLength;
-}
-
-int KPDParameters::getMaxLRSSize() {
-	return maxLRSSize;
 }
 
 double KPDParameters::getMatchUtilityLowerBound() {
@@ -563,12 +572,16 @@ double KPDParameters::getProbPairInactiveToActive(){
 	return probPairInactiveToActive;
 }
 
+double KPDParameters::getProbInitKPDAttrition() {
+	return probInitKPDAttrition;
+}
+
 double KPDParameters::getProbPairAttrition(){
 	return probPairAttrition;
 }
 
-double KPDParameters::getProbNDDAttrition(){
-	return probNDDAttrition;
+double KPDParameters::getProbBridgeDonorAttrition(){
+	return probBridgeDonorAttrition;
 }
 
 double KPDParameters::getPRAEligibilityMin(){
@@ -625,6 +638,10 @@ std::string KPDParameters::getFileWaitingListCandidates() {
 
 int KPDParameters::getRNGSeedSelection() {
 	return rngSeedSelection;
+}
+
+int KPDParameters::getRNGSeedAttrition() {
+	return rngSeedAttrition;
 }
 
 int KPDParameters::getRNGSeedArrival() {

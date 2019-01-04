@@ -50,13 +50,16 @@ private:
 	std::map<int, std::vector<KPDDonor *> > pairedDonorsPool;
 
 	std::deque<KPDDonor *> deceasedDonors;
+
 	std::map<int, KPDCandidate *> waitlistCandidates;
 	std::vector<int> waitlistCandidateIDs;
+
+	std::map<int, std::vector<int> > actualDeceasedDonorWaitlistCandidateTransplants;
 
 
 	//Convert raw to clean data
 
-	void readDataFromFile(std::vector<std::vector<std::vector<std::string> > >  & parsedData, std::string fileName); // Reads and parses data from files
+	void readDataFromFile(std::vector<std::vector<std::vector<std::string> > > & parsedData, std::string fileName); // Reads and parses data from files
 
 	void formDonorHLAFrequency();
 	void formHLADictionary();	
@@ -79,10 +82,10 @@ public:
 	std::deque<int> getDeceasedDonorArrivalTimes();
 
 	std::vector<KPDCandidate *> getWaitlistedCandidates();
-	std::vector<int> getWaitlistedCandidateIDs();
 	std::vector<std::deque<KPDStatus> > getWaitlistCandidatesStateTransitionMatrix();
 	std::vector<std::deque<int> > getWaitlistCandidatesStateTransitionTimeMatrix();
 
+	std::vector<int> getActualTransplantedCandidates(int donorID);
 
 	// Stochastic draws from data
 	std::pair<KPDCandidate *, int> drawCandidate(double u);
@@ -90,7 +93,7 @@ public:
 	KPDDonor * generateDonor(std::vector<double> u);
 
 	// Crossmatch and survival calculations
-	KPDCrossmatch performCrossmatch(KPDCandidate * candidate, KPDDonor * donor);
+	KPDCrossmatch performCrossmatch(KPDCandidate * candidate, KPDDonor * donor, bool waitlist);
 	bool allowableMatch(KPDCrossmatch crossmatch);
 	double calculateSurvival(KPDCandidate * candidate, KPDDonor * donor, int fiveyear);
 	
@@ -396,6 +399,7 @@ void KPDData::formKPDPopulation() {
 
 			KPDDonor * d = new KPDDonor(matchingID, donorID,
 				dBT, dRelation, dAge, dMale, dRace, dHeight, dWeight, dCigaretteUse);
+
 			d->setHLA(dHLA);
 
 			kpdDataLog << "NDD " << donorID << " (Matching ID: " << matchingID << ") added to NDD Pool" << std::endl;
@@ -485,7 +489,7 @@ void KPDData::formKPDPopulation() {
 
 				associatedDonors.push_back(d);
 
-				KPDCrossmatch crossmatch = performCrossmatch(c, d);
+				KPDCrossmatch crossmatch = performCrossmatch(c, d, false);
 				if (allowableMatch(crossmatch)) {
 					compatiblePair = true;
 				}
@@ -544,7 +548,7 @@ void KPDData::formDeceasedDonorPopulation() {
 			recoveryTimeSinceReference = atoi(recoveryTime.c_str());
 		}
 
-		int centerID = atoi((*srtrRow)[2][0].c_str());
+		int opo = atoi((*srtrRow)[2][0].c_str());
 
 		KPDBloodType bt = KPDFunctions::stringToBloodType((*srtrRow)[3][0]);
 		bool minorA = (*srtrRow)[4][0].compare("TRUE") == 0;
@@ -610,10 +614,11 @@ void KPDData::formDeceasedDonorPopulation() {
 		}
 
 		bool bothKidneysAvailable = atoi((*srtrRow)[28][0].c_str()) == 2;
+		double kdpi = 1.0;
 
 		KPDDonor * d = new KPDDonor(id, bt, minorA,
 			age, genderMale, race, height, weight, cigarette,
-			recoveryTimeSinceReference, centerID);
+			recoveryTimeSinceReference, opo, kdpi);
 
 		d->setHLA(dHLA);
 		d->setBothKidneysAvailable(bothKidneysAvailable);
@@ -655,19 +660,32 @@ void KPDData::formWaitlistPopulation() {
 				listingTime = atoi(listingTimeBegin.c_str());
 			}
 
-			int removalTime = 0;
-			std::string removalTimeBegin = (*srtrRow)[2][0];
-			if (removalTimeBegin.compare("NA") != 0) {
-				removalTime = atoi(removalTimeBegin.c_str());
-			}
-
-			int centerID = atoi((*srtrRow)[5][0].c_str());
-			int opoID = atoi((*srtrRow)[6][0].c_str());
+			int opo = atoi((*srtrRow)[6][0].c_str());
 
 			KPDBloodType bt = KPDFunctions::stringToBloodType((*srtrRow)[7][0]);
 			bool minorA = (*srtrRow)[8][0].compare("TRUE") == 0;
 
-			KPDAgeCategory ageCategory = KPDFunctions::stringToAgeCategory((*srtrRow)[9][0]); // Discrepancies.... go with category for now
+			int age = 40;
+			string ageCategory = (*srtrRow)[9][0];
+			if (ageCategory.compare("Age < 18 years") == 0) {
+				age = 18;
+			}
+			else if (ageCategory.compare("Age 18-29 years") == 0) {
+				age = 26;
+			}
+			else if (ageCategory.compare("Age 30-39 years") == 0) {
+				age = 35;
+			}
+			else if (ageCategory.compare("Age 40-49 years") == 0) {
+				age = 45;
+			}
+			else if (ageCategory.compare("Age 50-59 years") == 0) {
+				age = 55;
+			}
+			else if (ageCategory.compare("Age 60+ years") == 0) {
+				age = 65;
+			}
+
 			bool genderMale = (*srtrRow)[10][0].compare("M") == 0;
 			KPDRace race = KPDFunctions::stringToRace((*srtrRow)[11][0]);
 			int pra = atoi((*srtrRow)[12][0].c_str());
@@ -676,7 +694,7 @@ void KPDData::formWaitlistPopulation() {
 			bool hepC = (*srtrRow)[15][0].compare("Y") == 0;
 			bool previousTransplant = (*srtrRow)[16][0].compare("Yes") == 0;
 			int timeOnDialysis = atoi((*srtrRow)[17][0].c_str());
-			bool diabetes = KPDFunctions::stringToDiagnosis((*srtrRow)[18][0]) == DIAGNOSIS_DIABETES; //Just interested in diabetes
+			bool diabetes = (*srtrRow)[18][0].compare("Diabetes") == 0;
 			KPDInsurance insurance = KPDFunctions::stringToInsurance((*srtrRow)[19][0]);
 
 			double epts = atof((*srtrRow)[20][0].c_str());
@@ -702,14 +720,22 @@ void KPDData::formWaitlistPopulation() {
 				cHLA.push_back("DR" + (*srtrRow)[27][0]);
 			}
 
-			int listingYear = atoi((*srtrRow)[28][0].c_str());
-			bool withdrawn = (*srtrRow)[29][0].compare("FALSE") == 0;
+			int withdrawalTime = -1;
+			if ((*srtrRow)[29][0].compare("NA") != 0) {
+				withdrawalTime = atoi((*srtrRow)[29][0].c_str());
+			}
 			
+			bool withdrawn = (*srtrRow)[29][0].compare("NA") == 0 && (*srtrRow)[30][0].compare("Removed from Waitlist") == 0;
 
+			if ((*srtrRow)[31][0].compare("NA") != 0) {
+
+				int actualDonorID = atoi((*srtrRow)[31][0].c_str());
+				actualDeceasedDonorWaitlistCandidateTransplants[actualDonorID].push_back(id);
+			}
+						
 			KPDCandidate * c = new KPDCandidate(id, pra, bt, minorA,
-				ageCategory, genderMale, race, diabetes, height, weight, previousTransplant, timeOnDialysis, hepC, insurance,
-				epts, eptsPriority,
-				listingTime, listingYear, removalTime, withdrawn, centerID, opoID);
+				age, genderMale, race, diabetes, height, weight, previousTransplant, timeOnDialysis, hepC, insurance, epts, eptsPriority,
+				listingTime, opo, withdrawn, withdrawalTime);
 
 			c->setHLA(cHLA);
 			c->addStatusChangeTime(statusTime);
@@ -755,16 +781,11 @@ std::vector<KPDCandidate*> KPDData::getWaitlistedCandidates() {
 
 	std::vector<KPDCandidate* > candidates;
 
-	for (std::map<int, KPDCandidate*>::iterator it = waitlistCandidates.begin(); it != waitlistCandidates.end(); it++) {
-		candidates.push_back((*it).second);
+	for (std::vector<int>::iterator it = waitlistCandidateIDs.begin(); it != waitlistCandidateIDs.end(); it++) {
+		candidates.push_back(waitlistCandidates[*it]);
 	}
 
 	return candidates;
-}
-
-std::vector<int> KPDData::getWaitlistedCandidateIDs() {
-
-	return std::vector<int>(waitlistCandidateIDs);
 }
 
 std::vector<std::deque<KPDStatus> > KPDData::getWaitlistCandidatesStateTransitionMatrix() {
@@ -790,13 +811,17 @@ std::vector<std::deque<int> > KPDData::getWaitlistCandidatesStateTransitionTimeM
 	return waitlistCandidateTransitionTimes;
 }
 
+std::vector<int> KPDData::getActualTransplantedCandidates(int donorID) {
+	return actualDeceasedDonorWaitlistCandidateTransplants[donorID];
+}
+
 
 std::pair<KPDCandidate *, int> KPDData::drawCandidate(double u) {
 
 	int candidateIndex = (int)(u * pairedCandidatesPool.size());
 	KPDCandidate * candidate = pairedCandidatesPool[candidateIndex]->copy();
 
-	int numberOfDonors = (int) pairedDonorsPool[candidate->getMatchingID()].size();
+	int numberOfDonors = (int) pairedDonorsPool[candidate->getKPDMatchingID()].size();
 
 	return std::pair<KPDCandidate *, int>(candidate, numberOfDonors);
 }
@@ -856,51 +881,69 @@ KPDDonor * KPDData::generateDonor(std::vector<double> u) {
 }
 
 //Checks for Match Between Candidate and Donor
-KPDCrossmatch KPDData::performCrossmatch(KPDCandidate * candidate, KPDDonor * donor) {
+KPDCrossmatch KPDData::performCrossmatch(KPDCandidate * candidate, KPDDonor * donor, bool waitlist) {
 
 	//Check BT match
 	if ((donor->getBT() == BT_AB && candidate->getBT() != BT_AB) ||
 		(donor->getBT() == BT_A && (candidate->getBT() == BT_O || candidate->getBT() == BT_B)) ||
 		(donor->getBT() == BT_B && (candidate->getBT() == BT_O || candidate->getBT() == BT_A))) {
 
-		return CROSSMATCH_FAILED_BT;
+		return CROSSMATCH_FAILED;
 	}
 
+	bool oDonorToNonOCandidate = donor->getBT() == BT_O && candidate->getBT() != BT_O;
+
 	//Check HLA
+	std::vector<std::string> candidateHLA = candidate->getHLA();
 	std::vector<std::string> candidateUnacceptableHLA = candidate->getUnacceptableHLA();
 	std::vector<std::string> candidateDesensitizableHLA = candidate->getDesensitizableHLA();
 	std::vector<std::string> donorHLA = donor->getHLA();
 
-	//Unacceptable HLA
-	for (std::vector<std::string>::iterator cHLA = candidateUnacceptableHLA.begin(); cHLA != candidateUnacceptableHLA.end(); cHLA++) {
-		std::map<std::string, std::vector<std::string > >::iterator unacceptableAntigens = hlaDictionary.find(*cHLA);
+	if (waitlist) {
 
-		if (unacceptableAntigens != hlaDictionary.end()) {
-			for (std::vector<std::string>::iterator antigen = unacceptableAntigens->second.begin(); antigen != unacceptableAntigens->second.end(); antigen++) {
-				for (std::vector<std::string>::iterator dHLA = donorHLA.begin(); dHLA != donorHLA.end(); dHLA++) {
-					if ((*dHLA).compare(*antigen) == 0) {
-						return CROSSMATCH_FAILED_HLA;
+		for (std::vector<std::string>::iterator cHLA = candidateHLA.begin(); cHLA != candidateHLA.end(); cHLA++) {
+			std::map<std::string, std::vector<std::string> >::iterator unacceptableAntigens = hlaDictionary.find(*cHLA);
+
+			if (unacceptableAntigens != hlaDictionary.end()) {
+				for (std::vector<std::string>::iterator antigen = unacceptableAntigens->second.begin(); antigen != unacceptableAntigens->second.end(); antigen++) {
+					for (std::vector<std::string>::iterator dHLA = donorHLA.begin(); dHLA != donorHLA.end(); dHLA++) {
+						if ((*dHLA).compare(*antigen) == 0) {
+							return CROSSMATCH_FAILED;
+						}
 					}
 				}
 			}
 		}
 	}
 
-	bool oDonorToNonOCandidate = donor->getBT() == BT_O && candidate->getBT() != BT_O;
+	else {
+		for (std::vector<std::string>::iterator cHLA = candidateUnacceptableHLA.begin(); cHLA != candidateUnacceptableHLA.end(); cHLA++) {
+			std::map<std::string, std::vector<std::string > >::iterator unacceptableAntigens = hlaDictionary.find(*cHLA);
 
-	// Desensitizable HLA (if candidate can be desensitized)
-	for (std::vector<std::string>::iterator cHLA = candidateDesensitizableHLA.begin(); cHLA != candidateDesensitizableHLA.end(); cHLA++) {
-		std::map<std::string, std::vector<std::string > >::iterator unacceptableAntigens = hlaDictionary.find(*cHLA);
-
-		if (unacceptableAntigens != hlaDictionary.end()) {
-			for (std::vector<std::string>::iterator antigen = unacceptableAntigens->second.begin(); antigen != unacceptableAntigens->second.end(); antigen++) {
-				for (std::vector<std::string>::iterator dHLA = donorHLA.begin(); dHLA != donorHLA.end(); dHLA++) {
-					if ((*dHLA).compare(*antigen) == 0) {
-						if (oDonorToNonOCandidate) {
-							return CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O;
+			if (unacceptableAntigens != hlaDictionary.end()) {
+				for (std::vector<std::string>::iterator antigen = unacceptableAntigens->second.begin(); antigen != unacceptableAntigens->second.end(); antigen++) {
+					for (std::vector<std::string>::iterator dHLA = donorHLA.begin(); dHLA != donorHLA.end(); dHLA++) {
+						if ((*dHLA).compare(*antigen) == 0) {
+							return CROSSMATCH_FAILED;
 						}
-						else {
-							return CROSSMATCH_REQUIRES_DESENSITIZATION;
+					}
+				}
+			}
+		}
+
+		for (std::vector<std::string>::iterator cHLA = candidateDesensitizableHLA.begin(); cHLA != candidateDesensitizableHLA.end(); cHLA++) {
+			std::map<std::string, std::vector<std::string > >::iterator unacceptableAntigens = hlaDictionary.find(*cHLA);
+
+			if (unacceptableAntigens != hlaDictionary.end()) {
+				for (std::vector<std::string>::iterator antigen = unacceptableAntigens->second.begin(); antigen != unacceptableAntigens->second.end(); antigen++) {
+					for (std::vector<std::string>::iterator dHLA = donorHLA.begin(); dHLA != donorHLA.end(); dHLA++) {
+						if ((*dHLA).compare(*antigen) == 0) {
+							if (oDonorToNonOCandidate) {
+								return CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O;
+							}
+							else {
+								return CROSSMATCH_REQUIRES_DESENSITIZATION;
+							}
 						}
 					}
 				}
@@ -964,100 +1007,52 @@ double KPDData::calculateSurvival(KPDCandidate * candidate, KPDDonor * donor, in
 
 	int donorsAge = donor->getAge();
 
-	if (candidate->getWaitlist()) {
+	if (candidate->getAge() < 13) {
 
-		if (candidate->getAgeCategory() == AGE_LESS_THAN_18) {
+		dAge5yr = survivalParameters["5 Year Among Recipients Age < 12"];
+		dAge10yr = survivalParameters["10 Year Among Recipients Age < 12"];
 
-			dAge5yr = survivalParameters["5 Year Among Recipients 13-17"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 13-17"];
-
-			survival += fiveyear*(cAge5yr[1]) + (1 - fiveyear)*(cAge10yr[1]);
-		}
-		else if (candidate->getAgeCategory() == AGE_18_29) {
-
-			dAge5yr = survivalParameters["5 Year Among Recipients 18-29"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 18-29"];
-
-			survival += fiveyear*(cAge5yr[2]) + (1 - fiveyear)*(cAge10yr[2]);
-		}
-		else if (candidate->getAgeCategory() == AGE_30_39) {
-
-			dAge5yr = survivalParameters["5 Year Among Recipients 30-39"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 30-39"];
-
-			survival += fiveyear*(cAge5yr[3]) + (1 - fiveyear)*(cAge10yr[3]);
-		}
-		else if (candidate->getAgeCategory() == AGE_40_49) {
-
-			dAge5yr = survivalParameters["5 Year Among Recipients 40-49"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 40-49"];
-		}
-		else if (candidate->getAgeCategory() == AGE_50_59) {
-
-			dAge5yr = survivalParameters["5 Year Among Recipients 50-59"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 50-59"];
-
-			survival += fiveyear*(cAge5yr[5]) + (1 - fiveyear)*(cAge10yr[5]);
-		}
-		else if (candidate->getAgeCategory() == AGE_MORE_THAN_60) {
-
-			dAge5yr = survivalParameters["5 Year Among Recipients 60+"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 60+"];
-
-			survival += fiveyear*(cAge5yr[6]) + (1 - fiveyear)*(cAge10yr[6]);
-		}
-
-
+		survival += fiveyear*(cAge5yr[0]) + (1 - fiveyear)*(cAge10yr[0]);
 	}
+	else if (candidate->getAge() >= 13 && candidate->getAge() <= 17) {
 
-	else {
-		if (candidate->getAge() < 13) {
+		dAge5yr = survivalParameters["5 Year Among Recipients 13-17"];
+		dAge10yr = survivalParameters["10 Year Among Recipients 13-17"];
 
-			dAge5yr = survivalParameters["5 Year Among Recipients Age < 12"];
-			dAge10yr = survivalParameters["10 Year Among Recipients Age < 12"];
+		survival += fiveyear*(cAge5yr[1]) + (1 - fiveyear)*(cAge10yr[1]);
+	}
+	else if (candidate->getAge() >= 18 && candidate->getAge() <= 29) {
 
-			survival += fiveyear*(cAge5yr[0]) + (1 - fiveyear)*(cAge10yr[0]);
-		}
-		else if (candidate->getAge() >= 13 && candidate->getAge() <= 17) {
+		dAge5yr = survivalParameters["5 Year Among Recipients 18-29"];
+		dAge10yr = survivalParameters["10 Year Among Recipients 18-29"];
 
-			dAge5yr = survivalParameters["5 Year Among Recipients 13-17"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 13-17"];
+		survival += fiveyear*(cAge5yr[2]) + (1 - fiveyear)*(cAge10yr[2]);
+	}
+	else if (candidate->getAge() >= 30 && candidate->getAge() <= 39) {
 
-			survival += fiveyear*(cAge5yr[1]) + (1 - fiveyear)*(cAge10yr[1]);
-		}
-		else if (candidate->getAge() >= 18 && candidate->getAge() <= 29) {
+		dAge5yr = survivalParameters["5 Year Among Recipients 30-39"];
+		dAge10yr = survivalParameters["10 Year Among Recipients 30-39"];
 
-			dAge5yr = survivalParameters["5 Year Among Recipients 18-29"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 18-29"];
+		survival += fiveyear*(cAge5yr[3]) + (1 - fiveyear)*(cAge10yr[3]);
+	}
+	else if (candidate->getAge() >= 40 && candidate->getAge() <= 49) {
 
-			survival += fiveyear*(cAge5yr[2]) + (1 - fiveyear)*(cAge10yr[2]);
-		}
-		else if (candidate->getAge() >= 30 && candidate->getAge() <= 39) {
+		dAge5yr = survivalParameters["5 Year Among Recipients 40-49"];
+		dAge10yr = survivalParameters["10 Year Among Recipients 40-49"];
+	}
+	else if (candidate->getAge() >= 50 && candidate->getAge() <= 59) {
 
-			dAge5yr = survivalParameters["5 Year Among Recipients 30-39"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 30-39"];
+		dAge5yr = survivalParameters["5 Year Among Recipients 50-59"];
+		dAge10yr = survivalParameters["10 Year Among Recipients 50-59"];
 
-			survival += fiveyear*(cAge5yr[3]) + (1 - fiveyear)*(cAge10yr[3]);
-		}
-		else if (candidate->getAge() >= 40 && candidate->getAge() <= 49) {
+		survival += fiveyear*(cAge5yr[5]) + (1 - fiveyear)*(cAge10yr[5]);
+	}
+	else if (candidate->getAge() >= 60) {
 
-			dAge5yr = survivalParameters["5 Year Among Recipients 40-49"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 40-49"];
-		}
-		else if (candidate->getAge() >= 50 && candidate->getAge() <= 59) {
+		dAge5yr = survivalParameters["5 Year Among Recipients 60+"];
+		dAge10yr = survivalParameters["10 Year Among Recipients 60+"];
 
-			dAge5yr = survivalParameters["5 Year Among Recipients 50-59"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 50-59"];
-
-			survival += fiveyear*(cAge5yr[5]) + (1 - fiveyear)*(cAge10yr[5]);
-		}
-		else if (candidate->getAge() >= 60) {
-
-			dAge5yr = survivalParameters["5 Year Among Recipients 60+"];
-			dAge10yr = survivalParameters["10 Year Among Recipients 60+"];
-
-			survival += fiveyear*(cAge5yr[6]) + (1 - fiveyear)*(cAge10yr[6]);
-		}
+		survival += fiveyear*(cAge5yr[6]) + (1 - fiveyear)*(cAge10yr[6]);
 	}
 
 	while (donorsAge > 0 && changePoint <= 3) {

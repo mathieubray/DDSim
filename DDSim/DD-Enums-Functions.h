@@ -23,9 +23,7 @@ enum KPDUtilityScheme { UTILITY_TRANSPLANTS, UTILITY_FIVE_YEAR_SURVIVAL, UTILITY
 
 // Characteristics
 enum KPDBloodType { BT_O, BT_A, BT_B, BT_AB, BT_UNSPECIFIED };
-enum KPDAgeCategory { AGE_LESS_THAN_18, AGE_18_29, AGE_30_39, AGE_40_49, AGE_50_59, AGE_MORE_THAN_60, AGE_UNSPECIFIED};
 enum KPDRace { RACE_WHITE, RACE_BLACK, RACE_HISPANIC, RACE_HAWAIIAN, RACE_NATIVE, RACE_ASIAN, RACE_MULTIRACIAL, RACE_OTHER, RACE_UNSPECIFIED };
-enum KPDDiagnosis { DIAGNOSIS_DIABETES, DIAGNOSIS_GLOMERONEPHRITIS, DIAGNOSIS_HYPERTENSION, DIAGNOSIS_OTHER, DIAGNOSIS_UNSPECIFIED };
 enum KPDRelation { RELATION_PARENT, RELATION_NDD, RELATION_LIVING_DECEASED, RELATION_NON_DOMINO_THERAPEUTIC,
 	RELATION_CHILD, RELATION_TWIN, RELATION_SIBLING, RELATION_HALF_SIBLING, RELATION_RELATIVE,
 	RELATION_SPOUSE, RELATION_PARTNER, RELATION_PAIRED_DONATION, RELATION_OTHER_UNRELATED, RELATION_UNSPECIFIED };
@@ -34,13 +32,12 @@ enum KPDInsurance { INSURANCE_PUBLIC, INSURANCE_MEDICAID, INSURANCE_MEDICARE_PLU
 
 // Node Properties
 enum KPDStatus{ STATUS_ACTIVE, STATUS_INACTIVE, STATUS_WITHDRAWN };
-enum KPDTransplant { NOT_TRANSPLANTED, TRANSPLANT_IN_PROGRESS, TRANSPLANTED_YES };
+enum KPDTransplant { TRANSPLANT_YES, TRANSPLANT_NO, TRANSPLANT_IN_PROGRESS };
 enum KPDNodeType { PAIR, NDD, BRIDGE };
 
 // Match Properties
 enum KPDCrossmatch { CROSSMATCH_SUCCESSFUL, CROSSMATCH_O_DONOR_TO_NON_O_CANDIDATE, 
-	CROSSMATCH_REQUIRES_DESENSITIZATION, CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O, 
-	CROSSMATCH_FAILED_HLA, CROSSMATCH_FAILED_BT, CROSSMATCH_FAILED_LAB };
+	CROSSMATCH_REQUIRES_DESENSITIZATION, CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O, CROSSMATCH_FAILED };
 
 
 /* Functions */
@@ -60,12 +57,9 @@ namespace KPDFunctions {
 		return outcome;
 	}
 
-	//Converts 'value' to binary, saving to vector and returning the number of bits
+	// Converts 'value' to binary, saving to vector and returning the number of bits
 	inline int setFlags(int value, int startIndex, std::vector<int> &flagVector) {
-
-		//Starts at index 1
-		//int position = 1;
-
+		
 		int position = startIndex;
 		int numberOfFlags = 0;
 		while (value != 0) {
@@ -80,23 +74,7 @@ namespace KPDFunctions {
 
 		return numberOfFlags;
 	}
-
-
-	// Truncate value to within a certain range
-	inline double truncateValue(double value, double min, double max) {
-
-		double newValue = value;
-		if (value > max) {
-			newValue = max;
-		}
-		if (value < min) {
-			newValue = min;
-		}
-
-		return newValue;
-	}
-
-	
+		
 	// String Functions
 
 	inline std::string intToString(int number) {
@@ -199,30 +177,6 @@ namespace KPDFunctions {
 			return "Unspecified";
 		}
 	}
-	
-	inline std::string ageCategoryToString(KPDAgeCategory ageCategory) {
-		if (ageCategory == AGE_LESS_THAN_18) {
-			return "Less than 18 Years Old";
-		}
-		else if (ageCategory == AGE_18_29) {
-			return "Age 18-29";
-		}
-		else if (ageCategory == AGE_30_39) {
-			return "Age 30-39";
-		}
-		else if (ageCategory == AGE_40_49) {
-			return "Age 40-49";
-		}
-		else if (ageCategory == AGE_50_59) {
-			return "Age 50-59";
-		}
-		else if (ageCategory == AGE_MORE_THAN_60) {
-			return "More than 60 Years Old";
-		}
-		else {
-			return "Unspecified";
-		}
-	}
 
 	inline std::string raceToString(KPDRace race) {
 		if (race == RACE_WHITE) {
@@ -248,24 +202,6 @@ namespace KPDFunctions {
 		}
 		else if (race == RACE_OTHER) {
 			return "Other";
-		}
-		else {
-			return "Unspecified";
-		}
-	}
-
-	inline std::string diagnosisToString(KPDDiagnosis diagnosis) {
-		if (diagnosis == DIAGNOSIS_DIABETES) {
-			return "Diabetes";
-		}
-		else if (diagnosis == DIAGNOSIS_GLOMERONEPHRITIS) {
-			return "Glomeronephritis";
-		}
-		else if (diagnosis == DIAGNOSIS_HYPERTENSION) {
-			return "Hypertension";
-		}
-		else if (diagnosis == DIAGNOSIS_OTHER) {
-			return "Other Diagnosis";
 		}
 		else {
 			return "Unspecified";
@@ -361,13 +297,13 @@ namespace KPDFunctions {
 	}
 
 	inline std::string transplantToString(KPDTransplant state) {
-		if (state == NOT_TRANSPLANTED) {
+		if (state == TRANSPLANT_NO) {
 			return "Not Transplanted";
 		}
 		else if (state == TRANSPLANT_IN_PROGRESS) {
 			return "In Progress";
 		}
-		else if (state == TRANSPLANTED_YES) {
+		else if (state == TRANSPLANT_YES) {
 			return "Transplanted";
 		}
 		else {
@@ -403,14 +339,8 @@ namespace KPDFunctions {
 		else if (result == CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O) {
 			return "Requires Desensitization and O Donor to Non-O Candidate";
 		}
-		else if (result == CROSSMATCH_FAILED_HLA) {
-			return "Failed Crossmatch (Based on HLA)";
-		}
-		else if (result == CROSSMATCH_FAILED_BT) {
-			return "Failed Crossmatch (Based on BT)";
-		}
-		else if (result == CROSSMATCH_FAILED_LAB) {
-			return "Failed Crossmatch (Lab Crossmatch)";
+		else if (result == CROSSMATCH_FAILED) {
+			return "Failed Crossmatch";
 		}
 		else {
 			return "Unspecified";
@@ -445,18 +375,6 @@ namespace KPDFunctions {
 		return bloodtype;
 	}
 	
-	inline KPDAgeCategory stringToAgeCategory(std::string age) {
-		KPDAgeCategory ageCategory = AGE_UNSPECIFIED;
-		if (age.compare("Age < 18 years") == 0) { ageCategory = AGE_LESS_THAN_18; }
-		else if (age.compare("Age 18-29 years") == 0) { ageCategory = AGE_18_29; }
-		else if (age.compare("Age 30-39 years") == 0) { ageCategory = AGE_30_39; }
-		else if (age.compare("Age 40-49 years") == 0) { ageCategory = AGE_40_49; }
-		else if (age.compare("Age 50-59 years") == 0) { ageCategory = AGE_50_59; }
-		else if (age.compare("Age 60+ years") == 0) { ageCategory = AGE_MORE_THAN_60; }
-
-		return ageCategory;
-	}
-	
 	inline KPDRace stringToRace(std::string raceString) {
 		KPDRace race = RACE_UNSPECIFIED;
 		if (raceString.compare("WHITE") == 0 || raceString.compare("White") == 0) { race = RACE_WHITE; }
@@ -470,17 +388,7 @@ namespace KPDFunctions {
 		
 		return race;
 	}
-
-	inline KPDDiagnosis stringToDiagnosis(std::string diagnosisString) {
-		KPDDiagnosis diagnosis = DIAGNOSIS_UNSPECIFIED;
-		if (diagnosisString.compare("Diabetes") == 0) { diagnosis = DIAGNOSIS_DIABETES; }
-		else if (diagnosisString.compare("Glomerlonephritis") == 0) { diagnosis = DIAGNOSIS_GLOMERONEPHRITIS; }
-		else if (diagnosisString.compare("Hypertension") == 0) { diagnosis = DIAGNOSIS_HYPERTENSION; }
-		else if (diagnosisString.compare("Other Diagnosis") == 0) { diagnosis = DIAGNOSIS_OTHER; }
-
-		return diagnosis;
-	}
-	
+		
 	inline KPDRelation stringToRelation(std::string relation) {
 		KPDRelation relationToCandidate = RELATION_UNSPECIFIED;
 		if (relation.compare("Parent") == 0) { relationToCandidate = RELATION_PARENT; }
@@ -511,42 +419,6 @@ namespace KPDFunctions {
 		else if (insuranceString.compare("Private only + Other") == 0) { insurance = INSURANCE_PRIVATE_PLUS; }
 
 		return insurance;
-	}
-
-	inline KPDStatus stringToStatus(std::string underlyingStatus) {
-		KPDStatus status = STATUS_ACTIVE;
-		if (underlyingStatus.compare("STATUS_INACTIVE") == 0) { status = STATUS_INACTIVE; }
-		else if (underlyingStatus.compare("STATUS_WITHDRAWN") == 0) { status = STATUS_WITHDRAWN; }
-
-		return status;
-	}
-
-	inline KPDTransplant stringToTransplant(std::string transplantationStatus) {
-		KPDTransplant status = NOT_TRANSPLANTED;
-		if (transplantationStatus.compare("TRANSPLANT_IN_PROGRESS") == 0) { status = TRANSPLANT_IN_PROGRESS; }
-		else if (transplantationStatus.compare("TRANSPLANTED_YES") == 0) { status = TRANSPLANTED_YES; }
-
-		return status;
-	}
-
-	inline KPDNodeType stringToNodeType(std::string nodeType) {
-		KPDNodeType type = PAIR;
-		if (nodeType.compare("NDD") == 0) { type = NDD; }
-		else if (nodeType.compare("BRIDGE") == 0) { type = BRIDGE; }
-
-		return type;
-	}
-
-	inline KPDCrossmatch stringToCrossmatch(std::string result) {
-		KPDCrossmatch crossmatchResult = CROSSMATCH_SUCCESSFUL;
-		if (result.compare("CROSSMATCH_O_DONOR_TO_NON_O_CANDIDATE") == 0) { crossmatchResult = CROSSMATCH_O_DONOR_TO_NON_O_CANDIDATE; }
-		else if (result.compare("CROSSMATCH_REQUIRES_DESENSITIZATION") == 0) { crossmatchResult = CROSSMATCH_REQUIRES_DESENSITIZATION; }
-		else if (result.compare("CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O") == 0) { crossmatchResult = CROSSMATCH_REQUIRES_DESENSITIZATION_AND_O_TO_NON_O; }
-		else if (result.compare("CROSSMATCH_FAILED_HLA") == 0) { crossmatchResult = CROSSMATCH_FAILED_HLA; }
-		else if (result.compare("CROSSMATCH_FAILED_BT") == 0) { crossmatchResult = CROSSMATCH_FAILED_BT; }
-		else if (result.compare("CROSSMATCH_FAILED_LAB") == 0) { crossmatchResult = CROSSMATCH_FAILED_LAB; }
-
-		return crossmatchResult;
 	}
 	
 }

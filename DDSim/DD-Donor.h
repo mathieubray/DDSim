@@ -19,8 +19,8 @@ class KPDDonor {
 private:
 
 	//IDs
-	int matchingID;
-	int uniqueID;
+	int donorID;
+	int donorKPDMatchingID;
 			
 	//Crossmatch Information	
 	KPDBloodType donorBT;
@@ -39,7 +39,8 @@ private:
 	bool donorDeceased;
 	int donorRecoveryTime;
 	bool donorBothKidneysAvailable;
-	int donorCenterID;
+	int donorOPO;
+	double donorKDPI;
 
 public:
 
@@ -48,21 +49,21 @@ public:
 	//Constructs a dummy donor
 	KPDDonor();
 	//Constructs a KPD donor from APD data
-	KPDDonor(int mID, int uID, KPDBloodType bt, 
+	KPDDonor(int id, int matchingID, KPDBloodType bt, 
 		KPDRelation relation, int age, bool male, KPDRace race, double height, double weight, bool cigaretteUse);
 	//Constructs a deceased donor from SRTR data
-	KPDDonor(int uID, KPDBloodType bt, bool minorA, 
+	KPDDonor(int id, KPDBloodType bt, bool minorA, 
 		int age, bool male, KPDRace race, double height, double weight, bool cigaretteUse,
-		int recoveryTime, int cID);
+		int recoveryTime, int opo, double kdpi);
 	//Constructs a donor with all defined donor characteristics
-	KPDDonor(int mID, int uID, KPDBloodType bt, bool minorA, 
+	KPDDonor(int id, int matchingID, KPDBloodType bt, bool minorA, 
 		KPDRelation relation, int age, bool male, KPDRace race, double height, double weight, bool cigaretteUse,
-		bool dd, int recoveryTime,  bool bothKidneys, int cID);
+		bool dd, int recoveryTime,  bool bothKidneys, int opo, double kdpi);
 	~KPDDonor();	
 	
 	//Getters
-	int getMatchingID();
-	int getUniqueID();
+	int getDonorID();
+	int getKPDMatchingID();
 		
 	KPDBloodType getBT();
 	bool getMinorA();
@@ -80,11 +81,13 @@ public:
 	bool isDeceasedDonor();
 	int getRecoveryTime();
 	bool getBothKidneysAvailable();
-	int getCenterID();
+	int getOPO();
+
+	double getKDPI();
 
 	//Setters
-	void setMatchingID(int id);
-	void setUniqueID(int id);
+	void setDonorID(int id);
+	void setKPDMatchingID(int id);
 		
 	void setBT(KPDBloodType bt);
 	void setMinorA(bool minorA);
@@ -101,8 +104,8 @@ public:
 	void setDeceasedDonor(bool dd);
 	void setRecoveryTime(int time);
 	void setBothKidneysAvailable(bool both);
-	void setCenterID(int cID);
-
+	void setOPO(int opo);
+	void setKDPI(double kdpi);
 
 	//Strings
 	std::string donorString(); // Returns a comma-separated string
@@ -114,8 +117,8 @@ public:
 
 KPDDonor::KPDDonor() {
 
-	matchingID = -1;
-	uniqueID = -1;
+	donorID = -1;
+	donorKPDMatchingID = -1;
 	
 	donorBT = BT_UNSPECIFIED;
 	donorMinorA = false;
@@ -131,14 +134,15 @@ KPDDonor::KPDDonor() {
 	donorDeceased = false;
 	donorRecoveryTime = 0;
 	donorBothKidneysAvailable = false;
-	donorCenterID = -1;
+	donorOPO = -1;
+	donorKDPI = 0.0;
 }
 
-KPDDonor::KPDDonor(int mID, int uID, KPDBloodType bt, 
+KPDDonor::KPDDonor(int id, int matchingID, KPDBloodType bt, 
 	KPDRelation relation, int age, bool male, KPDRace race, double height, double weight, bool cigaretteUse) {
 
-	matchingID = mID;
-	uniqueID = uID;
+	donorID = id;
+	donorKPDMatchingID = matchingID;
 		
 	donorBT = bt;
 	donorMinorA = false;
@@ -154,15 +158,16 @@ KPDDonor::KPDDonor(int mID, int uID, KPDBloodType bt,
 	donorDeceased = false;
 	donorRecoveryTime = 0;
 	donorBothKidneysAvailable = false;
-	donorCenterID = -1;
+	donorOPO = -1;
+	donorKDPI = 0.0;
 }
 
-KPDDonor::KPDDonor(int uID, KPDBloodType bt, bool minorA,
+KPDDonor::KPDDonor(int id, KPDBloodType bt, bool minorA,
 	int age, bool male, KPDRace race, double height, double weight, bool cigaretteUse,
-	int recoveryTime, int cID){
-	
-	matchingID = -1;
-	uniqueID = uID;
+	int recoveryTime, int opo, double kdpi){
+
+	donorID = id;
+	donorKPDMatchingID = -1;
 
 	donorBT = bt;
 	donorMinorA = minorA;
@@ -178,15 +183,16 @@ KPDDonor::KPDDonor(int uID, KPDBloodType bt, bool minorA,
 	donorDeceased = true;
 	donorRecoveryTime = recoveryTime;
 	donorBothKidneysAvailable = false;
-	donorCenterID = cID;
+	donorOPO = opo;
+	donorKDPI = kdpi;
 }
 
-KPDDonor::KPDDonor(int mID, int uID, KPDBloodType bt, bool minorA,
+KPDDonor::KPDDonor(int id, int matchingID, KPDBloodType bt, bool minorA,
 	KPDRelation relation, int age, bool male, KPDRace race, double height, double weight, bool cigaretteUse,
-	bool dd, int recoveryTime, bool bothKidneys, int cID) {
+	bool dd, int recoveryTime, bool bothKidneys, int opo, double kdpi) {
 
-	matchingID = mID;
-	uniqueID = uID;
+	donorID = id;
+	donorKPDMatchingID = matchingID;
 
 	donorBT = bt;
 	donorMinorA = minorA;
@@ -202,19 +208,21 @@ KPDDonor::KPDDonor(int mID, int uID, KPDBloodType bt, bool minorA,
 	donorDeceased = dd;
 	donorRecoveryTime = recoveryTime;
 	donorBothKidneysAvailable = bothKidneys;
-	donorCenterID = cID;
+	donorOPO = opo;
+
+	donorKDPI = kdpi;
 }
 
 KPDDonor::~KPDDonor() {
 
 }
 
-int KPDDonor::getMatchingID() {
-	return matchingID;
+int KPDDonor::getDonorID() {
+	return donorID;
 }
 
-int KPDDonor::getUniqueID() {
-	return uniqueID;
+int KPDDonor::getKPDMatchingID() {
+	return donorKPDMatchingID;
 }
 
 KPDBloodType KPDDonor::getBT() {
@@ -280,16 +288,20 @@ bool KPDDonor::getBothKidneysAvailable(){
 	return donorBothKidneysAvailable;
 }
 
-int KPDDonor::getCenterID() {
-	return donorCenterID;
+int KPDDonor::getOPO() {
+	return donorOPO;
 }
 
-void KPDDonor::setMatchingID(int id) {
-	matchingID = id;
+double KPDDonor::getKDPI() {
+	return donorKDPI;
 }
 
-void KPDDonor::setUniqueID(int id) {
-	uniqueID = id;
+void KPDDonor::setDonorID(int id) {
+	donorID = id;
+}
+
+void KPDDonor::setKPDMatchingID(int id) {
+	donorKPDMatchingID = id;
 }
 
 void KPDDonor::setBT(KPDBloodType bt) {
@@ -348,8 +360,12 @@ void KPDDonor::setBothKidneysAvailable(bool both) {
 	donorBothKidneysAvailable = both;
 }
 
-void KPDDonor::setCenterID(int cID) {
-	donorCenterID = cID;
+void KPDDonor::setOPO(int opo) {
+	donorOPO = opo;
+}
+
+void KPDDonor::setKDPI(double kdpi) {
+	donorKDPI = kdpi;
 }
 
 std::string KPDDonor::donorString() {
@@ -357,7 +373,6 @@ std::string KPDDonor::donorString() {
 	std::stringstream donorInfo;
 	
 	if (donorDeceased) {
-		donorInfo << uniqueID << ",";
 		donorInfo << KPDFunctions::bloodTypeToString(donorBT) << ",";
 		donorInfo << KPDFunctions::boolToYesNo(donorMinorA) << ",";
 		donorInfo << donorAge << ",";
@@ -369,7 +384,8 @@ std::string KPDDonor::donorString() {
 		donorInfo << KPDFunctions::boolToYesNo(donorCigaretteUse) << ",";
 		donorInfo << donorRecoveryTime << ",";
 		donorInfo << KPDFunctions::boolToYesNo(donorBothKidneysAvailable) << ",";
-		donorInfo << donorCenterID;
+		donorInfo << donorOPO << ",";
+		donorInfo << donorKDPI;
 	}
 	else {
 		donorInfo << KPDFunctions::bloodTypeToString(donorBT) << ",";
@@ -393,7 +409,7 @@ std::string KPDDonor::donorOutput() {
 	std::stringstream donorInfo;
 
 	if (donorDeceased) {
-		donorInfo << KPDFunctions::indent(tab) << "Donor: " << uniqueID << std::endl;
+		donorInfo << KPDFunctions::indent(tab) << "Donor: " << donorID << std::endl;
 		donorInfo << KPDFunctions::indent(tab) << "Recovery Date: " << donorRecoveryTime << std::endl;
 		if (donorBothKidneysAvailable) {
 			donorInfo << KPDFunctions::indent(tab) << "Both Kidneys Available" << std::endl;
@@ -401,16 +417,12 @@ std::string KPDDonor::donorOutput() {
 		else {
 			donorInfo << KPDFunctions::indent(tab) << "One Kidney Available" << std::endl;
 		}
-		donorInfo << "Center ID: " << donorCenterID << std::endl;
+		donorInfo << KPDFunctions::indent(tab) << "OPO: " << donorOPO << std::endl;
 	}
 	else {
-		if (!(matchingID == -1 && uniqueID == -1)) {
-			donorInfo << KPDFunctions::indent(tab) << "Donor " << uniqueID << " (Matching ID: " << matchingID << ")" << std::endl;
-		}
-		else {
-			donorInfo << KPDFunctions::indent(tab) << "Donor:" << std::endl;
-		}
+		donorInfo << KPDFunctions::indent(tab) << "Donor " << donorID << " (Matching ID: " << donorKPDMatchingID << ")" << std::endl;
 	}
+
 	donorInfo << KPDFunctions::indent(tab) << "BT: " << KPDFunctions::bloodTypeToString(donorBT) << std::endl;
 	if (donorMinorA) {
 		donorInfo << KPDFunctions::indent(tab) << "Minor A2 Subtype" << std::endl;
@@ -428,15 +440,15 @@ std::string KPDDonor::donorOutput() {
 	donorInfo << KPDFunctions::indent(tab) << "Age: " << donorAge << ", Sex: " << KPDFunctions::boolToMaleFemale(donorMale) << ", Race: " << KPDFunctions::raceToString(donorRace) << std::endl;
 	donorInfo << KPDFunctions::indent(tab) << "Height: " << donorHeight << ", Weight: " << donorWeight << ", BMI: " << (donorWeight / donorHeight) / donorHeight << std::endl;
 	donorInfo << KPDFunctions::indent(tab) << "Cigarette Use: " << KPDFunctions::boolToYesNo(donorCigaretteUse) << std::endl;
-
+	donorInfo << KPDFunctions::indent(tab) << "KDPI: " << donorKDPI << std::endl;
 	return donorInfo.str();
 }
 
 KPDDonor * KPDDonor::copy() {
 
-	KPDDonor * copyDonor = new KPDDonor(matchingID,uniqueID,donorBT,donorMinorA,
+	KPDDonor * copyDonor = new KPDDonor(donorID, donorKPDMatchingID, donorBT,donorMinorA,
 		donorRelation,donorAge,donorMale,donorRace,donorHeight,donorWeight,donorCigaretteUse,
-		donorDeceased, donorRecoveryTime, donorBothKidneysAvailable, donorCenterID);
+		donorDeceased, donorRecoveryTime, donorBothKidneysAvailable, donorOPO, donorKDPI);
 
 	copyDonor->setHLA(donorHLA);
 
