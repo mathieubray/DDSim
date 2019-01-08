@@ -6,9 +6,9 @@
 #initkpdsize=50
 #pairarrivals=365
 #nddarrivals=12
-#timespan=30
-#freqmatchrun=1
-#postselectioninactiveperiod=1
+#timesimulation=10
+#timebetweenmatchruns=1
+#timebetweenselectionandtransplantation=1
 #maxcyclesize=3
 #maxchainlength=3
 #matchutilitylowerbound=1.0

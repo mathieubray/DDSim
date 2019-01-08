@@ -1,0 +1,77 @@
+-----------------
+Output Folder
+-----------------
+
+Output Folder: Test
+Sub-Folder: Test
+
+-----------------
+Simulation Settings
+-----------------
+
+Utility Based On: # Of Transplants
+
+--------------------
+Numerical Parameters
+--------------------
+
+Simulation Iterations: 1 (From 1-1)
+Initial Expected KPD Size: 50
+Expected Pair Arrivals Per Year: 365
+Expected NDD Arrivals Per Year: 12
+
+Simulation Time: 10 Days
+Match Run Frequency: Every 1 Days
+Post-Selection: 1 Days After Selection Before Transplantation
+
+Maximum Cycle Size: 3
+Maximum Chain Length: 3
+
+Daily Probability of Pair Active -> Inactive: 0.01
+Daily Probability of Pair Inactive -> Active: 0.02
+
+Probability of Attrition when Generating Initial KPD: 0.02
+Daily Probability of Pair Withdrawing: 0.005
+Daily Probability of Bridge Donor Withdrawing: 0.05
+
+Minimum PRA for Candidate Eligibility for DD Transplant in KPD: 58
+Maximum PRA for Candidate Eligibility for DD Transplant in KPD: 98
+
+------------------
+Additional Options
+------------------
+
+Do Not Reserve O Donors for O Candidates
+Do Not Include Chains Which End With AB Bridge Donor
+Allow Desensitization of Candidates (Affects HLA Considered)
+
+-----------
+Files and Folders
+-----------
+
+KPD Data File Name: APDData.csv
+HLA Frequency File Name: HLAFrequency.csv
+HLA Dictionary File Name: HLADictionary.csv
+Survival Parameters File Name: SurvivalParameters.csv
+Deceased Donors File Name: DeceasedDonors_Test.csv
+Waiting List Candidates File Name: CandidateWaitlist_Test.csv
+
+-----------------------------
+Random Number Generator Seeds
+-----------------------------
+
+Pair/NDD Selection RNG Seed: 9007900
+Initial Pool Generation Attrition RNG Seed: 52531
+Pair/NDD Arrival Time RNG Seed: 5416162
+Match Properties RNG Seed: 3102156
+Donor Generation RNG Seed: 3942252
+Status Changes RNG Seed: 7156372
+Expected Utility Estimation RNG Seed: 1923323
+
+------------------
+Output Suppression
+------------------
+
+ - Exchange Information Will Not Be Printed
+ - Simulation Information Will Not Be Printed
+

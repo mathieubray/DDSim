@@ -58,6 +58,7 @@ private:
 	RNG rngStatus;
 
 	// Helper Functions 
+	void clearRecord();
 	void generateInitialKPD();
 	void assembleKPD(std::vector<int> matchRunTimes);		
 	void assignStateTransitions();
@@ -98,18 +99,31 @@ KPDRecord::KPDRecord(KPDData * data, KPDParameters * params){
 
 	kpdData = data;
 	kpdParameters = params;
-
-	nodeIDAssignment = 1;
-
-	nDonorsTotal = 0;
-	nPairsTotal = 0;
-	nNDDsTotal = 0;
 }
 
 KPDRecord::~KPDRecord(){
 	printLog();
 }
 
+
+void KPDRecord::clearRecord(){
+
+	nodeIDAssignment = 1;
+
+	nDonorsTotal = 0;
+	nPairsTotal = 0;
+	nNDDsTotal = 0;
+
+	kpdNodes.clear();
+	kpdNodeStateTransitionMatrix.clear();
+	kpdNodeStateTransitionTimeMatrix.clear();
+
+	kpdMatches.clear();
+
+	kpdAdjacencyMatrix.clear();
+	kpdAdjacencyMatrixReduced.clear();
+
+}
 
 void KPDRecord::generateInitialKPD(){
 
@@ -715,6 +729,8 @@ void KPDRecord::generateSimulationData(int iteration, std::vector<int> matchRunT
 	kpdRecordLog << "--------------" << std::endl << std::endl;
 	
 	//Initialize random number seeds
+
+	clearRecord();
 
 	kpdRecordLog << "Initializing Random Number Generator Seeds" << std::endl;
 	std::cout << "Initializing Random Number Generator Seeds... " << std::endl;

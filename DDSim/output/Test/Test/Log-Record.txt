@@ -1,0 +1,1885 @@
+--------------
+Iteration 1
+--------------
+
+Initializing Random Number Generator Seeds
+Initializing a Mature KPD:
+Initial KPD Pool: 
+Pair 5
+   Candidate: 30000150 (Matching ID: 30000151)
+   PRA: 15, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A32 B49 B51
+   Desensitizable HLA:
+   Age: 64, Sex: Female, Race: White, Diabetes: No
+   Height: 1.63, Weight: 48, BMI: 18.0662
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+
+Pair 6
+   Candidate: 10004745 (Matching ID: 10004745)
+   PRA: 36, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: A11 A2 A29 A31 A68 A69 B40 B46 B56 B57 B58 B63 B67 DQB2 DQB4 DQB7 DQB9 DR1 DRW52
+   Desensitizable HLA:
+   Age: 34, Sex: Female, Race: White, Diabetes: No
+   Height: 1.68, Weight: 70.76, BMI: 25.0709
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A3 B7 CW7 DQ6 DR15 DR51 A2 B44 CW5 DQ7 DR4 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 9
+   Candidate: 10006024 (Matching ID: 10006024)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 56, Sex: Male, Race: White, Diabetes: No
+   Height: 1.7, Weight: 71.67, BMI: 24.7993
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A1 B8 CW7 DQ4 DR8 DR53 A2 B18 CW7 DQ6 DR15 DR51 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 10
+   Candidate: 10006840 (Matching ID: 10006840)
+   PRA: 85, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: B18 B27 B35 B39 B41 B42 B48 B51 B52 B54 B55 B56 B59 B60 B61 B63 B67 B7 B71 B75 B78 B8 B81 DR1
+   Desensitizable HLA:
+   Age: 55, Sex: Female, Race: White, Diabetes: No
+   Height: 1.56, Weight: 60.2, BMI: 24.737
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A1 B8 CW7 DQ2 DR17 DR52 A26 B51 CW15 DQ2 DR7 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 12
+   Candidate: 10003881 (Matching ID: 10003881)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 42, Sex: Male, Race: White, Diabetes: No
+   Height: 1.75, Weight: 80.74, BMI: 26.3641
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B15 CW10 DQ6 DR15 DR51 A1 B13 CW6 DQ7 DR4 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 13
+   Candidate: 10003041 (Matching ID: 10003041)
+   PRA: 11, BT: B, Minor A2 Subtype: No
+   Unacceptable HLA: A29 A30 A31 A32 B13 B18 B27 B35 B38 B44 B45 B51 B52 B55 B57 B60 B62 B7 B8 DR12 DR13 DR14 DR15 DR17 DR18 DR9 DRW52
+   Desensitizable HLA:
+   Age: 37, Sex: Male, Race: Other, Diabetes: No
+   Height: 1.65, Weight: 54.43, BMI: 19.9927
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A11 B35 CW4 DQ2 DR17 DR52 A23 B44 CW4 DQ2 DR7 DR53
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 15
+   Candidate: 10006524 (Matching ID: 10006524)
+   PRA: 92, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A25 A26 A33 A34 A66 A68 B42 B44 B45 B58 DQB7 DQB8 DQB9 DR1 DR10 DR103 DR11 DR12 DR16 DR4 DR9 DRW51
+   Desensitizable HLA:
+   Age: 47, Sex: Male, Race: Black, Diabetes: No
+   Height: 1.8, Weight: 88.91, BMI: 27.4414
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: B
+   HLA: A11 B39 CW7 DQ7 DR11 DR52 A2 B18 CW7 DQ7 DR11 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 18
+   Candidate: 10004741 (Matching ID: 10004741)
+   PRA: 0, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 43, Sex: Male, Race: White, Diabetes: No
+   Height: 1.83, Weight: 99.34, BMI: 29.6635
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: AB
+   HLA: A1 B8 CW7 DQ2 DR17 DR52 A2 B18 CW5 DQ2 DR17 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 19
+   Candidate: 10289982 (Matching ID: 10289982)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 57, Sex: Female, Race: White, Diabetes: No
+   Height: 1.68, Weight: 59, BMI: 20.9042
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B40 CW10 DQ8 DR4 DR53 A11 B7 CW7 DQ8 DR4 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 20
+   Candidate: 10006790 (Matching ID: 10006790)
+   PRA: 66, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A11 A2 A28 A29 A3 A30 A31 A32 A36 A68 A69 A74 B17 B57 B58 B63 DQB7 DQB9 DR1 DR103 DR15 DR16 DR9 DRW51
+   Desensitizable HLA:
+   Age: 23, Sex: Female, Race: Hispanic, Diabetes: No
+   Height: 1.47, Weight: 48, BMI: 22.213
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B15 CW9 DQ6 DR13 DR52 A2 B44 CW16 DQ2 DR7 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 23
+   Candidate: 10006531 (Matching ID: 10006531)
+   PRA: 96, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A10 A19 A25 A26 A29 A3 A30 A31 A32 A33 A34 A66 A74 B13 B22 B27 B40 B42 B48 B54 B55 B56 B60 B61 B7 B8 B81 B82 DQB1 DQB5 DQB6 DR1 DR103 DR12 DR15 DR16 DR7 DR9 DRW51
+   Desensitizable HLA:
+   Age: 43, Sex: Male, Race: White, Diabetes: No
+   Height: 1.78, Weight: 77.11, BMI: 24.3372
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A2 B44 CW4 DQ2 DR7 DR53 A1 B8 CW7 DQ2 DR17 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 24
+   Candidate: 10006685 (Matching ID: 10006685)
+   PRA: 99, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: A11 A24 A25 A3 A30 A31 A32 A33 A34 A36 A43 A6602 A74 B14 B18 B22 B35 B37 B39 B42 B46 B48 B5 B51 B5102 B5103 B52 B53 B54 B55 B59 B64 B65 B70 B71 B72 B73 B75 B77 B78 B7801 B8 CW1 CW10 CW12 CW14 CW15 CW16 CW18 CW3 CW4 CW5 CW6 CW8 CW9 DPA02 DPA0201 DPB01 DPB0101 DPB0202 DPB03 DPB0301 DPB05 DPB0501 DPB06 DPB0601 DPB09 DPB0901 DPB10 DPB1001 DPB11 DPB1101 DPB13 DPB1301 DPB14 DPB1401 DPB15 DPB1501 DPB17 DPB1701 DPB18 DPB1801 DPB19 DPB1901 DPB20 DPB2001 DPB23 DPB2301 DPB28 DPB2801 DR1 DR10 DR103 DR11 DR15 DR16 DR2 DR4 DR7 DR8 DR9 DRW51 DRW53
+   Desensitizable HLA:
+   Age: 47, Sex: Male, Race: White, Diabetes: No
+   Height: 1.78, Weight: 70, BMI: 22.0932
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A24 B15 CW9 DQ6 DR13 DR52 A2 B44 CW5 DQ7 DR4 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 26
+   Candidate: 10006861 (Matching ID: 10006861)
+   PRA: 98, BT: B, Minor A2 Subtype: No
+   Unacceptable HLA: A2 A68 A69 B18 B35 B39 B41 B42 B44 B45 B46 B48 B50 B51 B52 B54 B55 B56 B57 B58 B60 B61 B62 B63 B64 B65 B67 B7 B71 B72 B73 B75 B76 B78 B8 B81 B8201 BW6 CW1 CW10 CW12 CW14 CW16 CW7 CW8 CW9 DR11 DR12 DR13 DR14 DR17 DR18 DR8 DRW52
+   Desensitizable HLA:
+   Age: 65, Sex: Female, Race: Black, Diabetes: Yes
+   Height: 1.57, Weight: 69, BMI: 27.993
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A2 B35 CW4 DQ5 DR1 A30 B18 CW5 DQ2 DR17 DR52 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 28
+   Candidate: 10006819 (Matching ID: 10006819)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 56, Sex: Male, Race: White, Diabetes: No
+   Height: 1.77, Weight: 84, BMI: 26.8122
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A31 B8 CW7 DQ2 DR17 DR52 A2 B27 CW2 DQ7 DR11 DR52 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 30
+   Candidate: 10002266 (Matching ID: 10002266)
+   PRA: 97, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: B13 B18 B27 B35 B38 B39 B41 B42 B45 B46 B48 B49 B50 B51 B52 B53 B54 B55 B56 B57 B58 B59 B60 B61 B62 B63 B64 B65 B67 B7 B71 B72 B73 B75 B76 B77 B78 B8 B81 B82 CW1 CW10 CW15 CW16 CW7 CW9
+   Desensitizable HLA:
+   Age: 41, Sex: Female, Race: White, Diabetes: No
+   Height: 1.63, Weight: 55.34, BMI: 20.8288
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B15 CW10 DQ4 DR8 DR53 A2 B8 CW7 DQ2 DR17 DR52 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+NDD 32:    Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A24 B35 CW4 DQ7 DR11 DR52 A11 B51 CW15 DQ7 DR4 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+Pair 33
+   Candidate: 30000032 (Matching ID: 30000034)
+   PRA: 19, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A10 A25 A26 A34 A43 A66 B37 B76
+   Desensitizable HLA:
+   Age: 51, Sex: Male, Race: White, Diabetes: No
+   Height: 1.72, Weight: 72, BMI: 24.3375
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+
+Pair 34
+   Candidate: 10002381 (Matching ID: 10002381)
+   PRA: 100, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A11 B35 B8 DR1 DR17 DR18 DRW52
+   Desensitizable HLA:
+   Age: 54, Sex: Male, Race: White, Diabetes: No
+   Height: 1.78, Weight: 63.5, BMI: 20.0417
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A11 B15 CW10 DQ8 DR4 DR53 A2 B27 CW2 DQ5 DR16 DR51 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 35
+   Candidate: 10006732 (Matching ID: 10006732)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 54, Sex: Male, Race: Other, Diabetes: No
+   Height: 1.75, Weight: 74.84, BMI: 24.4376
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A3 B7 CW7 DQ6 DR15 DR51 A1 B8 CW7 DQ6 DR15 DR51 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 36
+   Candidate: 10005107 (Matching ID: 10005107)
+   PRA: 99, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A11 A2 A26 A29 A3 A30 A31 A32 A33 A34 A36 A43 A74 A80 B18 B27 B35 B37 B38 B39 B41 B42 B44 B45 B46 B47 B48 B50 B51 B52 B53 B54 B57 B58 B60 B61 B62 B63 B64 B65 B67 B7 B71 B72 B73 B75 B76 B77 B78 B8 B81 B82 CW10 CW12 CW15 CW17 CW18 CW2 CW4 CW5 CW6 CW9 DQB2 DQB4 DQB6 DQB7 DQB8 DQB9 DR1 DR10 DR103 DR12 DR13 DR14 DR15 DR16 DR4 DR7 DR8 DR9 DRW51 DRW52 DRW53
+   Desensitizable HLA:
+   Age: 45, Sex: Male, Race: White, Diabetes: No
+   Height: 1.78, Weight: 102.06, BMI: 32.2118
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B44 CW5 DQ7 DR4 DR53 A31 B40 CW10 DQ8 DR4 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A3 B35 CW4 DQ5 DR1 A3 B35 CW4 DQ6 DR13 DR52 BW4
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 37
+   Candidate: 10006641 (Matching ID: 10006641)
+   PRA: 66, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A2 A23 A24 A68 A69 B35 B51 B53 B57 B58 CW15 CW18 CW6 DQB2 DQB4 DQB7
+   Desensitizable HLA:
+   Age: 15, Sex: Female, Race: Hispanic, Diabetes: No
+   Height: 1.63, Weight: 56.25, BMI: 21.1713
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A1 B57 CW6 DQ9 DR7 DR53 A24 B56 CW1 DQ5 DR1 BW4
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 40
+   Candidate: 10002462 (Matching ID: 10002462)
+   PRA: 18, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A2 A23 A24 A29 A68 A69 B27 B55 B57 B58 B60 B61 B62 B7 B8 DR10
+   Desensitizable HLA:
+   Age: 48, Sex: Male, Race: White, Diabetes: Yes
+   Height: 1.7, Weight: 79.38, BMI: 27.4671
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: B
+   HLA: A23 B41 CW17 DQ7 DR11 DR52 A1 B8 CW7 DQ2 DR17 DR52 BW4
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 41
+   Candidate: 10004305 (Matching ID: 10004305)
+   PRA: 94, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A11 A2 A23 A24 A25 A26 A32 A43 A66 A6601 A80 A9 B13 B17 B27 B35 B37 B38 B44 B45 B47 B49 B51 B52 B53 B57 B58 B63 B76 B77 B82 BW4 DQB1 DQB4 DQB5 DQB6 DQB8 DQB9 DR1 DR103 DR12 DR15 DR16 DR2 DR8 DRW51
+   Desensitizable HLA:
+   Age: 56, Sex: Male, Race: Black, Diabetes: No
+   Height: 1.83, Weight: 96.16, BMI: 28.7139
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A2 B55 CW9 DQ6 DR13 DR52 A29 B40 CW10 DQ4 DR8 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 43
+   Candidate: 10006073 (Matching ID: 10006073)
+   PRA: 88, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A23 A24 A36 A43 A80 B0804 B14 B18 B22 B2708 B35 B39 B3901 B3902 B3905 B40 B4005 B41 B42 B44 B45 B46 B48 B50 B54 B55 B56 B60 B61 B62 B64 B65 B67 B7 B70 B703 B71 B72 B73 B75 B76 B78 B7801 B8 B81 B82 B8201 BW6 DQB1 DQB5 DQB6 DR15 DR16 DR4
+   Desensitizable HLA:
+   Age: 59, Sex: Female, Race: White, Diabetes: No
+   Height: 1.65, Weight: 56, BMI: 20.5693
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A31 B51 CW16 DQ9 DR9 DR53 A3 B47 CW6 DQ2 DR7 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 45
+   Candidate: 30000065 (Matching ID: 30000067)
+   PRA: 97, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A2 A24 A25 A26 A32 A33 A34 A66 A68 A69 A74 B27 B35 B37 B38 B39 B42 B45 B46 B48 B50 B51 B53 B54 B59 B60 B61 B64 B65 B67 B7 B71 B73 B75 B76 B77 B8 B81 CW1 CW10 CW14 CW18 CW4 CW9
+   Desensitizable HLA:
+   Age: 63, Sex: Female, Race: Hispanic, Diabetes: No
+   Height: 1.52, Weight: 74.46, BMI: 32.2282
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+
+Pair 47
+   Candidate: 10005821 (Matching ID: 10005821)
+   PRA: 12, BT: B, Minor A2 Subtype: No
+   Unacceptable HLA: B17 B57 B58 B7
+   Desensitizable HLA:
+   Age: 53, Sex: Male, Race: White, Diabetes: Yes
+   Height: 1.57, Weight: 72.12, BMI: 29.2588
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A24 B7 CW7 DQ6 DR13 DR52 A24 B7 CW7 DQ6 DR15 DR51 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 48
+   Candidate: 10002266 (Matching ID: 10002266)
+   PRA: 97, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: B13 B18 B27 B35 B38 B39 B41 B42 B45 B46 B48 B49 B50 B51 B52 B53 B54 B55 B56 B57 B58 B59 B60 B61 B62 B63 B64 B65 B67 B7 B71 B72 B73 B75 B76 B77 B78 B8 B81 B82 CW1 CW10 CW15 CW16 CW7 CW9
+   Desensitizable HLA:
+   Age: 41, Sex: Female, Race: White, Diabetes: No
+   Height: 1.63, Weight: 55.34, BMI: 20.8288
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A2 B7 CW7 DQ5 DR1 A2 B35 CW4 DQ5 DR1 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 49
+   Candidate: 10005050 (Matching ID: 10005050)
+   PRA: 98, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A10 A11 A2 A203 A210 A23 A24 A2403 A25 A26 A28 A29 A31 A32 A33 A34 A36 A43 A66 A6601 A6602 A68 A69 A74 A80 A9 B12 B17 B37 B39 B42 B44 B45 B46 B54 B55 B57 B58 B59 B63 B64 B7 B73 B76 B8 B81 B8201 CW1 CW10 CW12 CW14 CW16 CW2 CW7 CW8 CW9 DQB2 DQB3 DQB4 DQB7 DQB8 DQB9 DR11 DR12 DR13 DR14 DR17 DR18 DR3 DR4 DR5 DR6 DR7 DR8 DR9 DRW52 DRW53
+   Desensitizable HLA:
+   Age: 29, Sex: Male, Race: White, Diabetes: No
+   Height: 1.52, Weight: 63.5, BMI: 27.4844
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A11 B52 CW12 DQ6 DR15 DR51 A29 B44 CW16 DQ2 DR7 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 50
+   Candidate: 10353264 (Matching ID: 10353264)
+   PRA: 89, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A32 A74 B13 B27 B41 B44 B45 B47 B48 B49 B50 B57 B60 B61 B62 B63 B7 B72 B73 B75 B76 B77 B81 CW17 CW7 DQB7 DQB8 DQB9 DR7
+   Desensitizable HLA:
+   Age: 57, Sex: Female, Race: White, Diabetes: No
+   Height: 1.57, Weight: 37.69, BMI: 15.2907
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A1 B57 CW6 DQ9 DR7 DR53 A30 B13 CW6 DQ2 DR7 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 51
+   Candidate: 10003060 (Matching ID: 10003060)
+   PRA: 100, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A11 A2 A25 A26 A29 A3 A30 A31 A32 A33 A34 A36 A66 A68 A69 A74 B13 B41 B44 B45 B47 B49 B50 B52 B57 B58 B60 B61 B76 B82 DQB2 DQB4 DQB7 DQB8 DQB9 DR10 DR4 DR7 DR9 DRW53
+   Desensitizable HLA:
+   Age: 28, Sex: Male, Race: White, Diabetes: No
+   Height: 1.7, Weight: 72.58, BMI: 25.1142
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: B
+   HLA: A2 B52 CW12 DQ6 DR15 DR51 A11 B27 CW1 DQ5 DR1 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 54
+   Candidate: 10006656 (Matching ID: 10006656)
+   PRA: 99, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A10 A23 A24 A2403 A25 A26 A29 A30 A31 A32 A33 A34 A66 A6601 A6602 A74 A80 A9 B18 B27 B2708 B35 B39 B41 B42 B45 B48 B50 B53 B54 B55 B56 B57 B58 B60 B61 B62 B64 B65 B67 B7 B70 B71 B72 B73 B75 B76 B78 B8 B81 B8201 BW6 CW10 CW17 CW9 DQB2 DQB4 DR11 DR12 DR13 DR14 DR17 DR18 DR3 DR5 DR6 DR7 DR8 DR9 DRW52
+   Desensitizable HLA:
+   Age: 17, Sex: Female, Race: White, Diabetes: No
+   Height: 1.52, Weight: 43.09, BMI: 18.6505
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: AB
+   HLA: A1 B8 CW7 DQ2 DR17 DR52 A1 B15 CW4 DQ6 DR13 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+   Donor -1 (Matching ID: -1)
+   BT: B
+   HLA: A1 B7 CW7 DQ5 DR1 A29 B44 CW16 DQ2 DR7 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A2 B7 CW7 DQ7 DR11 DR52 A29 B44 CW7 DQ7 DR4 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A11 B7 CW7 DQ7 DR4 DR53 A24 B71 CW7 DQ8 DR4 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 55
+   Candidate: 10030917 (Matching ID: 10030917)
+   PRA: 90, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A23 A24 A25 A32 A33 B18 B35 B39 B46 B50 B56 B62 B64 B65 B71 B72 B75 B78 B8 B82 BW4 CW10 CW9 DQB7 DQB8 DQB9
+   Desensitizable HLA:
+   Age: 53, Sex: Female, Race: Black, Diabetes: No
+   Height: 1.5, Weight: 64.23, BMI: 28.5467
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A31 B35 CW4 DQ8 DR4 DR53 A30 B18 CW5 DQ2 DR17 DR52 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+NDD 63:    Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A1 B8 CW7 DQ2 DR17 DR52 A1 B7 CW7 DQ9 DR7 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+Pair 67
+   Candidate: 10006537 (Matching ID: 10006537)
+   PRA: 99, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A11 A23 A24 A25 A26 A29 A3 A30 A31 A32 A33 A34 A36 A43 A66 A68 A69 A74 A80 B13 B18 B27 B2708 B35 B37 B41 B42 B44 B45 B47 B48 B49 B50 B54 B56 B57 B58 B59 B60 B61 B62 B63 B67 B7 B73 B75 B76 B77 B8 B81 B8201 CW10 CW12 CW14 CW15 CW16 CW17 CW18 CW6 CW7 CW8 DQB2 DQB3 DQB4 DQB5 DQB7 DQB8 DQB9 DR10 DR12 DR13 DR14 DR17 DR4 DR7 DR9 DRW52 DRW53
+   Desensitizable HLA:
+   Age: 29, Sex: Female, Race: White, Diabetes: No
+   Height: 1.63, Weight: 76.2, BMI: 28.68
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B18 CW5 DQ2 DR17 DR52 A3 B51 CW15 DQ5 DR1 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A24 B7 CW7 DQ5 DR1 A3 B7 CW7 DQ5 DR1 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 68
+   Candidate: 10005821 (Matching ID: 10005821)
+   PRA: 12, BT: B, Minor A2 Subtype: No
+   Unacceptable HLA: B17 B57 B58 B7
+   Desensitizable HLA:
+   Age: 53, Sex: Male, Race: White, Diabetes: Yes
+   Height: 1.57, Weight: 72.12, BMI: 29.2588
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B38 CW12 DQ6 DR13 DR52 A2 B44 CW5 DQ8 DR4 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 69
+   Candidate: 10006506 (Matching ID: 10006506)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 52, Sex: Male, Race: Black, Diabetes: Yes
+   Height: 1.7, Weight: 82.56, BMI: 28.5675
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A30 B13 CW6 DQ2 DR7 DR53 A2 B57 CW6 DQ4 DR8 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 70
+   Candidate: 10005819 (Matching ID: 10005819)
+   PRA: 93, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A11 A2 A23 A24 A28 A3 A36 A68 A69 A80 A9 B12 B44 B45 B76 DQB1 DQB2 DQB4 DQB5 DQB6 DR12 DR14 DR7 DR9
+   Desensitizable HLA:
+   Age: 50, Sex: Female, Race: White, Diabetes: No
+   Height: 1.6, Weight: 59.42, BMI: 23.2109
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A24 B15 CW9 DQ5 DR14 DR52 A1 B8 CW7 DQ2 DR17 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 71
+   Candidate: 10006524 (Matching ID: 10006524)
+   PRA: 92, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A25 A26 A33 A34 A66 A68 B42 B44 B45 B58 DQB7 DQB8 DQB9 DR1 DR10 DR103 DR11 DR12 DR16 DR4 DR9 DRW51
+   Desensitizable HLA:
+   Age: 47, Sex: Male, Race: Black, Diabetes: No
+   Height: 1.8, Weight: 88.91, BMI: 27.4414
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: AB
+   HLA: A29 B65 CW8 DQ2 DR7 DR53 A23 B65 CW8 DQ9 DR7 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 72
+   Candidate: 10006395 (Matching ID: 10006395)
+   PRA: 3, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: B37
+   Desensitizable HLA:
+   Age: 59, Sex: Female, Race: White, Diabetes: Yes
+   Height: 1.65, Weight: 63.5, BMI: 23.3242
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A3 B7 CW7 DQ6 DR15 DR51 A68 B44 CW7 DQ7 DR11 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 73
+   Candidate: 10006875 (Matching ID: 10006875)
+   PRA: 98, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: A23 A25 A3 A80 B13 B27 B35 B37 B39 B41 B44 B45 B46 B47 B48 B49 B50 B54 B60 B61 B63 B65 B71 B72 B73 B76 B81 CW1 CW10 CW12 CW14 CW15 CW16 CW17 CW18 CW2 CW3 CW6 CW8 CW9 DQB1 DQB4 DQB5 DQB6 DQB7 DR103 DR11 DR12 DR13 DR16 DR5 DR7 DR8 DRW51
+   Desensitizable HLA:
+   Age: 17, Sex: Male, Race: White, Diabetes: No
+   Height: 1.85, Weight: 79.38, BMI: 23.1936
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A3 B7 CW7 DQ2 DR7 DR53 A3 B65 CW8 DQ6 DR13 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 75
+   Candidate: 10004200 (Matching ID: 10004200)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 53, Sex: Female, Race: White, Diabetes: No
+   Height: 1.73, Weight: 60.78, BMI: 20.3081
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A30 B49 CW7 DQ2 DR7 DR53 A29 B41 CW17 DQ7 DR13 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 78
+   Candidate: 10006721 (Matching ID: 10006721)
+   PRA: 100, BT: B, Minor A2 Subtype: No
+   Unacceptable HLA: A10 A11 A19 A2 A25 A26 A28 A29 A3 A30 A31 A32 A33 A34 A36 A43 A66 A68 A69 A74 A80 B12 B13 B14 B15 B16 B18 B21 B27 B2708 B35 B37 B38 B39 B40 B41 B42 B44 B45 B46 B47 B48 B49 B50 B51 B52 B53 B55 B56 B57 B59 B60 B61 B62 B63 B64 B65 B67 B7 B70 B71 B72 B73 B75 B76 B77 B78 B82 DQB5 DQB6 DR1 DR103 DR11 DR12 DR13 DR16 DR7 DR8 DR9 DRW51
+   Desensitizable HLA:
+   Age: 38, Sex: Male, Race: Black, Diabetes: No
+   Height: 1.76, Weight: 72.64, BMI: 23.4504
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A24 B63 CW7 DQ7 DR11 DR52 A2 B71 CW7 DQ6 DR13 DR52 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 80
+   Candidate: 10006241 (Matching ID: 10006241)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 61, Sex: Male, Race: Hispanic, Diabetes: No
+   Height: 1.6, Weight: 80.74, BMI: 31.5391
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B57 CW6 DQ9 DR7 DR53 A11 B35 CW4 DQ6 DR13 DR52
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 81
+   Candidate: 10004500 (Matching ID: 10004500)
+   PRA: 100, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A10 A11 A25 A26 A29 A3 A30 A31 A33 A36 A80 B35 B41 B42 B52 B57 B58 B63 B7 B8 DQB2 DQB4 DQB6 DQB7 DQB8 DQB9 DR11 DR13 DR14 DR16 DR17 DR18 DR4 DR7 DR8 DR9 DRW52 DRW53
+   Desensitizable HLA:
+   Age: 29, Sex: Female, Race: Hispanic, Diabetes: No
+   Height: 1.7, Weight: 61.24, BMI: 21.1903
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A1 B8 CW7 DQ2 DR17 DR52 A3 B7 CW7 DQ7 DR11 DR52 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+   Donor -1 (Matching ID: -1)
+   BT: B
+   HLA: A1 B8 CW7 DQ2 DR17 DR52 A23 B58 CW10 DQ6 DR13 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A3 B18 CW5 DQ2 DR17 DR52 A3 B15 CW10 DQ8 DR4 DR53 BW4
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 82
+   Candidate: 10002469 (Matching ID: 10002469)
+   PRA: 12, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: B13 B18 B27 B35 B44 B45 B55 B57 B60 B62 B7 B8 CW10 CW2 DQB8 DQB9
+   Desensitizable HLA:
+   Age: 52, Sex: Male, Race: White, Diabetes: No
+   Height: 1.91, Weight: 81.65, BMI: 22.3815
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B44 CW5 DQ7 DR11 DR52 A25 B7 CW7 DQ2 DR7 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A68 B35 CW4 DQ5 DR10 A26 B18 CW7 DQ7 DR11 DR52 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 84
+   Candidate: 10006063 (Matching ID: 10006063)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 28, Sex: Female, Race: White, Diabetes: No
+   Height: 1.63, Weight: 73.35, BMI: 27.6074
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A1 B57 CW6 DQ9 DR7 DR53 A1 B8 CW7 DQ2 DR17 DR52 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 86
+   Candidate: 10002661 (Matching ID: 10002661)
+   PRA: 0, BT: B, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 39, Sex: Female, Race: Black, Diabetes: No
+   Height: 1.7, Weight: 70.76, BMI: 24.4844
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A29 B7 CW15 DQ2 DR7 DR53 A29 B44 CW16 DQ2 DR7 DR53
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 89
+   Candidate: 10005811 (Matching ID: 10005811)
+   PRA: 45, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: B46 CW1 CW14 CW16 CW2 CW3 CW5 CW8
+   Desensitizable HLA:
+   Age: 37, Sex: Male, Race: White, Diabetes: No
+   Height: 1.83, Weight: 69.4, BMI: 20.7232
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B7 CW7 DQ6 DR15 DR51 A3 B7 CW7 DQ7 DR4 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 90
+   Candidate: 10003960 (Matching ID: 10003960)
+   PRA: 98, BT: B, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A10 A11 A23 A24 A25 A26 A28 A29 A3 A30 A31 A32 A33 A34 A36 A43 A66 A68 A69 A74 A80 B13 B18 B35 B37 B38 B39 B41 B42 B44 B45 B46 B47 B48 B49 B50 B51 B52 B53 B54 B55 B56 B57 B58 B59 B60 B61 B62 B63 B64 B65 B67 B7 B70 B71 B72 B73 B75 B76 B77 B78 B8 B81 B82 B8201 CW10 CW12 CW15 CW18 CW6 CW7 DQB4 DQB7 DQB8 DQB9 DR1 DR10 DR103 DR14 DR4 DR9 DRW53
+   Desensitizable HLA:
+   Age: 33, Sex: Female, Race: White, Diabetes: Yes
+   Height: 1.52, Weight: 53.52, BMI: 23.1648
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B7 CW7 DQ8 DR4 DR53 A1 B8 CW7 DQ6 DR15 DR51 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Pair 92
+   Candidate: 10006042 (Matching ID: 10006042)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 40, Sex: Male, Race: White, Diabetes: No
+   Height: 1.7, Weight: 82.5, BMI: 28.5467
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A3 B35 CW4 DQ5 DR1 A68 B27 CW2 DQ5 DR16 DR51
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+Initial Pool NDDs: 2, Pairs: 48, Donors: 53
+Selecting Nodes:
+At Time 1, Pair 94 Joins
+   Candidate: 10302041 (Matching ID: 10302041)
+   PRA: 0, BT: B, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 65, Sex: Male, Race: White, Diabetes: Yes
+   Height: 1.8, Weight: 125, BMI: 38.5802
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A25 B18 CW12 DQ6 DR15 DR51 A11 B35 CW4 DQ5 DR1 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Time 1, Pair 95 Joins
+   Candidate: 10006832 (Matching ID: 10006832)
+   PRA: 80, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A2 A23 A29 A3 A32 A34 A66 A69 B13 B27 B37 B38 B39 B41 B42 B44 B47 B48 B49 B50 B51 B52 B53 B54 B55 B59 B60 B61 B63 B67 B7 B73 B76 B77 B78 B81 B82 CW1 CW12 CW14 CW15 CW16 CW17 CW18 CW2 CW5 CW6 CW7 CW8 DQB2 DQB4 DQB6 DQB9 DR12 DR15 DR7 DR9 DRW51 DRW52
+   Desensitizable HLA:
+   Age: 23, Sex: Male, Race: White, Diabetes: No
+   Height: 1.83, Weight: 120.2, BMI: 35.8924
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: B
+   HLA: A1 B8 CW7 DQ2 DR17 DR52 A24 B13 CW6 DQ2 DR7 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Match Run at Time 1, # of NDDs Added: 0, # of Pairs Added: 2
+At Time 2, Pair 96 Joins
+   Candidate: 10003060 (Matching ID: 10003060)
+   PRA: 100, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A11 A2 A25 A26 A29 A3 A30 A31 A32 A33 A34 A36 A66 A68 A69 A74 B13 B41 B44 B45 B47 B49 B50 B52 B57 B58 B60 B61 B76 B82 DQB2 DQB4 DQB7 DQB8 DQB9 DR10 DR4 DR7 DR9 DRW53
+   Desensitizable HLA:
+   Age: 28, Sex: Male, Race: White, Diabetes: No
+   Height: 1.7, Weight: 72.58, BMI: 25.1142
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A1 B35 CW4 DQ8 DR4 DR53 A24 B7 CW7 DQ6 DR15 DR51 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Time 2, Pair 97 Joins
+   Candidate: 10004740 (Matching ID: 10004740)
+   PRA: 94, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A11 A25 A26 A29 A30 A31 A32 A33 A34 A36 A43 A66 A68 A69 A74 A80
+   Desensitizable HLA:
+   Age: 31, Sex: Male, Race: Black, Diabetes: No
+   Height: 1.88, Weight: 106.6, BMI: 30.1607
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A24 B15 CW9 DQ7 DR12 DR52 A11 B7 CW7 DQ6 DR15 DR51 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Match Run at Time 2, # of NDDs Added: 0, # of Pairs Added: 2
+At Time 3, Pair 98 Joins
+   Candidate: 10113642 (Matching ID: 10113642)
+   PRA: 98, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A2 A23 A24 A25 A28 A32 A6602 A68 A69 A9 B12 B13 B15 B17 B18 B21 B22 B27 B2708 B35 B37 B38 B40 B41 B42 B44 B45 B46 B47 B48 B49 B5 B50 B51 B5102 B5103 B52 B53 B54 B55 B56 B57 B58 B59 B60 B61 B62 B63 B67 B7 B70 B703 B71 B72 B73 B75 B76 B77 B78 B7801 B81 B82 B8201 BW4 CW1 CW14 CW17 CW18 DPB02 DPB0201 DPB0202 DPB2001 DPB2801 DQB2 DQB3 DQB7 DQB8 DQB9 DR9
+   Desensitizable HLA:
+   Age: 45, Sex: Female, Race: White, Diabetes: No
+   Height: 1.59, Weight: 73, BMI: 28.8754
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: O
+   HLA: A3 B44 CW16 DQ8 DR4 DR53 A11 B13 CW12 DQ2 DR7 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Match Run at Time 3, # of NDDs Added: 0, # of Pairs Added: 1
+At Time 4, Pair 99 Joins
+   Candidate: 10325547 (Matching ID: 10325547)
+   PRA: 0, BT: B, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 30, Sex: Female, Race: Black, Diabetes: No
+   Height: 1.63, Weight: 94.3, BMI: 35.4925
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B40 CW10 DQ4 DR8 DR53 A25 B18 CW12 DQ6 DR15 DR51 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Match Run at Time 4, # of NDDs Added: 0, # of Pairs Added: 1
+At Time 5, Pair 100 Joins
+   Candidate: 10006698 (Matching ID: 10006698)
+   PRA: 99, BT: A, Minor A2 Subtype: No
+   Unacceptable HLA: DQB1 DQB3 DQB4 DQB5 DQB6 DQB7 DQB8 DQB9 DR103 DR11 DR12 DR13 DR15 DR16 DR4 DR7 DR8 DR9 DRW51
+   Desensitizable HLA:
+   Age: 26, Sex: Female, Race: White, Diabetes: No
+   Height: 1.69, Weight: 83.5, BMI: 29.2357
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A1 B37 CW6 DQ5 DR1 A24 B13 CW6 DQ2 DR7 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Match Run at Time 5, # of NDDs Added: 0, # of Pairs Added: 1
+At Time 6, Pair 101 Joins
+   Candidate: 10159421 (Matching ID: 10159421)
+   PRA: 92, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: A1 A11 A2 A23 A24 A26 A28 A3 A33 A34 A36 A43 A66 A68 A69 A80 A9 B12 B13 B27 B2708 B37 B38 B39 B41 B42 B44 B45 B47 B48 B49 B5 B50 B54 B55 B56 B59 B60 B61 B62 B67 B7 B71 B72 B73 B76 B78 B8 B81 B82 CW17 CW2 DPB01 DPB02 DPB03 DPB04 DPB05 DPB06 DPB09 DPB10 DPB11 DPB13 DPB14 DPB15 DPB17 DPB18 DPB19 DPB20 DPB23 DPB28 DQB1 DQB3 DQB4 DQB5 DQB6 DQB7 DQB8 DQB9 DR1 DR10 DR103 DR11 DR12 DR13 DR15 DR16 DR4 DR7 DR8 DR9 DRW51 DRW53
+   Desensitizable HLA:
+   Age: 55, Sex: Female, Race: White, Diabetes: No
+   Height: 1.65, Weight: 85, BMI: 31.2213
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A2 B44 CW5 DQ7 DR4 DR53 A2 B44 CW4 DQ2 DR7 DR53 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Match Run at Time 6, # of NDDs Added: 0, # of Pairs Added: 1
+At Match Run at Time 7, # of NDDs Added: 0, # of Pairs Added: 0
+At Time 8, Pair 102 Joins
+   Candidate: 10006042 (Matching ID: 10006042)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 40, Sex: Male, Race: White, Diabetes: No
+   Height: 1.7, Weight: 82.5, BMI: 28.5467
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A1 B37 CW6 DQ7 DR4 DR53 A30 B13 CW6 DQ2 DR7 DR53 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Match Run at Time 8, # of NDDs Added: 0, # of Pairs Added: 1
+At Time 9, Pair 103 Joins
+   Candidate: 10307314 (Matching ID: 10307314)
+   PRA: 0, BT: O, Minor A2 Subtype: No
+   Unacceptable HLA: NA
+   Desensitizable HLA:
+   Age: 51, Sex: Male, Race: White, Diabetes: No
+   Height: 1.7, Weight: 84.7, BMI: 29.308
+   Previous Transplant: No, Time on Dialysis: 1.5
+   Hep C: No, Inusrance: Unspecified
+   EPTS: 0, EPTS Priority: No
+
+
+   Donor -1 (Matching ID: -1)
+   BT: A
+   HLA: A3 B15 CW9 DQ2 DR17 DR52 A3 B7 CW7 DQ6 DR15 DR51 BW4 BW6
+   Relation to Candidate: Unspecified
+   Age: 40, Sex: Male, Race: Unspecified
+   Height: 1.75, Weight: 80, BMI: 26.1224
+   Cigarette Use: No
+   KDPI: 0
+
+
+At Match Run at Time 9, # of NDDs Added: 0, # of Pairs Added: 1
+At Match Run at Time 10, # of NDDs Added: 0, # of Pairs Added: 0
+Total Pairs: 58, Total NDDs: 2, Total Donors: 63
+Generating State Transitions:
+Node 5
+5: 0 (Active) 11 (Inactive) 
+Node 6
+6: 0 (Active) 
+Node 9
+9: 0 (Active) 
+Node 10
+10: 0 (Active) 
+Node 12
+12: 0 (Active) 
+Node 13
+13: 0 (Active) 5 (Inactive) 
+Node 15
+15: 0 (Active) 
+Node 18
+18: 0 (Active) 5 (Inactive) 
+Node 19
+19: 0 (Active) 
+Node 20
+20: 0 (Active) 
+Node 23
+23: 0 (Active) 5 (Withdrawn) 
+Node 24
+24: 0 (Active) 
+Node 26
+26: 0 (Active) 
+Node 28
+28: 0 (Active) 
+Node 30
+30: 0 (Active) 
+Node 32
+32: 0 (Active) 90 (Withdrawn) 
+Node 33
+33: 0 (Active) 2 (Inactive) 
+Node 34
+34: 0 (Active) 
+Node 35
+35: 0 (Active) 
+Node 36
+36: 0 (Active) 
+Node 37
+37: 0 (Active) 
+Node 40
+40: 0 (Active) 
+Node 41
+41: 0 (Active) 
+Node 43
+43: 0 (Active) 
+Node 45
+45: 0 (Active) 
+Node 47
+47: 0 (Active) 
+Node 48
+48: 0 (Active) 
+Node 49
+49: 0 (Active) 
+Node 50
+50: 0 (Active) 9 (Inactive) 
+Node 51
+51: 0 (Active) 
+Node 54
+54: 0 (Active) 2 (Inactive) 
+Node 55
+55: 0 (Active) 
+Node 63
+63: 0 (Active) 90 (Withdrawn) 
+Node 67
+67: 0 (Active) 
+Node 68
+68: 0 (Active) 
+Node 69
+69: 0 (Active) 
+Node 70
+70: 0 (Active) 
+Node 71
+71: 0 (Active) 2 (Inactive) 
+Node 72
+72: 0 (Active) 
+Node 73
+73: 0 (Active) 8 (Inactive) 
+Node 75
+75: 0 (Active) 
+Node 78
+78: 0 (Active) 6 (Inactive) 
+Node 80
+80: 0 (Active) 
+Node 81
+81: 0 (Active) 
+Node 82
+82: 0 (Active) 
+Node 84
+84: 0 (Active) 
+Node 86
+86: 0 (Active) 
+Node 89
+89: 0 (Active) 
+Node 90
+90: 0 (Active) 
+Node 92
+92: 0 (Active) 
+Node 94
+94: 1 (Active) 
+Node 95
+95: 1 (Active) 
+Node 96
+96: 2 (Active) 9 (Withdrawn) 
+Node 97
+97: 2 (Active) 
+Node 98
+98: 3 (Active) 
+Node 99
+99: 4 (Active) 
+Node 100
+100: 5 (Active) 
+Node 101
+101: 6 (Active) 
+Node 102
+102: 8 (Active) 
+Node 103
+103: 9 (Active) 
+Generating Match Properties:
+   6[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   9[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   10[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   10[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   12[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   13[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   15[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   15[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   15[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   15[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   15[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   19[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   20[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   23[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   23[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   23[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   23[1] -> 89 [0.922866,0,0.0001,1,0.8,0.8,Successful Crossmatch,F]
+   23[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,F]
+   23[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   23[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   23[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   24[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   26[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   26[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   26[1] -> 50 [0.883201,0,0.0001,1,0.5,0.5,Successful Crossmatch,T]
+   26[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   26[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   26[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   26[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   26[1] -> 100 [0.787048,0,1,1,0.5,0.5,O Donor to Non-O Candidate,F]
+   26[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   26[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   28[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   30[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   32[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   34[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   35[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   35[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   36[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   36[2] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   37[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   37[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   37[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   37[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   37[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   37[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   40[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   40[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   40[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   40[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   40[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 15 [0.88308,0,0.0001,1,0.5,0.5,Successful Crossmatch,F]
+   41[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   41[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 34 [0.900102,0,1,1,0.5,0.5,Successful Crossmatch,F]
+   41[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   41[1] -> 50 [0.883201,0,0.0001,1,0.5,0.5,Successful Crossmatch,F]
+   41[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   41[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 71 [0.88308,0,0.0001,1,0.5,0.5,Successful Crossmatch,F]
+   41[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   41[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,F]
+   41[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   41[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   41[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   43[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   47[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,Successful Crossmatch,F]
+   47[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   48[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   48[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   48[1] -> 89 [0.922866,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   48[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   48[1] -> 97 [0.852601,0,0.0001,1,0.5,0.5,Successful Crossmatch,T]
+   48[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,F]
+   48[1] -> 100 [0.787048,0,1,1,0.5,0.5,O Donor to Non-O Candidate,T]
+   48[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   48[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   49[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 10 [0.883201,0,0.0001,1,0.5,0.5,Successful Crossmatch,T]
+   50[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 15 [0.88308,0,0.0001,1,0.5,0.5,Successful Crossmatch,T]
+   50[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   50[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 45 [0.841875,0,1,1,0.5,0.5,Successful Crossmatch,T]
+   50[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 71 [0.88308,0,0.0001,1,0.5,0.5,Successful Crossmatch,F]
+   50[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   50[1] -> 89 [0.922866,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   50[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   50[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   50[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   50[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   51[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   51[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   51[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   51[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   51[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   54[4] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   54[3] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   54[3] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 34 [0.900102,0,1,1,0.5,0.5,Successful Crossmatch,F]
+   54[3] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   54[3] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[2] -> 86 [0.900866,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   54[4] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   54[3] -> 89 [0.922866,0,0.0001,1,0.8,0.8,Successful Crossmatch,F]
+   54[4] -> 89 [0.922866,0,0.0001,1,0.8,0.8,Successful Crossmatch,F]
+   54[3] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[2] -> 94 [0.847814,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   54[4] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   54[2] -> 99 [0.885214,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   54[4] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   54[3] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[3] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   54[4] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   55[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   55[1] -> 70 [0.883201,0,0.0001,1,0.5,0.5,Successful Crossmatch,F]
+   63[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   63[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   67[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   67[2] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   67[1] -> 100 [0.787048,0,1,1,0.5,0.5,Successful Crossmatch,T]
+   67[2] -> 100 [0.787048,0,1,1,0.5,0.5,Successful Crossmatch,T]
+   68[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   69[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,O Donor to Non-O Candidate,T]
+   70[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 15 [0.88308,0,0.0001,1,0.5,0.5,Successful Crossmatch,T]
+   70[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   70[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   70[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   70[1] -> 51 [0.81745,0,1,1,0.5,0.5,Successful Crossmatch,F]
+   70[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   70[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   70[1] -> 71 [0.88308,0,0.0001,1,0.5,0.5,Successful Crossmatch,T]
+   70[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   70[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   70[1] -> 96 [0.81745,0,1,1,0.5,0.5,Successful Crossmatch,T]
+   70[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   70[1] -> 100 [0.787048,0,1,1,0.5,0.5,O Donor to Non-O Candidate,T]
+   70[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   70[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   72[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   73[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   73[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   75[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   78[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 23 [0.903824,0,0.0001,1,0.5,0.5,Successful Crossmatch,T]
+   78[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 34 [0.900102,0,1,1,0.5,0.5,Successful Crossmatch,F]
+   78[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   78[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   78[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 82 [0.91479,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   78[1] -> 89 [0.922866,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   78[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   78[1] -> 97 [0.852601,0,0.0001,1,0.5,0.5,Successful Crossmatch,F]
+   78[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   78[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   78[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   80[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   81[3] -> 6 [0.910024,0,0.0001,1,0.8,0.8,O Donor to Non-O Candidate,F]
+   81[3] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   81[3] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 37 [0.844435,0,0.0001,1,0.65,0.65,Successful Crossmatch,T]
+   81[3] -> 40 [0.902296,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 47 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   81[3] -> 50 [0.883201,0,0.0001,1,0.5,0.5,Successful Crossmatch,T]
+   81[3] -> 68 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   81[3] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[2] -> 86 [0.900866,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   81[3] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[2] -> 94 [0.847814,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   81[3] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   81[3] -> 97 [0.852601,0,0.0001,1,0.5,0.5,Successful Crossmatch,F]
+   81[2] -> 99 [0.885214,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   81[3] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   81[3] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   82[2] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 47 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,F]
+   82[2] -> 68 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   82[2] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   82[2] -> 89 [0.922866,0,0.0001,1,0.8,0.8,Successful Crossmatch,F]
+   82[2] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   82[2] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   82[2] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   82[2] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   84[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   86[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   89[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   90[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   90[1] -> 73 [0.81568,0,1,1,0.5,0.5,Successful Crossmatch,F]
+   92[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   94[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   95[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   95[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   95[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   95[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   95[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   96[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,O Donor to Non-O Candidate,T]
+   96[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   96[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   96[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   96[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   96[1] -> 89 [0.922866,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   96[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   96[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   96[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   96[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,F]
+   97[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 5 [0.878622,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 9 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 10 [0.883201,0,0.0001,1,0.5,0.5,Successful Crossmatch,F]
+   98[1] -> 12 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   98[1] -> 19 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 28 [0.928593,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 33 [0.922152,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 35 [0.947762,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 37 [0.844435,0,0.0001,1,0.65,0.65,Successful Crossmatch,F]
+   98[1] -> 40 [0.902296,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 45 [0.841875,0,1,1,0.5,0.5,Successful Crossmatch,F]
+   98[1] -> 47 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   98[1] -> 68 [0.898969,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,F]
+   98[1] -> 69 [0.888756,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 72 [0.890978,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 75 [0.915908,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 80 [0.90261,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 84 [0.844207,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 86 [0.900866,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   98[1] -> 92 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 94 [0.847814,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   98[1] -> 99 [0.885214,0,0.0001,1,0.95,0.95,O Donor to Non-O Candidate,T]
+   98[1] -> 102 [0.931427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   98[1] -> 103 [0.929052,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   99[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   100[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   101[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   102[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   102[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+   103[1] -> 6 [0.910024,0,0.0001,1,0.8,0.8,Successful Crossmatch,T]
+   103[1] -> 18 [0.930427,0,0.0001,1,0.95,0.95,Successful Crossmatch,T]
+Simulation Data for Iteration 1 Generated!
+

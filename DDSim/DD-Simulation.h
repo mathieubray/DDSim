@@ -133,8 +133,8 @@ KPDSimulation::KPDSimulation(KPDParameters * parameters) {
 		
 	kpdSimulationLog << "Match Runs Occur at Times: ";
 
+	int timeSimulation = kpdParameters->getTimeSimulation();
 	int timeBetweenMatchRuns = kpdParameters->getTimeBetweenMatchRuns();
-	int timeSimulation = kpdParameters->getTimeBetweenSelectionAndTransplantation();
 
 	int matchRunTime = timeBetweenMatchRuns;
 
@@ -403,7 +403,7 @@ void KPDSimulation::findWaitlistedCandidateMatches() {
 			if (allowableMatchExists) {
 				// then store the list of matches
 				
-				std::cout << donorNodeID << "->" << waitlistCandidateID << std::endl;
+				//std::cout << donorNodeID << "->" << waitlistCandidateID << std::endl;
 
 				waitlistedCandidateMatches[donorNodeID][waitlistCandidateID] = matches;
 			}
@@ -607,7 +607,7 @@ void KPDSimulation::runMatchRunStage() {
 			outputKPDExchanges << "," << KPDFunctions::boolToYesNo(ndd) << "," << arrangementUtility << ",";
 			outputKPDExchanges << KPDFunctions::boolToYesNo(arrangementIsPartOfOptimalSolution) << std::endl;
 
-			i++;
+			//i++;
 		}
 	}
 	else {
@@ -711,7 +711,7 @@ void KPDSimulation::runDeceasedDonorAllocationStage() {
 							if (kpdData->allowableMatch(crossmatch)) {
 
 								int waitlistCandidatePRA = waitlistCandidate->getPRA();
-								int waitlistCandidatePrevTrans = waitlistCandidate->getPrevTrans();
+								//int waitlistCandidatePrevTrans = waitlistCandidate->getPrevTrans();
 								int waitlistCandidateAge = waitlistCandidate->getAge();
 
 								std::vector<std::string> waitlistCandidateHLA = waitlistCandidate->getHLA();
@@ -734,7 +734,7 @@ void KPDSimulation::runDeceasedDonorAllocationStage() {
 									waitlistCandidatePRA == 99 ||
 									waitlistCandidatePRA == 98 && waitlistCandidateOPO == deceasedDonorOPO ||
 									!mismatch ||
-									waitlistCandidatePrevTrans ||
+									//waitlistCandidatePrevTrans ||
 									(waitlistCandidateAge <= 17 && waitlistCandidateOPO == deceasedDonorOPO)) {
 
 									priorityCandidateFound = true;
@@ -1253,6 +1253,8 @@ void KPDSimulation::runIteration(int iteration) {
 
 	int matchRunTime = *it;
 	it++;
+
+	runStateTransitionStage(); // For initial KPD
 
 	while (currentTime < timeSimulation) {
 
